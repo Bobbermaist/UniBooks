@@ -2,7 +2,7 @@
 
 function connect() {	/* Connessione a mysqli, restituisce l'oggetto mysqli in caso
 						 * di esito positivo, false altrimenti */
-	if( $mysqli = new mysqli($host, $user, $pswd, $db) )
+	if( $mysqli = new mysqli(HOST, USER, PASS, DB) )
 		return $mysqli;
 	else
 		return false;
@@ -22,9 +22,9 @@ function checkString($str) {	/* Controlla una stringa, restituisce true se nella
 	$email = trim($email);
 	$atIndex = strpos($email, "@");
 	$dotIndex = strrpos($email,".");
-		/* Controlla: se c'è una '@', se c'è un '.', se prima della '@' ci sono almeno 4 caratteri, 
+		/* Controlla: se c'?una '@', se c'?un '.', se prima della '@' ci sono almeno 4 caratteri,
 		 * se tra la '@' e l'ultimo '.' ci sono almeno 3 caratteri,
-		 * se dopo l'ultimo '.' ci sono almeno due caratteri, 
+		 * se dopo l'ultimo '.' ci sono almeno due caratteri,
 		 * se nella stringa ci sono ';', ',', ' ' e altri pattern non comuni negli indirizzi email
 	if( !$atIndex || !$dotIndex || $atIndex < 4 || $dotIndex < $atIndex+4 || $dotIndex+2 >= strlen($email) || strpos($email,";") ||
 			strpos($email,",") || strpos($email," ") || !preg_match( "/^[\w\.\-]+@\w+[\w\.\-]*?\.\w{1,4}$/", $email))
