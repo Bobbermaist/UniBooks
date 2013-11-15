@@ -18,7 +18,7 @@ if( isset($_POST["login"]) && isset($_POST["user"]) && isset($_POST["pass"]) ) {
 	if( login($_POST["user"], $_POST["pass"]) )		//login
 		headerIn();
 	else
-		echo "<p><b>Errore nel login</b></p>";
+		echo "<p><strong>Errore nel login</strong></p>";
 }
 
 session_start();	/* in $_SESSION["url"] viene salvato l'indirizzo
