@@ -2,7 +2,7 @@
 
 function connect() {	/* Connessione a mysqli, restituisce l'oggetto mysqli in caso
 						 * di esito positivo, false altrimenti */
-	if( $mysqli = new mysqli('localhost', 'emilianobovetti', '', 'my_emilianobovetti') )
+	if( $mysqli = new mysqli($host, $user, $pswd, $db) )
 		return $mysqli;
 	else
 		return false;
