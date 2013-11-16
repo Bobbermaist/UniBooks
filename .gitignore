@@ -1,0 +1,5 @@
+phpmyadmin/
+postfixadmin/
+config/db.php
+application/config/database.php
+info.php
