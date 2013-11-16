@@ -1,8 +1,9 @@
 <?php
+include("../config/db.php");
 
 function connect() {	/* Connessione a mysqli, restituisce l'oggetto mysqli in caso
 						 * di esito positivo, false altrimenti */
-	if( $mysqli = new mysqli(HOST, USER, PASS, DB) )
+	if( $mysqli = new mysqli(HOST, USER, PWD, DB) )
 		return $mysqli;
 	else
 		return false;
