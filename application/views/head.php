@@ -12,6 +12,6 @@
       <meta name='author' content='Emiliano Bovetti' />
       
       <base target='_self'>
-      <link rel="stylesheet" type="text/css" href="application/views/base.css">
+      <link rel="stylesheet" type="text/css" href="/application/views/base.css">
   </head>
   
