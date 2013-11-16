@@ -11,20 +11,20 @@ class User extends CI_Controller {
 
 	public function registration()
 	{
-		if( $this->input->post('registration') ) {
-		//if( $data = $this->input->post(NULL, TRUE) ) {
-			$this->load->config('validation');
+		$this->load->view('head');
+		$this->load->view('body');
+		//if( $this->input->post('registration') ) {
+		if( $this->input->post(NULL, TRUE) ) {
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules($reg_form);
-			if($this->form_validation->run() == FALSE)
-			$this->load->model('User_model');
-			print_r($data);
+			$this->form_validation->set_rules( $this->load->config('validation') );
+			if ($this->form_validation->run() == FALSE)
+				echo 'error';
+			else
+				echo 'formsuccess';
 		}
-		else
-			$this->load->view('head');
-			$this->load->view('body');
-			$this->load->view('registration');
-			$this->load->view('coda');
+		$this->load->helper('form');
+		$this->load->view('registration');
+		$this->load->view('coda');
 	}
 }
 
