@@ -16,9 +16,9 @@ class User extends CI_Controller {
 		//if( $this->input->post('registration') ) {
 		if( $this->input->post() ) {
 			$this->load->library('form_validation');
-			$this->form_validation->set_rules( $this->load->config('validation') );
-			if ($this->form_validation->run() == FALSE)
-				$this->load->view('registration');
+			$this->load->config('form_validation');
+			if ($this->form_validation->run('signup') == FALSE)
+				echo 'error';
 			else
 				echo 'formsuccess';
 		}
