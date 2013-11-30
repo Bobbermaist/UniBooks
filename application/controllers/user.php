@@ -50,7 +50,7 @@ class User extends CI_Controller {
 				'user_name' => $user_data['user_name'],
 				'link' => site_url('user/activation/'.$user_data['user_name'].'/'.$user_data['activation_key'])
 			);
-		$msg = $this->load->view('signup_email', $email_data, 'true');
+		$msg = $this->load->view('signup_email', $email_data, TRUE);
 		$this->email->message( $msg );
 		$this->email->send();
 	}
