@@ -7,16 +7,11 @@ class User_model extends CI_Model {
 		parent::__construct();
 	}
 
-	function insert_user($input_post)
+	function insert_user($data)
 	{
 		$this->load->database();
-		$data = array(
-				'user_name' => $input_post['user_name'],
-				'pass' => sha1($input_post['pass']),
-				'email' => $input_post['email'],
-				'activation_key' => substr(md5(rand()),0,15),
-				'registration_time' => date("Y-m-d H:i:s")
-			);
+		//todo: escape su user_name
+		//$data['user_name'] = ...
 		$this->db->insert('users', $data);
 	}
 }
