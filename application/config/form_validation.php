@@ -3,7 +3,7 @@
 $config = array(
   'signup' => array(
       array(
-       'field'   => 'user_name', 
+        'field'   => 'user_name', 
         'label'   => 'Username', 
         'rules'   => 'trim|required|min_length[3]|max_length[20]xss_clean'
        ),
