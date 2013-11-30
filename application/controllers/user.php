@@ -14,11 +14,11 @@ class User extends CI_Controller {
 		$this->load->view('head');
 		$this->load->view('body');
 		//if( $this->input->post('registration') ) {
-		if( $this->input->post(NULL, TRUE) ) {
+		if( $this->input->post() ) {
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules( $this->load->config('validation') );
 			if ($this->form_validation->run() == FALSE)
-				echo 'error';
+				$this->load->view('registration');
 			else
 				echo 'formsuccess';
 		}

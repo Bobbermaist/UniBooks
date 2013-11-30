@@ -4,7 +4,7 @@ $config ['reg_form'] = array(
 	array(
 		'field'   => 'user_name', 
     'label'   => 'Username', 
-    'rules'   => 'trim|required|min_length[4]|max_length[20]xss_clean'
+    'rules'   => 'trim|required|min_length[3]|max_length[20]xss_clean'
   ),
   array(
     'field'   => 'pass', 
