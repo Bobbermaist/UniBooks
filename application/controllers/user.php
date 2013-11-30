@@ -34,7 +34,6 @@ class User extends CI_Controller {
 			);
 			$this->User_model->insert_user( $user_data );
 			$this->send_activation($user_data);
-			echo 'succes!';
 		}
 
 		$this->load->view('coda');
@@ -44,15 +43,16 @@ class User extends CI_Controller {
 	{
 		$this->load->library('email');
 		$this->email->from('registration@unibooks.it');
-		$this->email->to('$post_data["email"]');
+		$this->email->to($user_data['email']);
 		$this->email->subject('Attivazione account');
 		$email_data = array(
 				'user_name' => $user_data['user_name'],
 				'link' => site_url('user/activation/'.$user_data['user_name'].'/'.$user_data['activation_key'])
 			);
 		$msg = $this->load->view('signup_email', $email_data, TRUE);
-		$this->email->message( $msg );
+		$this->email->message($msg);
 		$this->email->send();
+		echo $this->email->print_debugger();
 	}
 }
 
