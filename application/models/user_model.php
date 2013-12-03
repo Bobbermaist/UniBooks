@@ -14,18 +14,11 @@ class User_model extends CI_Model {
 		//$data['user_name'] = ...
 		$this->db->insert('users', $data);
 	}
-	
-	public function exists_user($user_name)
-	{
-		$this->load->database();
-		$this->db->select('ID')->from('users')->where('user_name', trim($user_name))->limit(1);
-		return (boolean) $this->db->get()->num_rows();
-	}
 
-	public function exists_mail($email)
+	public function exists($field, $value)
 	{
 		$this->load->database();
-		$this->db->select('ID')->from('users')->where('email', trim($email))->limit(1);
+		$this->db->from('users')->where($field, trim($value))->limit(1);
 		return (boolean) $this->db->get()->num_rows();
 	}
 
