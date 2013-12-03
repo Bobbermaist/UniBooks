@@ -84,6 +84,36 @@ class User extends CI_Controller {
 		$this->load->view('coda');
 	}
 
+	public function reset()
+	{
+			/* Load */
+		$this->load->model('User_model');
+		$this->load->helper('form');
+		$this->load->helper('url');
+		$this->load->view('head');
+		$this->load->view('body');
+
+		$post = $this->input->post();
+		if( ! $post )
+			$this->load->view('reset_form');
+		else
+		{	
+			$user = $this->User_model->select_where('email', $post['user_or_email']);
+			if( ! $user )
+				$user = $this->User_model->select_where('user_name', $post['user_or_email'])
+			if( $user )
+			{
+				$msg = 'Hey '.$user->user_name.' ti &egrave; stata inviata un\'email 
+						con le istruzioni per effettuare il reset della password ;)';
+				$this->send_reset($user);	// da finire
+			}
+
+			$this->send_activation($user_data);
+		}
+
+		$this->load->view('coda');
+	}
+
 	public function login()
 	{
 			/* Load */
@@ -99,7 +129,7 @@ class User extends CI_Controller {
 		$post = $this->input->post();
 		$valid = $this->form_validation->run('login');
 		$user = $this->User_model->select_where('user_name', $post['user_name']);
-		if( $valid && $user != NULL && strcmp($user->pass, sha1($post['pass'])) == 0 )
+		if( $valid AND $user != NULL AND strcmp($user->pass, sha1($post['pass'])) == 0 )
 		{
 			$this->load->library('session');
 			$session = array(
