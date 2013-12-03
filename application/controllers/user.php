@@ -20,7 +20,7 @@ class User extends CI_Controller {
 		$valid = FALSE;
 		$this->load->view('head');
 		$this->load->view('body');
-		if( ($post = $this->input->post('registration')) )
+		if( ($post = $this->input->post()) )
 			$valid = $this->form_validation->run('signup');
 		if( ! $valid )
 			$this->load->view('registration');
@@ -33,7 +33,7 @@ class User extends CI_Controller {
 				'activation_key' => substr(md5(rand()),0,15),
 				'registration_time' => date("Y-m-d H:i:s")
 			);
-			$this->User_model->insert_user( $user_data );
+			$this->User_model->insert_user($user_data);
 			$this->send_activation($user_data);
 		}
 
@@ -68,15 +68,15 @@ class User extends CI_Controller {
 		else
 		{
 			$this->load->model('User_model');
-			$user = $this->User_model->select_user($user_name);
+			$user = $this->User_model->select_where('user_name', $user_name);
 			if( $user->rights > -1 )
 			{
 				$msg = "Utente già registrato";
 			}
 			elseif( strcmp($activation_key, $user->activation_key) == 0 )
 			{
-				$this->User_model->update_rights($user->ID, 0);
-				$this->User_model->update_activation_key($user->ID, '');
+				$data = array('rights' => 0, 'activation_key' => '');
+				$this->User_model->update_by_ID($user->ID, $data);
 				$msg = "Attivazione completata";
 			}
 			else
@@ -103,14 +103,14 @@ class User extends CI_Controller {
 		$valid = FALSE;
 		if( ($post = $this->input->post('login')) )
 			$valid = $this->form_validation->run('login');
-		if( $valid )
-		{
-			echo "login...";
-		}
-		else
+		if( ! $valid )
 		{
 			$this->load->view('validation_errors');
 			$this->load->view('login_form');
+		}
+		else
+		{
+			
 		}
 		$this->load->view('coda');
 	}
