@@ -38,9 +38,9 @@ class User_model extends CI_Model {
 
 	public function set_user_tmp($data)
 	{
-		$query = $this->db->insert_string('users_tmp', $data) . ' ON DUPLICATE KEY UPDATE 
-			session_id=\'$data["session_id"]\',
-				login_time=\'$data["login_time"]\', user_ip=\'$data["user_ip"]\'';
+		$query = $this->db->insert_string('users_tmp', $data) . " ON DUPLICATE KEY UPDATE 
+			session_id='" . $data['session_id'] . "',
+				login_time='" . $data['login_time'] ."', user_ip='" . $data['user_ip'] . "'";
 		$this->db->query($query);
 	}
 }
