@@ -8,7 +8,12 @@ class Test extends CI_Controller {
 		$this->load->view('body');
 
 		$this->load->model('User_model');
-		if( $this->User_model->exists_user('bob') === FALSE )
+		if( $this->User_model->exists_user('  BoB        ') === FALSE )
+			echo 'FALSE';
+		else
+			echo 'TRUE';
+
+		if( $this->User_model->exists_mail('  EmilianoBovetti@hotmail.it') === FALSE )
 			echo 'FALSE';
 		else
 			echo 'TRUE';
