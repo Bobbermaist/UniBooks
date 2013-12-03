@@ -21,7 +21,8 @@ class Welcome extends CI_Controller {
 	{
 		$this->load->view('head');
 		$this->load->view('body');
-		$this->load->view('login');
+		$this->load->helper('form');
+		$this->load->view('login_form');
 		$this->load->view('coda');
 	}
 }

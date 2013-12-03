@@ -14,7 +14,7 @@ class User_model extends CI_Model {
 		//$data['user_name'] = ...
 		$this->db->insert('users', $data);
 	}
-
+	
 	public function exists_user($user_name)
 	{
 		$this->load->database();

@@ -20,7 +20,7 @@ class User extends CI_Controller {
 		$valid = FALSE;
 		$this->load->view('head');
 		$this->load->view('body');
-		if( ($post = $this->input->post()) )
+		if( ($post = $this->input->post('registration')) )
 			$valid = $this->form_validation->run('signup');
 		if( ! $valid )
 			$this->load->view('registration');
@@ -86,6 +86,32 @@ class User extends CI_Controller {
 		}
 		$data = array( 'par' => $msg );
 		$this->load->view('par', $data);
+		$this->load->view('coda');
+	}
+
+	public function login()
+	{
+			/* Load */
+		$this->load->model('User_model');
+		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->load->config('form_validation');
+		$this->load->database();
+		$this->load->view('head');
+		$this->load->view('body');
+
+		$valid = FALSE;
+		if( ($post = $this->input->post('login')) )
+			$valid = $this->form_validation->run('login');
+		if( $valid )
+		{
+			echo "login...";
+		}
+		else
+		{
+			$this->load->view('validation_errors');
+			$this->load->view('login_form');
+		}
 		$this->load->view('coda');
 	}
 }
