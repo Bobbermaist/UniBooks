@@ -101,7 +101,7 @@ class User extends CI_Controller {
 		$this->load->view('body');
 
 		$valid = FALSE;
-		if( ($post = $this->input->post('login')) )
+		if( ($post = $this->input->post()) )
 			$valid = $this->form_validation->run('login');
 		if( ! $valid )
 		{
@@ -110,7 +110,17 @@ class User extends CI_Controller {
 		}
 		else
 		{
-			
+			$user = $this->User_model->select_where('user_name', $post['user_name']);
+			if( $user != NULL && strcmp($user->pass, sha1($post['pass'])) == 0 )
+			{
+				$data = array(
+					'user_id'			=> $user->ID,
+					'session_id'	=> md5(rand()),
+					'login_time'	=> date("Y-m-d H:i:s"),
+					'user_ip'			=> $this->input->ip_address()
+				);
+				$this->User_model->set_user_tmp($data);
+			}
 		}
 		$this->load->view('coda');
 	}
