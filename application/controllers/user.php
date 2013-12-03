@@ -15,11 +15,11 @@ class User extends CI_Controller {
 		$this->load->helper('url');
 		$this->load->library('form_validation');
 		$this->load->config('form_validation');
-		$this->load->database();	// necessario per is_unique
-
-		$valid = FALSE;
+		$this->load->database();
 		$this->load->view('head');
 		$this->load->view('body');
+
+		$valid = FALSE;
 		if( ($post = $this->input->post()) )
 			$valid = $this->form_validation->run('signup');
 		if( ! $valid )
@@ -60,15 +60,14 @@ class User extends CI_Controller {
 	{
 		$this->load->view('head');
 		$this->load->view('body');
-
-		if( ! $user_name || ! $activation_key )
+		$this->load->model('User_model');
+		$user = $this->User_model->select_where('user_name', $user_name);
+		if( $user == NULL )
 		{
-			$msg = "Parametri non validi";
+			$msg = "Errore nell'attivazione";
 		}
 		else
 		{
-			$this->load->model('User_model');
-			$user = $this->User_model->select_where('user_name', $user_name);
 			if( $user->rights > -1 )
 			{
 				$msg = "Utente già registrato";
@@ -77,11 +76,7 @@ class User extends CI_Controller {
 			{
 				$data = array('rights' => 0, 'activation_key' => '');
 				$this->User_model->update_by_ID($user->ID, $data);
-				$msg = "Attivazione completata";
-			}
-			else
-			{
-				$msg = "Errore nell'attivazione";
+				$msg = "Attivazione effettuata con successo";
 			}
 		}
 		$data = array( 'par' => $msg );
@@ -101,27 +96,22 @@ class User extends CI_Controller {
 		$this->load->view('body');
 
 		$valid = FALSE;
-		if( ($post = $this->input->post()) )
-			$valid = $this->form_validation->run('login');
-		if( ! $valid )
+		$post = $this->input->post();
+		$valid = $this->form_validation->run('login');
+		$user = $this->User_model->select_where('user_name', $post['user_name']);
+		if( $valid && $user != NULL && strcmp($user->pass, sha1($post['pass'])) == 0 )
 		{
-			$this->load->view('validation_errors');
-			$this->load->view('login_form');
+			$this->load->library('session');
+			$session = array(
+				'ID'					=> $user->ID,
+				'user_name'		=> $user->user_name,
+				'email'				=> $user->email
+			);
+			$this->session->set_userdata($session);
+			/* REDIRECT */
 		}
-		else
-		{
-			$user = $this->User_model->select_where('user_name', $post['user_name']);
-			if( $user != NULL && strcmp($user->pass, sha1($post['pass'])) == 0 )
-			{
-				$this->load->library('session');
-				$session = array(
-					'user_id'			=> $user->ID,
-					'user_name'		=> $user->user_name,
-					'email'				=> $user->email
-				);
-				$this->session->set_userdata($session);
-			}
-		}
+		$this->load->view('validation_errors');
+		$this->load->view('login_form');
 		$this->load->view('coda');
 	}
 }
