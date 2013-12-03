@@ -5,7 +5,7 @@ $config = array(
       array(
         'field'   => 'user_name', 
         'label'   => 'Username', 
-        'rules'   => 'trim|required|min_length[3]|max_length[20]xss_clean'
+        'rules'   => 'trim|required|min_length[3]|max_length[20]|xss_clean|is_unique[users.user_name]'
        ),
        array(
         'field'   => 'pass', 
@@ -20,7 +20,7 @@ $config = array(
        array(
         'field'   => 'email', 
         'label'   => 'Email', 
-        'rules'   => 'trim|required|valid_email'
+        'rules'   => 'trim|required|valid_email|is_unique[users.email]'
        )
   )
 );

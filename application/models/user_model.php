@@ -33,9 +33,6 @@ class User_model extends CI_Model {
 	{
 		$this->load->database();
 		$this->db->from('users')->where('user_name', trim($user_name))->limit(1);
-		//$select = $this->db->get_where('users', array('user_name' => $user_name), 1);
-		//if( $select->num_rows() == 0 )
-		//	return NULL;
 		return $this->db->get()->row();
 	}
 

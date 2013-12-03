@@ -15,6 +15,7 @@ class User extends CI_Controller {
 		$this->load->helper('url');
 		$this->load->library('form_validation');
 		$this->load->config('form_validation');
+		$this->load->database();	// necessario per is_unique
 
 		$valid = FALSE;
 		$this->load->view('head');
