@@ -2,7 +2,7 @@
 
 $config = array(
   'protocol' => 'sendmail',
-  //'protocol' => 'mail',
+  'mailpath' => '/usr/sbin/sendmail',
   'mailtype' => 'html',
   'charset' => 'utf-8'
 );

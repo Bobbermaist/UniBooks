@@ -54,6 +54,39 @@ class User extends CI_Controller {
 		$this->email->send();
 		echo $this->email->print_debugger();
 	}
+
+	public function activation($user_name, $activation_key)
+	{
+		$this->load->view('head');
+		$this->load->view('body');
+
+		if( ! $user_name || ! $activation_key )
+		{
+			$msg = "Parametri non validi";
+		}
+		else
+		{
+			$this->load->model('User_model');
+			$user = $this->User_model->select_user($user_name);
+			if( $user->rights > -1 )
+			{
+				$msg = "Utente già registrato";
+			}
+			elseif( strcmp($activation_key, $user->activation_key) == 0 )
+			{
+				$this->User_model->update_rights($user->ID, 0);
+				$this->User_model->update_activation_key($user->ID, '');
+				$msg = "Attivazione completata";
+			}
+			else
+			{
+				$msg = "Errore nell'attivazione";
+			}
+		}
+		$data = array( 'par' => $msg );
+		$this->load->view('par', $data);
+		$this->load->view('coda');
+	}
 }
 
 /* End of file user.php */

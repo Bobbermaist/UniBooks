@@ -7,12 +7,35 @@ class User_model extends CI_Model {
 		parent::__construct();
 	}
 
-	function insert_user($data)
+	public function insert_user($data)
 	{
 		$this->load->database();
 		//todo: escape su user_name
 		//$data['user_name'] = ...
 		$this->db->insert('users', $data);
+	}
+
+	public function select_user($user_name)
+	{
+		$this->load->database();
+		$select = $this->db->get_where('users', array('user_name' => $user_name), 1);
+		if( $select->num_rows() == 0 )
+			return NULL;
+		return $select->row();
+	}
+
+	public function update_rights($ID, $rights)
+	{
+		$this->load->database();
+		$this->db->where('ID', $ID);
+		$this->db->update('users', array( 'rights' => $rights ));
+	}
+
+	public function update_activation_key($ID, $activation_key)
+	{
+		$this->load->database();
+		$this->db->where('ID', $ID);
+		$this->db->update('users', array( 'activation_key' => $activation_key ));
 	}
 }
 
