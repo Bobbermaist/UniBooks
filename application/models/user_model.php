@@ -15,6 +15,13 @@ class User_model extends CI_Model {
 		$this->db->insert('users', $data);
 	}
 
+	public function exists_user($user_name)
+	{
+		$this->load->database();
+		$this->db->select('ID')->from('users')->where('user_name', $user_name)->limit(1);
+		return (boolean) $this->db->get()->num_rows();
+	}
+
 	public function select_user($user_name)
 	{
 		$this->load->database();
