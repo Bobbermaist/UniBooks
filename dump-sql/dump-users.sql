@@ -2,7 +2,6 @@ CREATE TABLE IF NOT EXISTS `users` (
   `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user_name` varchar(20) NOT NULL DEFAULT '',
   `pass` varchar(40) NOT NULL DEFAULT '',
-  `tmp_pass` varchar(40) DEFAULT NULL,
   `email` varchar(64) NOT NULL DEFAULT '',
   `activation_key` varchar(15) NOT NULL DEFAULT '',
   `registration_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',

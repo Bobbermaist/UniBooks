@@ -13,6 +13,7 @@ class User_model extends CI_Model {
 		//todo: escape su user_name
 		//$data['user_name'] = ...
 		$this->db->insert('users', $data);
+		return $this->db->insert_id();
 	}
 
 	public function exists($field, $value)
