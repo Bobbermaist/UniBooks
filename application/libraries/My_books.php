@@ -17,9 +17,21 @@ class My_books {
   	$this->service = new Google_BooksService($client);
   }
 
-  public function get($str)
+  public function get($data)
   {
-  	return $this->service->volumes->listVolumes($str);
+  	if( ! is_array($data) )
+  		return $this->service->volumes->listVolumes($data);
+  	$query = isset($data['title']) ? 'intitle:' . $data['title'] . ' ' : '';
+  	$query .= isset($data['author']) ? 'inauthor:' . $data['author'] . ' ' : '';
+  	$query .= isset($data['publisher']) ? 'inpublisher:' . $data['publisher'] . ' ' : '';
+  	$query .= isset($data['subject']) ? 'subject:' . $data['subject'] . ' ' : '';
+  	//$query = substr($query, 0, -1);
+  	return $this->service->volumes->listVolumes($query);
+  }
+
+  public function get_by_isbn($isbn)
+  {
+  	return $this->service->volumes->listVolumes("isbn:$isbn");
   }
 }
 

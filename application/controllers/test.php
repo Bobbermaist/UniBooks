@@ -9,7 +9,12 @@ class Test extends CI_Controller {
 
 		$this->load->library('My_books');
 		$book = new My_books;
-		print_r($book->get('Immanuel Kant'));
+		$data = array(
+			'title' => 'Critica del giudizio',
+			'author' => 'Immanuel Kant',
+			'publisher' => 'De agostini'
+		);
+		print_r($book->get($data));
 
 		$this->load->view('coda');
 	}
