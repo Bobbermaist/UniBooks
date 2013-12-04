@@ -7,16 +7,9 @@ class Test extends CI_Controller {
 		$this->load->view('head');
 		$this->load->view('body');
 
-		$this->load->model('User_model');
-		if( $this->User_model->exists('user_name','  BoB        ') === FALSE )
-			echo 'FALSE';
-		else
-			echo 'TRUE';
-
-		if( $this->User_model->exists('email','  EmilianoBovetti@hotmail.it') === FALSE )
-			echo 'FALSE';
-		else
-			echo 'TRUE';
+		$this->load->library('My_books');
+		$book = new My_books;
+		print_r($book->get('Immanuel Kant'));
 
 		$this->load->view('coda');
 	}

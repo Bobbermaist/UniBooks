@@ -31,7 +31,7 @@ class Welcome extends CI_Controller {
 		if( ! ($user_name = $this->session->userdata('user_name')) )
 			$this->load->view('login_form');
 		else
-			echo "<p>Hey, <b>$user_name!</b></p>\n";
+			$this->load->view('par', array('par' => "Hey, <b>$user_name!</b>\n"));
 		$this->load->view('coda');
 	}
 }
