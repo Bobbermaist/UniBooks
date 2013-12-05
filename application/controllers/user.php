@@ -13,10 +13,11 @@ class User extends CI_Controller {
 	{
 		$this->load->view('template/head');
 		$this->load->view('template/body');
+		$this->load->config('form_data');
 		$this->load->helper('form');
 		$user = $this->session->all_userdata();
 		if( ! isset($user['ID']) )
-			$this->load->view('form/login');
+			$this->load->view('form/login', $this->config->item('login_data'));
 		else
 		{		/* Test variabili sessione */
 			$this->load->view('par', array('par' => 'Hey, <b>'.$user['user_name'].'!</b>'));
@@ -227,12 +228,12 @@ class User extends CI_Controller {
 		{
 			$session = array(
 				'ID'					=> $user->ID,
-				'user_name'		=> $user->user_name,
 				'rights'			=> $user->rights,
+				'user_name'		=> $user->user_name,
 				'email'				=> $user->email
 			);
 			$this->session->set_userdata($session);
-			redirect('user/index');
+			redirect('user');
 		}
 		$login_data = $this->config->item('login_data');
 		$login_data['user_name']['value'] = $post['user_name'];
