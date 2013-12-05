@@ -1,5 +1,5 @@
 
-<?php echo form_open('book/search'); ?> 
+<?php echo form_open('book/index'); ?> 
 	  <h1>Ricerca un libro</h1>
 	  <p>
 	  	<input type='text' name='book_search' maxlength='255' required autofocus>
