@@ -7,7 +7,7 @@ class Test extends CI_Controller {
 		parent::__construct();
 		$this->load->helper('url');
 	}
-	
+
 	public function index()
 	{
 		$this->load->view('template/head');
@@ -23,7 +23,7 @@ class Test extends CI_Controller {
 	public function migration()
 	{
 		$this->load->library('migration');
-		if ( ! $this->migration->current())
+		if ( ! $this->migration->current() )
 			show_error($this->migration->error_string());
 		else
 			redirect('test');

@@ -38,6 +38,8 @@ class Welcome extends CI_Controller {
 			anchor('user/login', 'Log in', 'title="login"')));
 		$this->load->view('par', array('par' => 'Puoi cercare un libro tramite ISBN o altre informazioni qui: '.
 			anchor('book/index', 'Ricerca libro', 'title="search"')));
+		$this->load->view('par', array('par' => 'Esegui test: '.
+			anchor('test', 'Test controller', 'title="test"')));
 
 		$this->load->view('template/coda');
 	}
