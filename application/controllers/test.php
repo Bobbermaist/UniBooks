@@ -2,21 +2,31 @@
 
 class Test extends CI_Controller {
 
+	public function __construct()
+	{
+		parent::__construct();
+		$this->load->helper('url');
+	}
+	
 	public function index()
 	{
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-
-		$this->load->library('My_books');
-		$book = new My_books;
-		$data = array(
-			'title' => 'Critica del giudizio',
-			'author' => 'Immanuel Kant',
-			'publisher' => 'De agostini'
-		);
-		print_r($book->get($data));
-
+		
+		$this->load->view('par', array('par' => 'Migration test'));
+		$this->load->view('par', array('par' => 'Database <b>users</b>: '.
+			anchor('test/migration/', 'Effettua current migration')));
+		
 		$this->load->view('template/coda');
+	}
+
+	public function migration()
+	{
+		$this->load->library('migration');
+		if ( ! $this->migration->current())
+			show_error($this->migration->error_string());
+		else
+			redirect('test');
 	}
 }
 
