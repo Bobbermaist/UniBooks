@@ -47,7 +47,7 @@ class User extends CI_Controller {
 
 		$valid = FALSE;
 		$signup_data = $this->config->item('signup_data');
-		$this->form_validation->set_rules($this->config->item('signup_rules'));
+		//$this->form_validation->set_rules($this->config->item('signup_rules'));
 		if( ($post = $this->input->post()) )
 		{
 			$valid = $this->form_validation->run();
@@ -220,7 +220,7 @@ class User extends CI_Controller {
 
 		$valid = FALSE;
 		$post = $this->input->post();
-		$this->form_validation->set_rules($this->config->item('login_rules'));
+		//$this->form_validation->set_rules($this->config->item('login_rules'));
 		$valid = $this->form_validation->run();
 		$user = $this->User_model->select_where('user_name', $post['user_name']);
 		if( $valid AND $user != NULL AND strcmp($user->pass, sha1($post['pass'])) == 0 )
