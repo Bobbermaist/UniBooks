@@ -10,13 +10,14 @@ class Book extends CI_Controller {
 	public function index()
 	{
 		$this->load->helper('form');
-
 		$post = $this->input->post('book_search');
-		if( $post ) $this->search($post);
-		
+
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-		$this->load->view('form/book_search');
+
+		if( $post ) $this->search($post);
+		else $this->load->view('form/book_search');
+		
 		$this->load->view('template/coda');
 	}
 
