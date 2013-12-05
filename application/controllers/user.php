@@ -36,16 +36,24 @@ class User extends CI_Controller {
 		$this->load->model('User_model');
 		$this->load->helper('form');
 		$this->load->library('form_validation');
-		$this->load->config('form_validation');
+		$this->load->config('form_data');
 		$this->load->database();
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 
 		$valid = FALSE;
+		$signup_data = $this->config->item('signup_data');
+		$this->form_validation->set_rules($this->config->item('signup_rules'));
 		if( ($post = $this->input->post()) )
-			$valid = $this->form_validation->run('signup');
+		{
+			$valid = $this->form_validation->run();
+			$signup_data['user_name_data']['value'] = $post['user_name'];
+			$signup_data['email_data']['value'] = $post['email'];
+			//$signup_data['pass_data']['value'] = $post['pass'];
+			//$signup_data['passconf_data']['value'] = $post['passconf'];
+		}
 		if( ! $valid )
-			$this->load->view('form/registration');
+			$this->load->view('form/registration', $signup_data);
 		else
 		{
 			$user_data = array(
@@ -198,12 +206,13 @@ class User extends CI_Controller {
 		$this->load->model('User_model');
 		$this->load->helper('form');
 		$this->load->library('form_validation');
-		$this->load->config('form_validation');
+		$this->load->config('form_data');
 		$this->load->database();
 
 		$valid = FALSE;
 		$post = $this->input->post();
-		$valid = $this->form_validation->run('login');
+		$valid = $this->form_validation->run('login_rules
+			');
 		$user = $this->User_model->select_where('user_name', $post['user_name']);
 		if( $valid AND $user != NULL AND strcmp($user->pass, sha1($post['pass'])) == 0 )
 		{
