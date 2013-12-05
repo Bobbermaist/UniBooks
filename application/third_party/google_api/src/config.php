@@ -30,7 +30,7 @@ $apiConfig = array(
     'oauth2_redirect_uri' => '',
 
     // The developer key, you get this at https://code.google.com/apis/console
-    'developer_key' => '',
+    'developer_key' => 'AIzaSyB_qpOh6a5EddC32mNT7Cqo7Qi9IeV-vU0',
   
     // Site name to show in the Google's OAuth 1 authentication screen.
     'site_name' => 'www.example.org',

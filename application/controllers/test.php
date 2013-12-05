@@ -4,8 +4,8 @@ class Test extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->view('head');
-		$this->load->view('body');
+		$this->load->view('template/head');
+		$this->load->view('template/body');
 
 		$this->load->library('My_books');
 		$book = new My_books;
@@ -16,7 +16,7 @@ class Test extends CI_Controller {
 		);
 		print_r($book->get($data));
 
-		$this->load->view('coda');
+		$this->load->view('template/coda');
 	}
 }
 

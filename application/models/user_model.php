@@ -39,4 +39,4 @@ class User_model extends CI_Model {
 }
 
 /* End of file user_model.php */
-/* Location: ./application/models/user_models.php */ 
+/* Location: ./application/models/user_model.php */ 

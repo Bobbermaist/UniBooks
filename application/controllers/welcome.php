@@ -20,19 +20,24 @@ class Welcome extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->library('session');
+		$this->load->helper('url');
+		//$this->load->library('session');
 	}
 
 	public function index()
 	{
-		$this->load->view('head');
-		$this->load->view('body');
-		$this->load->helper('form');
-		if( ! ($user_name = $this->session->userdata('user_name')) )
-			$this->load->view('login_form');
-		else
-			$this->load->view('par', array('par' => "Hey, <b>$user_name!</b>\n"));
-		$this->load->view('coda');
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		
+		$this->load->view('par', array('par' => 'Benvenuto : )'));
+		$this->load->view('par', array('par' => 'Puoi registrarti qui: '.
+			anchor('user/registration', 'Registrazione utente', 'title="registrazione"')));
+		$this->load->view('par', array('par' => 'Puoi effettuare il reset della tua password qui: '.
+			anchor('user/reset', 'Reset password', 'title="reset"')));
+		$this->load->view('par', array('par' => 'Puoi effettuare il login qui: '.
+			anchor('user/login', 'Log in', 'title="login"')));
+
+		$this->load->view('template/coda');
 	}
 }
 
