@@ -224,7 +224,7 @@ class User extends CI_Controller {
 		//$this->form_validation->set_rules($this->config->item('login_rules'));
 		$valid = $this->form_validation->run();
 		$user = $this->User_model->select_where('user_name', $post['user_name']);
-		if( $valid AND $user != NULL AND strcmp($user->pass, sha1($post['pass'])) == 0 )
+		if( $valid AND $user != NULL AND strcmp($user->pass, sha1($post['pass'])) == 0 AND $user->rights >= 0 )
 		{
 			$session = array(
 				'ID'					=> $user->ID,
