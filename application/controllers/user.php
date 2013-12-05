@@ -26,6 +26,10 @@ class User extends CI_Controller {
 			$this->load->view('par', array('par' => 'Il tuo ip_address &egrave; <b>'.$user['ip_address'].'</b>'));
 			$this->load->view('par', array('par' => 'Il tuo user_agent &egrave; <b>'.$user['user_agent'].'</b>'));
 			$this->load->view('par', array('par' => 'La tua last_activity &egrave; <b>'.$user['last_activity'].'</b>'));
+			if( $user['rights'] == 0 )
+				$this->load->view('par', array('par' => 'Il tuo account ha normali permessi utente'));
+			elseif( $user['rights'] == 1 )
+				$this->load->view('par', array('par' => 'Il tuo &egrave; un account amministratore'));
 		}
 		$this->load->view('template/coda');
 	}
@@ -120,32 +124,34 @@ class User extends CI_Controller {
 			/* Load */
 		$this->load->model('User_model');
 		$this->load->helper('form');
+		$this->load->config('form_data');
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 
-		$post = $this->input->post();
-		if( ! $post )
-			$this->load->view('form/reset');
-		else
+		$msg = '';
+		$reset_data = $this->config->item('reset_data');
+		$input = $this->input->post('user_or_email');
+		$reset_data['reset_form_data']['value'] = $input;
+		$user = $this->User_model->select_where('email', $input);
+		if( ! $user )
+			$user = $this->User_model->select_where('user_name', $input);
+		if( $user )
 		{
-			$user = $this->User_model->select_where('email', $post['user_or_email']);
-			if( ! $user )
-				$user = $this->User_model->select_where('user_name', $post['user_or_email']);
-			if( $user )
-			{
-				$msg = 'Hey '.$user->user_name.' ti &egrave; stata inviata un\'email 
-						con le istruzioni per effettuare il reset della password ;)';
-				$user_data = array(
-					'ID'				=> $user->ID,
-					'user_name' => $user->user_name,
-					'email'			=> $user->email,
-					'activation_key'	=> substr(md5(rand()),0,15)
-				);
-				$this->User_model->update_by_ID($user->ID, array('activation_key' => $user_data['activation_key']));
-				$this->send_reset($user_data);
-			}
+			$msg = 'Hey '.$user->user_name.' ti &egrave; stata inviata un\'email 
+				con le istruzioni per effettuare il reset della password ;)';
+			$user_data = array(
+				'ID'				=> $user->ID,
+				'user_name' => $user->user_name,
+				'email'			=> $user->email,
+				'activation_key'	=> substr(md5(rand()),0,15)
+			);
+			$this->User_model->update_by_ID($user->ID, array('activation_key' => $user_data['activation_key']));
+			$this->send_reset($user_data);
 		}
-
+		elseif( $input )
+			$msg = 'I parametri inseriti non corrispondono a nessun utente';
+		$this->load->view('form/reset', $reset_data);
+		$this->load->view('par', array('par' => $msg));
 		$this->load->view('template/coda');
 	}
 
@@ -169,13 +175,16 @@ class User extends CI_Controller {
 	{
 		$this->load->model('User_model');
 		$this->load->helper('form');
+		$this->load->config('form_data');
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 		$user = $this->User_model->select_where('ID', $ID);
 		if( $user != NULL AND $user->rights > -1 AND strcmp($activation_key, $user->activation_key) == 0 )
 		{
-			$data = array( 'ID' => $user->ID, 'activation_key' => $user->activation_key );
-			$this->load->view('form/new_password', $data);
+			$reset_data = $this->config->item('new_password_data');
+			$reset_data['ID'] = $user->ID;
+			$reset_data['activation_key'] = $user->activation_key;
+			$this->load->view('form/new_password', $reset_data);
 		}
 		$this->load->view('template/coda');
 	}
@@ -211,22 +220,26 @@ class User extends CI_Controller {
 
 		$valid = FALSE;
 		$post = $this->input->post();
-		$valid = $this->form_validation->run('login_rules
-			');
+		$this->form_validation->set_rules($this->config->item('login_rules'));
+		$valid = $this->form_validation->run();
 		$user = $this->User_model->select_where('user_name', $post['user_name']);
 		if( $valid AND $user != NULL AND strcmp($user->pass, sha1($post['pass'])) == 0 )
 		{
 			$session = array(
 				'ID'					=> $user->ID,
 				'user_name'		=> $user->user_name,
+				'rights'			=> $user->rights,
 				'email'				=> $user->email
 			);
 			$this->session->set_userdata($session);
 			redirect('user/index');
 		}
+		$login_data = $this->config->item('login_data');
+		$login_data['user_name']['value'] = $post['user_name'];
+
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-		$this->load->view('form/login');
+		$this->load->view('form/login', $login_data);
 		$this->load->view('validation_errors');
 		$this->load->view('template/coda');
 	}

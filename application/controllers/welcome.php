@@ -34,8 +34,10 @@ class Welcome extends CI_Controller {
 			anchor('user/registration', 'Registrazione utente', 'title="registrazione"')));
 		$this->load->view('par', array('par' => 'Puoi effettuare il reset della tua password qui: '.
 			anchor('user/reset', 'Reset password', 'title="reset"')));
-		$this->load->view('par', array('par' => 'Puoi effettuare il login qui: '.
+		$this->load->view('par', array('par' => 'Puoi fare il log in qui: '.
 			anchor('user/login', 'Log in', 'title="login"')));
+		$this->load->view('par', array('par' => 'Puoi cercare un libro tramite ISBN o altre informazioni qui: '.
+			anchor('book/index', 'Ricerca libro', 'title="search"')));
 
 		$this->load->view('template/coda');
 	}

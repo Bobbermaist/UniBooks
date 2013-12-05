@@ -19,7 +19,7 @@
 	  <!-- <p>Accetto i termini e le condizioni d'uso di <b> 
 	  	<?php //echo $_SERVER['SERVER_NAME']; ?> </b> <input type='checkbox' name='terms'> </p> -->
 <?php
-		echo '	'.form_submit('registration', 'Iscriviti!');
+		echo form_submit('registration', 'Iscriviti!');
 	echo form_close(); 
 ?>
 

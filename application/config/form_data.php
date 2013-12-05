@@ -1,6 +1,7 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $config = array(
+
 	'signup_rules' => array(
     array(
       'field'   => 'user_name', 
@@ -23,6 +24,7 @@ $config = array(
       'rules'   => 'required|valid_email|is_unique[users.email]'
     )
   ),
+
   'login_rules' => array(
     array(
       'field'   => 'user_name',
@@ -35,6 +37,7 @@ $config = array(
       'rules'   => 'required|min_length[4]|max_length[32]'
     )
   ),
+
   'signup_data' => array(
   	'user_name_data' => array(
   		'name'			=> 'user_name',
@@ -57,7 +60,33 @@ $config = array(
   		'maxlength'	=> '64'/*,
   		'required'	=> TRUE*/
   	)
+  ),
+
+  'reset_data' => array(
+  	'reset_form_data' => array(
+  		'name'			=> 'user_or_email',
+  		'maxlength'	=> '64'
+  	)
+  ),
+
+  'new_password_data' => array(
+  	'new_password_form_data' => array(
+  		'name'			=> 'pass',
+  		'maxlength'	=> '64'
+  	)
+  ),
+
+  'login_data' => array(
+  	'user_name' => array(
+  		'name'			=> 'user_name',
+  		'maxlength'	=> '20'
+  	),
+  	'pass' => array(
+  		'name'			=> 'pass',
+  		'maxlength'	=> '64'
+  	)
   )
+  
 );
 
 /* End of file form_data.php */
