@@ -25,9 +25,12 @@ class Book extends CI_Controller {
 	{
 		$this->load->model('Book_model');
 		$this->Book_model->setISBN($search_key);
-		$book_data = $this->Book_model->google_fetch($search_key);
-		print_r($book_data);
+		$google_book_data = $this->Book_model->google_fetch($search_key);
+		$this->Book_model->set_info($google_book_data, 0);
+		print_r($this->Book_model->info);
 	}
+
+
 }
 
 /* End of file book.php */
