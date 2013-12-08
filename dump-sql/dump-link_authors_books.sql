@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `link_authors_books` (
-  `id_author` int(10) unsigned NOT NULL DEFAULT 0,
+  `author_id` int(10) unsigned NOT NULL DEFAULT 0,
   `ISBN` varchar(9) NOT NULL DEFAULT '000000000',
   FOREIGN KEY (id_author) REFERENCES authors(ID)
     ON DELETE CASCADE
