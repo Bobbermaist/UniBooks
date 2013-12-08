@@ -16,8 +16,29 @@ class Book_model extends CI_Model {
 		$book = new My_books;
 		if( isset($this->ISBN) )
 			return $book->get_by_isbn($this->ISBN);
-		else
-			return $book->get($data);
+		return $book->get($data);
+	}
+
+	public function printable_array($google_data)
+	{
+		if( $google_data['totalItems'] == 0 )
+			return NULL;
+		$books_data = array();
+		foreach( $google_data['items'] as $book )
+		{
+			$book = $book['volumeInfo'];
+			array_push($books_data, array(
+				isset($book['title']) ? $book['title'] : '',
+				isset($book['authors']) ? implode(', ', $book['authors']) : '',
+				isset($book['publishedDate']) ? $book['publishedDate'] : '',
+				isset($book['industryIdentifiers'][1]) ? $book['industryIdentifiers'][1]['identifier'] : '',
+				isset($book['pageCount']) ? $book['pageCount'] : '',
+				isset($book['categories']) ? implode(', ', $book['categories']) : '',
+				isset($book['language']) ? $book['language'] : ''
+			));
+		}
+		array_walk_recursive($books_data, create_function('&$val', '$val = htmlentities($val);'));
+		return $books_data;
 	}
 
 	public function set_info($google_data, $index)

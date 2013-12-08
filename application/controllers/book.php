@@ -21,16 +21,31 @@ class Book extends CI_Controller {
 		$this->load->view('template/coda');
 	}
 
-	public function search($search_key)
+	private function search($search_key)
 	{
 		$this->load->model('Book_model');
 		$this->Book_model->setISBN($search_key);
 		$google_book_data = $this->Book_model->google_fetch($search_key);
 		$this->Book_model->set_info($google_book_data, 0);
-		print_r($this->Book_model->info);
+		//print_r($this->Book_model->info);
+		$this->select_result($google_book_data);
 	}
 
-
+	private function select_result($google_data)
+	{
+		$this->load->model('Book_model');
+		$this->load->library('table');
+		$books_data = $this->Book_model->printable_array($google_data);
+		if( ! $books_data )
+			echo '<p>La ricerca non ha prodotto risultati</p>';
+		else
+		{
+			$this->table->set_heading('Titolo', 'Autori', 'Anno di pubblicazione', 'ISBN', 'Pagine', 'Materia', 'Lingua');
+			foreach ( $books_data as $book )
+				$this->table->add_row($book);
+			echo $this->table->generate();
+		}
+	}
 }
 
 /* End of file book.php */
