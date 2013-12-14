@@ -109,7 +109,7 @@ class User extends CI_Controller {
 			}
 			elseif( strcmp($activation_key, $user->activation_key) == 0 )
 			{
-				$data = array('rights' => 0, 'activation_key' => '');
+				$data = array('rights' => 0, 'activation_key' => NULL);
 				$this->User_model->update_by_ID($user->ID, $data);
 				$msg = 'Attivazione effettuata con successo';
 			}
