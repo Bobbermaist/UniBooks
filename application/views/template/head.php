@@ -12,6 +12,6 @@
       <meta name="author" content="Emiliano Bovetti &amp; Ivan Prignano" />
       
       <base target="_self">
-      <link rel="stylesheet" type="text/css" href="/<?php echo APPPATH; ?>views/base.css">
+      <link rel="stylesheet" type="text/css" href="/css/base.css">
   </head>
   
