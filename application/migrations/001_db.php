@@ -6,7 +6,7 @@ class Migration_Db extends CI_Migration {
 	{
 		//parent::__construct();
 		$this->load->database();
-		$this->load->dbforge();
+		//$this->load->dbforge();
 	}
 
 	public function up()
@@ -23,59 +23,24 @@ class Migration_Db extends CI_Migration {
 
 	private function users_up()
 	{
-		$fields = array(
-			'ID' => array(
-				'type'						=> 'INT',
-				'constraint'			=> 9,
-				'unsigned'				=> TRUE,
-				'auto_increment'	=> TRUE,
-				'null'						=> FALSE
-			),
-			'user_name' => array(
-				'type'				=> 'VARCHAR',
-				'constraint'	=> 20,
-				'null'				=> FALSE,
-				'default'			=> ''
-			),
-			'pass' => array(
-				'type'				=> 'VARCHAR',
-				'constraint'	=> 40,
-				'null'				=> FALSE,
-				'default'			=> ''
-			),
-			'email' => array(
-				'type'				=> 'VARCHAR',
-				'constraint'	=> 64,
-				'null'				=> FALSE,
-				'default'			=> ''
-			),
-			'activation_key' => array(
-				'type'				=> 'VARCHAR',
-				'constraint'	=> 15,
-				'default'			=> NULL
-			),
-			'registration_time' => array(
-				'type'		=> 'DATETIME',
-				'null'		=> FALSE,
-				'default'	=> '0000-00-00 00:00:00'
-			),
-			'rights' => array(
-				'type'				=> 'INT',
-				'constraint'	=> 1,
-				'null'				=> FALSE,
-				'default'			=> -1
-			)
-		);
-		$this->dbforge->add_field($fields);
-		$this->dbforge->add_key('ID', TRUE);
-		$this->dbforge->add_key('user_name');
-		$this->dbforge->add_key('email');
-		$this->dbforge->create_table('users');
+		$query = "CREATE TABLE IF NOT EXISTS `users` (
+  						`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+  						`user_name` varchar(20) NOT NULL DEFAULT '',
+  						`pass` varchar(40) NOT NULL DEFAULT '',
+ 							`email` varchar(64) NOT NULL DEFAULT '',
+  						`activation_key` varchar(15) DEFAULT NULL,
+  						`registration_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  						`rights` tinyint(1) NOT NULL DEFAULT '-1',
+  						PRIMARY KEY (`ID`),
+  						UNIQUE KEY `user_name` (`user_name`),
+  						UNIQUE KEY `email` (`email`)
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+		$this->db->query($query);
 	}
 
 	private function users_down()
 	{
-		$this->dbforge->drop_table('users');
+		$this->db->query('DROP TABLE `users`;');
 	}
 
 	private function ci_sessions_up()
@@ -85,10 +50,10 @@ class Migration_Db extends CI_Migration {
   						`ip_address` varchar(45) NOT NULL DEFAULT '0',
   						`user_agent` varchar(120) NOT NULL,
   						`last_activity` int(10) unsigned NOT NULL DEFAULT '0',
-  						`user_data` varchar(255) DEFAULT NULL,
+  						`user_data` text NOT NULL,
   						PRIMARY KEY (`session_id`),
   						KEY `last_activity_idx` (`last_activity`)
-						) ENGINE=MEMORY DEFAULT CHARSET=utf8;";
+						) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
 		$this->db->query($query);
 	}
 
