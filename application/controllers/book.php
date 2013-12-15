@@ -1,51 +1,64 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
 class Book extends CI_Controller {
-	
+
 	public function __construct()
 	{
 		parent::__construct();
+		$this->load->model('Book_model');
 	}
 
 	public function index()
 	{
 		$this->load->helper('form');
-		$post = $this->input->post('book_search');
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-
-		if( $post ) $this->search($post);
-		else $this->load->view('form/book_search');
-		
+		$this->load->view('form/book_search');
 		$this->load->view('template/coda');
 	}
 
-	private function search($search_key)
+	public function search($search_key = NULL)
 	{
-		$this->load->model('Book_model');
-		$this->Book_model->setISBN($search_key);
-		$google_book_data = $this->Book_model->google_fetch($search_key);
-		$this->Book_model->set_info($google_book_data, 0);
-		print_r($this->Book_model->info);
-		//print_r($google_book_data);
-		//$this->select_result($google_book_data);
+		$this->load->helper('form');
+		$this->load->helper('url');
+		$this->load->library('session');
+		$this->load->library('table');
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+
+		$search_key = $search_key ? $search_key : $this->input->post('book_search');
+		if( $search_key )
+		{
+			$this->Book_model->setISBN($search_key);
+			$google_data = $this->Book_model->google_fetch($search_key);
+			$books_data = $this->Book_model->gdata_to_table($google_data);
+			$this->session->set_flashdata('google_data', $google_data);
+			$view_data = array('books_data' => $books_data);
+			$this->load->view('form/book_select', $view_data);
+		}
+		else
+			redirect('book');
+
+		$this->load->view('template/coda');
 	}
 
-	private function select_result($google_data)
+	public function select_result()
 	{
-		$this->load->model('Book_model');
-		$this->load->library('table');
-		$books_data = $this->Book_model->gdata_to_table_array($google_data);
-		if( ! $books_data )
-			echo '<p>La ricerca non ha prodotto risultati</p>';
-		else
+		$this->load->library('session');
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		
+		$google_data = $this->session->flashdata('google_data');
+		$book_select = $this->input->post('book_select');
+		if(  $google_data )
 		{
-			$this->table->set_heading('Titolo', 'Autori', 'Anno di pubblicazione', 'ISBN', 'Pagine', 'Materia', 'Lingua');
-			foreach ( $books_data as $book )
-				$this->table->add_row($book);
-			echo $this->table->generate();
+			print_r($google_data);
+			$this->Book_model->set_info($google_data, $book_select);
 		}
+		else
+			echo '<p>Flash data non presenti</p>';
+		$this->load->view('template/coda');
 	}
 }
 

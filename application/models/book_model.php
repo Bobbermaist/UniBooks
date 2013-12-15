@@ -19,7 +19,7 @@ class Book_model extends CI_Model {
 		return $book->get($data);
 	}
 
-	public function printable_array($google_data)
+	public function gdata_to_table($google_data)
 	{
 		if( $google_data['totalItems'] == 0 )
 			return NULL;
@@ -30,11 +30,11 @@ class Book_model extends CI_Model {
 			array_push($books_data, array(
 				isset($book['title']) ? $book['title'] : '',
 				isset($book['authors']) ? implode(', ', $book['authors']) : '',
-				isset($book['publishedDate']) ? $book['publishedDate'] : '',
+				isset($book['publishedDate']) ? substr($book['publishedDate'], 0, 4) : '',
 				$this->industryID_to_ISBN($book['industryIdentifiers']),
 				isset($book['pageCount']) ? $book['pageCount'] : '',
-				isset($book['categories']) ? implode(', ', $book['categories']) : '',
-				isset($book['language']) ? $book['language'] : ''
+				isset($book['categories']) ? implode(', ', $book['categories']) : ''/*,
+				isset($book['language']) ? $book['language'] : ''*/
 			));
 		}
 		array_walk_recursive($books_data, create_function('&$val', '$val = htmlentities($val);'));
