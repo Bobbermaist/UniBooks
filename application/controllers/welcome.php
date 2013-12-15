@@ -40,8 +40,10 @@ class Welcome extends CI_Controller {
 			anchor('book/index', 'Ricerca libro', 'title="search"')));
 		$this->load->view('par', array('par' => 'Gli amministratori possono accedere ad un\'area riservata: '.
 			anchor('admin', 'Admin area', 'title="admin"')));
-		$this->load->view('par', array('par' => 'Esegui test: '.
-			anchor('test', 'Test controller', 'title="test"')));
+		$this->load->view('par', array('par' => 'Esegui current migration: '.
+			anchor('migration', 'Current migration')));
+		$this->load->view('par', array('par' => 'Drop database: '.
+			anchor('migration/down', 'Drop all')));
 
 		$this->load->view('template/coda');
 	}

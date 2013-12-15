@@ -13,19 +13,9 @@ class Test extends CI_Controller {
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 		
-		$this->load->view('par', array('par' => 'Migration test'));
-		$this->load->view('par', array('par' => anchor('test/migration/', 'Effettua current migration')));
+		$this->load->view('par', array('par' => 'test'));
 		
 		$this->load->view('template/coda');
-	}
-
-	public function migration()
-	{
-		$this->load->library('migration');
-		if ( ! $this->migration->current() )
-			show_error($this->migration->error_string());
-		else
-			redirect('test');
 	}
 }
 

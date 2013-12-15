@@ -13,12 +13,26 @@ class Migration_Db extends CI_Migration {
 	{
 		$this->users_up();
 		$this->ci_sessions_up();
+		$this->languages_up();
+		$this->categories_up();
+		$this->publishers_up();
+		$this->authors_up();
+		$this->books_up();
+		$this->links_author_up();
+		$this->links_category_up();
 	}
 
 	public function down()
 	{
 		$this->users_down();
 		$this->ci_sessions_down();
+		$this->links_author_down();
+		$this->links_category_down();
+		$this->books_down();
+		$this->languages_down();
+		$this->categories_down();
+		$this->publishers_down();
+		$this->authors_down();
 	}
 
 		/* Users database */
@@ -76,7 +90,7 @@ class Migration_Db extends CI_Migration {
   						`pages` int(5) unsigned DEFAULT NULL,
   						`language_id` int(5) unsigned NOT NULL  DEFAULT 0,
   						PRIMARY KEY (`ID`),
- 							FOREIGN KEY (id_publisher) REFERENCES publishers(ID)
+ 							FOREIGN KEY (publisher_id) REFERENCES publishers(ID)
     						ON DELETE NO ACTION
     						ON UPDATE NO ACTION,
   						FOREIGN KEY (language_id) REFERENCES languages(ID)
