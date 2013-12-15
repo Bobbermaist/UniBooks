@@ -28,7 +28,8 @@ class Book extends CI_Controller {
 		$google_book_data = $this->Book_model->google_fetch($search_key);
 		$this->Book_model->set_info($google_book_data, 0);
 		//print_r($this->Book_model->info);
-		$this->select_result($google_book_data);
+		print_r($google_book_data);
+		//$this->select_result($google_book_data);
 	}
 
 	private function select_result($google_data)

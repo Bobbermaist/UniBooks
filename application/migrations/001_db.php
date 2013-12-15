@@ -21,6 +21,7 @@ class Migration_Db extends CI_Migration {
 		$this->ci_sessions_down();
 	}
 
+		/* Users database */
 	private function users_up()
 	{
 		$query = "CREATE TABLE IF NOT EXISTS `users` (
@@ -43,6 +44,7 @@ class Migration_Db extends CI_Migration {
 		$this->db->query('DROP TABLE `users`;');
 	}
 
+		/* Sessions database */
 	private function ci_sessions_up()
 	{
 		$query = "CREATE TABLE IF NOT EXISTS `ci_sessions` (
@@ -62,6 +64,132 @@ class Migration_Db extends CI_Migration {
 		$this->db->query('DROP TABLE `ci_sessions`;');
 	}
 
+		/* Books database */
+	private function books_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `books` (
+  						`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+  						`ISBN` varchar(9) NOT NULL DEFAULT '000000000',
+  						`title` varchar(255) NOT NULL DEFAULT '',
+  						`publisher_id` int(9) unsigned NOT NULL  DEFAULT 0,
+  						`publication_year` year(4) DEFAULT NULL,
+  						`pages` int(5) unsigned DEFAULT NULL,
+  						`language_id` int(5) unsigned NOT NULL  DEFAULT 0,
+  						PRIMARY KEY (`ID`),
+ 							FOREIGN KEY (id_publisher) REFERENCES publishers(ID)
+    						ON DELETE NO ACTION
+    						ON UPDATE NO ACTION,
+  						FOREIGN KEY (language_id) REFERENCES languages(ID)
+    						ON DELETE NO ACTION
+    						ON UPDATE NO ACTION
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+		$this->db->query($query);
+	}
+
+	private function books_down()
+	{
+		$this->db->query('DROP TABLE `books`;');
+	}
+
+	private function authors_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `authors` (
+  						`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+  						`name` varchar(255) NOT NULL DEFAULT '',
+ 							PRIMARY KEY (`ID`)
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+		$this->db->query($query);
+	}
+
+	private function authors_down()
+	{
+		$this->db->query('DROP TABLE `authors`;');
+	}
+
+	private function links_author_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `links_book_author` (
+  						`book_id` int(9) unsigned NOT NULL  DEFAULT 0,
+  						`author_id` int(9) unsigned NOT NULL DEFAULT 0,
+  						FOREIGN KEY (book_id) REFERENCES books(ID)
+    						ON DELETE CASCADE
+    						ON UPDATE CASCADE,
+  						FOREIGN KEY (author_id) REFERENCES authors(ID)
+    						ON DELETE CASCADE
+    						ON UPDATE CASCADE
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+		$this->db->query($query);
+	}
+
+	private function links_author_down()
+	{
+		$this->db->query('DROP TABLE `links_book_author`;');
+	}
+
+	private function publishers_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `publishers` (
+  						`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+  						`name` varchar(255) NOT NULL DEFAULT '',
+  						PRIMARY KEY (`ID`)
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+		$this->db->query($query);
+	}
+
+	private function publishers_down()
+	{
+		$this->db->query('DROP TABLE `publishers`;');
+	}
+
+	private function categories_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `categories` (
+  						`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+  						`name` varchar(255) NOT NULL DEFAULT '',
+  						PRIMARY KEY (`ID`)
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+		$this->db->query($query);
+	}
+
+	private function categories_down()
+	{
+		$this->db->query('DROP TABLE `categories`;');
+	}
+
+	private function links_category_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `links_book_category` (
+  						`book_id` int(9) unsigned NOT NULL  DEFAULT 0,
+  						`category_id` int(9) unsigned NOT NULL DEFAULT 0,
+  						FOREIGN KEY (book_id) REFERENCES books(ID)
+    						ON DELETE CASCADE
+    						ON UPDATE CASCADE,
+  						FOREIGN KEY (category_id) REFERENCES categories(ID)
+    						ON DELETE CASCADE
+    						ON UPDATE CASCADE
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+		$this->db->query($query);
+	}
+
+	private function links_category_down()
+	{
+		$this->db->query('DROP TABLE `links_book_category`;');
+	}
+
+	private function languages_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `languages` (
+  						`ID` int(5) unsigned NOT NULL AUTO_INCREMENT,
+  						`name` varchar(255) NOT NULL DEFAULT '',
+  						PRIMARY KEY (`ID`)
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+		$this->db->query($query);
+	}
+
+	private function languages_down()
+	{
+		$this->db->query('DROP TABLE `languages`;');
+	}
 }
 
 /* End of file 001_db.php */
