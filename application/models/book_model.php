@@ -31,7 +31,7 @@ class Book_model extends CI_Model {
 				isset($book['title']) ? $book['title'] : '',
 				isset($book['authors']) ? implode(', ', $book['authors']) : '',
 				isset($book['publishedDate']) ? $book['publishedDate'] : '',
-				isset($book['industryIdentifiers'][1]) ? $book['industryIdentifiers'][1]['identifier'] : '',
+				$this->industryID_to_ISBN($book['industryIdentifiers']),
 				isset($book['pageCount']) ? $book['pageCount'] : '',
 				isset($book['categories']) ? implode(', ', $book['categories']) : '',
 				isset($book['language']) ? $book['language'] : ''
@@ -43,20 +43,42 @@ class Book_model extends CI_Model {
 
 	public function set_info($google_data, $index)
 	{
+		if( ! isset($google_data['items'][intval($index)]) )
+			exit;
 		$google_data = $google_data['items'][intval($index)]['volumeInfo'];
 		$this->info = array(
-			'title'							=> $google_data['title'],
-			'authors'						=> $google_data['authors'],
-			'publication_year'	=> $google_data['publishedDate'],
-			'ISBN'							=> $google_data['industryIdentifiers'][1]['identifier'],
-			'pages'							=> $google_data['pageCount'],
-			'categories'				=> $google_data['categories'],
-			'language'					=> $google_data['language']
+			'title'							=> isset($google_data['title']) ? $google_data['title'] : NULL,
+			'authors'						=> isset($google_data['authors']) ? $google_data['authors'] : NULL,
+			'publication_year'	=> isset($google_data['publishedDate']) ? substr($google_data['publishedDate'], 0, 4) : NULL,
+			'ISBN'							=> $this->industryID_to_ISBN($google_data['industryIdentifiers']),
+			'pages'							=> isset($google_data['pageCount']) ? $google_data['pageCount'] : NULL,
+			'categories'				=> isset($google_data['categories']) ? $google_data['categories'] : NULL,
+			'language'					=> isset($google_data['language']) ? $google_data['language'] : NULL
 		);
+	}
+
+	private function industryID_to_ISBN($industryIdentifiers)
+	{
+		$isbn10 = NULL;
+		foreach ($industryIdentifiers as $iid)
+		{
+			if( strcmp($iid['type'], 'ISBN_13') == 0 )
+			{
+				$isbn13 = $iid['identifier'];
+				break;
+			}
+			elseif( strcmp($iid['type'], 'ISBN_10') == 0 )
+				$isbn10 = $iid['identifier'];
+		}
+		return isset($isbn13) ? $isbn13 : $isbn10;
 	}
 
 	public function setISBN($isbn)
 	{
+		/*
+		if( isset($this->ISBN) )
+			return TRUE;
+		*/
 		$this->ISBN = strtoupper(preg_replace('/[^\d^X]+/i', '', $isbn));
 		if( $this->validate() )
 			return TRUE;

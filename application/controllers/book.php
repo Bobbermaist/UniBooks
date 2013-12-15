@@ -27,8 +27,8 @@ class Book extends CI_Controller {
 		$this->Book_model->setISBN($search_key);
 		$google_book_data = $this->Book_model->google_fetch($search_key);
 		$this->Book_model->set_info($google_book_data, 0);
-		//print_r($this->Book_model->info);
-		print_r($google_book_data);
+		print_r($this->Book_model->info);
+		//print_r($google_book_data);
 		//$this->select_result($google_book_data);
 	}
 
@@ -36,7 +36,7 @@ class Book extends CI_Controller {
 	{
 		$this->load->model('Book_model');
 		$this->load->library('table');
-		$books_data = $this->Book_model->printable_array($google_data);
+		$books_data = $this->Book_model->gdata_to_table_array($google_data);
 		if( ! $books_data )
 			echo '<p>La ricerca non ha prodotto risultati</p>';
 		else
