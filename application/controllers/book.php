@@ -38,11 +38,12 @@ class Book extends CI_Controller {
 			if( $this->Book_model->issetISBN() )
 				$this->session->set_userdata(array('ISBN' => $this->Book_model->getISBN()));
 			$google_data = $this->Book_model->google_fetch($search_key);
-			$books_data = $this->Book_model->gdata_to_table($google_data);
 			$this->session->set_userdata(array('google_data' => $google_data));
-			$view_data = array('books_data' => $books_data);
-			$this->load->view('form/book_select', $view_data);
+			$books_data = $this->Book_model->gdata_to_table($google_data);
+			$this->load->view('form/book_select', array('books_data' => $books_data));
 		}
+		elseif( $google_data = $this->session->userdata('google_data') )
+			$this->load->view('form/book_select', array('books_data' => $this->Book_model->gdata_to_table($google_data)));
 		else
 			redirect('book');
 
@@ -62,7 +63,7 @@ class Book extends CI_Controller {
 			if( $book_id = $this->Book_model->insert_book($this->session->userdata('ISBN')) )
 			{
 				$this->load->view('paragraphs', array('p' => 'Libro inserito con successo con id ' . $book_id));
-				$this->session->unset_userdata();
+				$this->session->unset_userdata('ISBN');
 			}
 		}
 		else

@@ -175,7 +175,7 @@ class User extends CI_Controller {
 		echo $this->email->print_debugger();
 	}
 
-	public function choose_new_pass($ID, $activation_key)
+	public function choose_new_pass($ID = NULL, $activation_key = NULL)
 	{
 		$this->load->model('User_model');
 		$this->load->helper('form');
