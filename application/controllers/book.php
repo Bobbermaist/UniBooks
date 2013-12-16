@@ -16,11 +16,15 @@ class Book extends CI_Controller {
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-		$this->load->view('form/book_search', $this->config->item('book_search_data'));
+
+		$this->session->set_userdata(array('action' => 'book/search_result'));
+		$view_data = $this->config->item('book_search_data');
+		$view_data['title'] = 'Ricerca un libro';
+		$this->load->view('form/book', $view_data);
 		$this->load->view('template/coda');
 	}
 
-	public function search($search_key = NULL)
+	public function search()
 	{
 		$this->load->helper('form');
 		$this->load->helper('url');
@@ -28,7 +32,7 @@ class Book extends CI_Controller {
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 
-		$search_key = $search_key ? $search_key : $this->input->post('book_search');
+		$search_key = $this->input->post('book_search');
 		if( $search_key )
 		{
 			$this->Book_model->setISBN($search_key);
@@ -52,9 +56,10 @@ class Book extends CI_Controller {
 
 	public function select_result()
 	{
-		$this->load->view('template/head');
-		$this->load->view('template/body');
+		//$this->load->view('template/head');
+		//$this->load->view('template/body');
 		
+		$this->load->helper('url');
 		$google_data = $this->session->userdata('google_data');
 		$book_select = $this->input->post('book_select');
 		if( $google_data )
@@ -62,14 +67,33 @@ class Book extends CI_Controller {
 			$this->Book_model->set_info($google_data, $book_select);
 			if( $book_id = $this->Book_model->insert_book($this->session->userdata('ISBN')) )
 			{
-				$this->load->view('paragraphs', array('p' => 'Libro inserito con successo con id ' . $book_id));
+				//$this->load->view('paragraphs', array('p' => 'Libro inserito con successo con id ' . $book_id));
 				$this->session->unset_userdata('ISBN');
+				$this->session->unset_userdata('google_data');
+				$this->session->set_userdata(array('book_id' => $book_id));
+				if( $action = $this->session->userdata('action') )
+					redirect($action);
+				else
+					redirect('sell/search_result');
 			}
 		}
+		/*
 		else
 			$this->load->view('paragraphs', array('p' => 'Session data non presenti'));
 		$this->load->view('template/coda');
+		*/
 	}
+
+	public function search_result()
+	{
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+
+		$book_info = $this->Book_model->get_book($this->session->userdata('book_id'));
+		print_r($book_info);
+		$this->load->view('template/coda');
+	}
+
 }
 
 /* End of file book.php */

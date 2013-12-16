@@ -119,6 +119,18 @@ class Book_model extends CI_Model {
 		);
 	}
 
+	public function create_sale($user_id, $book_id)
+	{
+		$this->load->database();
+		$user_id = intval($user_id);
+		$book_id = intval($book_id);
+		$this->db->from('books_for_sale')->where(array('user_id' => $user_id, 'book_id' => $book_id));
+		if( $this->db->get()->num_rows > 0 )
+			return FALSE;
+		$this->db->insert('books_for_sale', array('user_id' => $user_id, 'book_id' => $book_id));
+		return TRUE;
+	}
+
 	private function insert_info($table, $value)
 	{
 		if( ! $value )

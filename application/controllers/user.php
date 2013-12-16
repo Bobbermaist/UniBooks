@@ -235,7 +235,13 @@ class User extends CI_Controller {
 				'email'				=> $user->email
 			);
 			$this->session->set_userdata($session);
-			redirect('user');
+			if( $redirect = $this->session->userdata('redirect') )
+			{
+				$this->session->unset_userdata('redirect');
+				redirect($redirect);
+			}
+			else
+				redirect('user');
 		}
 		$login_data = $this->config->item('login_data');
 		$login_data['user_name']['value'] = $post['user_name'];
