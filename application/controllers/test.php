@@ -14,9 +14,8 @@ class Test extends CI_Controller {
 		$this->load->view('template/body');
 		
 		$this->load->view('par', array('par' => 'test'));
-		/*$this->load->model('Book_model');
-		$this->Book_model->uncutISBN('886256536');
-		echo $this->Book_model->getISBN();*/
+		$this->load->model('Book_model');
+		print_r($this->Book_model->get_book(1));
 
 		$this->load->view('template/coda');
 	}
