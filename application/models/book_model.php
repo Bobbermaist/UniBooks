@@ -12,10 +12,6 @@ class Book_model extends CI_Model {
 
 	public function setISBN($isbn)
 	{
-		/*
-		if( isset($this->ISBN) )
-			return TRUE;
-		*/
 		$this->ISBN = strtoupper(preg_replace('/[^\d^X]+/i', '', $isbn));
 		if( $this->validate() )
 			return TRUE;
