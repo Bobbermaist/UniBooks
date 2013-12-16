@@ -35,6 +35,7 @@ class Welcome extends CI_Controller {
 			'Puoi effettuare il reset della tua password qui: '.anchor('user/reset', 'Reset password', 'title="reset"'),
 			'Puoi fare il log in qui: '.anchor('user/login', 'Log in', 'title="login"'),
 			'Puoi cercare un libro tramite le API di google books qui: '.anchor('book', 'Ricerca libro', 'title="search"'),
+			'Una volta effettuato il log in metti in vendita un libro: '.anchor('sell', 'Vendi', 'title="sell"'),
 			'Gli amministratori possono accedere ad un\'area riservata: '.anchor('admin', 'Admin area', 'title="admin"'),
 			'Esegui current migration: '.anchor('migration', 'Current migration'),
 			'Drop database: '.anchor('migration/down', 'Drop all'),

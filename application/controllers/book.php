@@ -56,9 +56,6 @@ class Book extends CI_Controller {
 
 	public function select_result()
 	{
-		//$this->load->view('template/head');
-		//$this->load->view('template/body');
-		
 		$this->load->helper('url');
 		$google_data = $this->session->userdata('google_data');
 		$book_select = $this->input->post('book_select');
@@ -67,7 +64,6 @@ class Book extends CI_Controller {
 			$this->Book_model->set_info($google_data, $book_select);
 			if( $book_id = $this->Book_model->insert_book($this->session->userdata('ISBN')) )
 			{
-				//$this->load->view('paragraphs', array('p' => 'Libro inserito con successo con id ' . $book_id));
 				$this->session->unset_userdata('ISBN');
 				$this->session->unset_userdata('google_data');
 				$this->session->set_userdata(array('book_id' => $book_id));
@@ -77,11 +73,6 @@ class Book extends CI_Controller {
 					redirect('sell/search_result');
 			}
 		}
-		/*
-		else
-			$this->load->view('paragraphs', array('p' => 'Session data non presenti'));
-		$this->load->view('template/coda');
-		*/
 	}
 
 	public function search_result()
