@@ -220,9 +220,11 @@ class Book_model extends CI_Model {
 	{
 		$isbn = '978' . $code;
 		$check = 0;
-    for($i = 0; $i < 13; $i+=2) $check += substr($code, $i, 1);
-    for($i = 1; $i < 12; $i+=2) $check += 3 * substr($code, $i, 1);
-    return $isbn . ($check % 10);
+    for($i = 0; $i < 13; $i+=2) $check += substr($isbn, $i, 1);
+    for($i = 1; $i < 12; $i+=2) $check += 3 * substr($isbn, $i, 1);
+		if( $check % 10 == 0 )
+			return $isbn . 0;
+    return $isbn . (10 - $check % 10);
 	}
 
 	private function validate()
@@ -234,7 +236,7 @@ class Book_model extends CI_Model {
 			return TRUE;
 		elseif( $len == 10 )
 		{
-			$this->ISBN = "978$this->ISBN";
+			$this->ISBN = '978' . $this->ISBN;
 			return $this->validate13($this->ISBN);
 		}
 		else

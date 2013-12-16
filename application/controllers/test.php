@@ -8,15 +8,20 @@ class Test extends CI_Controller {
 		$this->load->helper('url');
 	}
 
-	public function index()
+	public function index($book_id)
 	{
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 		
 		$this->load->view('par', array('par' => 'test'));
 		$this->load->model('Book_model');
-		print_r($this->Book_model->get_book(1));
-
+		$book = $this->Book_model->get_book($book_id);
+		print_r($book);
+		$this->Book_model->setISBN($book['ISBN']);
+		if( $this->Book_model->issetISBN() )
+			echo '<p>Codice corretto</p>';
+		else
+			echo '<p>Codice errato</p>';
 		$this->load->view('template/coda');
 	}
 }
