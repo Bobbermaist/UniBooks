@@ -20,6 +20,8 @@ class Migration_Db extends CI_Migration {
 		$this->books_up();
 		$this->links_author_up();
 		$this->links_category_up();
+		$this->books_for_sale_up();
+		$this->books_requested_up();
 	}
 
 	public function down()
@@ -33,6 +35,8 @@ class Migration_Db extends CI_Migration {
 		$this->categories_down();
 		$this->publishers_down();
 		$this->authors_down();
+		$this->books_for_sale_down();
+		$this->books_requested_down();
 	}
 
 		/* Users database */
@@ -85,10 +89,10 @@ class Migration_Db extends CI_Migration {
   						`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
   						`ISBN` varchar(9) NOT NULL DEFAULT '000000000',
   						`title` varchar(255) NOT NULL DEFAULT '',
-  						`publisher_id` int(9) unsigned NOT NULL  DEFAULT 0,
+  						`publisher_id` int(9) unsigned NOT NULL DEFAULT 0,
   						`publication_year` year(4) DEFAULT NULL,
   						`pages` int(5) unsigned DEFAULT NULL,
-  						`language_id` int(5) unsigned NOT NULL  DEFAULT 0,
+  						`language_id` int(5) unsigned NOT NULL DEFAULT 0,
   						PRIMARY KEY (`ID`),
  							FOREIGN KEY (publisher_id) REFERENCES publishers(ID)
     						ON DELETE NO ACTION
@@ -203,6 +207,46 @@ class Migration_Db extends CI_Migration {
 	private function languages_down()
 	{
 		$this->db->query('DROP TABLE `languages`;');
+	}
+
+	private function books_for_sale_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `books_for_sale` (
+  						`user_id` int(9) unsigned NOT NULL DEFAULT 0,
+  						`book_id` int(9) unsigned NOT NULL DEFAULT 0,
+  						FOREIGN KEY (user_id) REFERENCES users(ID)
+    						ON DELETE CASCADE
+    						ON UPDATE CASCADE,
+  						FOREIGN KEY (book_id) REFERENCES books(ID)
+    						ON DELETE CASCADE
+    						ON UPDATE CASCADE
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+		$this->db->query($query);
+	}
+
+	private function books_for_sale_down()
+	{
+		$this->db->query('DROP TABLE `books_for_sale`;');
+	}
+
+	private function books_requested_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `books_requested` (
+  						`user_id` int(9) unsigned NOT NULL DEFAULT 0,
+  						`book_id` int(9) unsigned NOT NULL DEFAULT 0,
+  						FOREIGN KEY (user_id) REFERENCES users(ID)
+    						ON DELETE CASCADE
+    						ON UPDATE CASCADE,
+  						FOREIGN KEY (book_id) REFERENCES books(ID)
+    						ON DELETE CASCADE
+    						ON UPDATE CASCADE
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+		$this->db->query($query);
+	}
+
+	private function books_requested_down()
+	{
+		$this->db->query('DROP TABLE `books_requested`;');
 	}
 }
 
