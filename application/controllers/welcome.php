@@ -29,22 +29,19 @@ class Welcome extends CI_Controller {
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 		
-		$this->load->view('par', array('par' => 'Benvenuto : )'));
-		$this->load->view('par', array('par' => 'Puoi registrarti qui: '.
-			anchor('user/registration', 'Registrazione utente', 'title="registrazione"')));
-		$this->load->view('par', array('par' => 'Puoi effettuare il reset della tua password qui: '.
-			anchor('user/reset', 'Reset password', 'title="reset"')));
-		$this->load->view('par', array('par' => 'Puoi fare il log in qui: '.
-			anchor('user/login', 'Log in', 'title="login"')));
-		$this->load->view('par', array('par' => 'Puoi cercare un libro tramite ISBN o altre informazioni qui: '.
-			anchor('book/index', 'Ricerca libro', 'title="search"')));
-		$this->load->view('par', array('par' => 'Gli amministratori possono accedere ad un\'area riservata: '.
-			anchor('admin', 'Admin area', 'title="admin"')));
-		$this->load->view('par', array('par' => 'Esegui current migration: '.
-			anchor('migration', 'Current migration')));
-		$this->load->view('par', array('par' => 'Drop database: '.
-			anchor('migration/down', 'Drop all')));
-
+		$view_data = array('p' => array(
+			'Benvenuto : )',
+			'Puoi registrarti qui: '.anchor('user/registration', 'Registrazione utente', 'title="registrazione"'),
+			'Puoi effettuare il reset della tua password qui: '.anchor('user/reset', 'Reset password', 'title="reset"'),
+			'Puoi fare il log in qui: '.anchor('user/login', 'Log in', 'title="login"'),
+			'Puoi cercare un libro tramite le API di google books qui: '.anchor('book', 'Ricerca libro', 'title="search"'),
+			'Gli amministratori possono accedere ad un\'area riservata: '.anchor('admin', 'Admin area', 'title="admin"'),
+			'Esegui current migration: '.anchor('migration', 'Current migration'),
+			'Drop database: '.anchor('migration/down', 'Drop all'),
+			'Test controller: '.anchor('test', 'Test')
+		));
+		$this->load->view('paragraphs', $view_data);
+		
 		$this->load->view('template/coda');
 	}
 }

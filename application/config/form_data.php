@@ -49,8 +49,14 @@ $config = array(
   		'name'			=> 'pass',
   		'maxlength'	=> '64'
   	)
-  )
+  ),
   
+  'book_search_data' => array(
+    'book_search' => array(
+      'name'      => 'book_search',
+      'maxlength' => '255'
+    )
+  )
 );
 
 /* End of file form_data.php */

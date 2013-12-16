@@ -20,17 +20,20 @@ class User extends CI_Controller {
 			$this->load->view('form/login', $this->config->item('login_data'));
 		else
 		{		/* Test variabili sessione */
-			$this->load->view('par', array('par' => 'Hey, <b>'.$user['user_name'].'!</b>'));
-			$this->load->view('par', array('par' => 'Il tuo ID utente &egrave; <b>'.$user['ID'].'</b>'));
-			$this->load->view('par', array('par' => 'Il tuo indirizzo email &egrave; <b>'.$user['email'].'</b>'));
-			$this->load->view('par', array('par' => 'Il tuo session_id &egrave; <b>'.$user['session_id'].'</b>'));
-			$this->load->view('par', array('par' => 'Il tuo ip_address &egrave; <b>'.$user['ip_address'].'</b>'));
-			$this->load->view('par', array('par' => 'Il tuo user_agent &egrave; <b>'.$user['user_agent'].'</b>'));
-			$this->load->view('par', array('par' => 'La tua last_activity &egrave; <b>'.$user['last_activity'].'</b>'));
+			$view_data = array('p' => array(
+				'Hey, <b>'.$user['user_name'].'!</b>',
+				'Il tuo ID utente &egrave; <b>'.$user['ID'].'</b>',
+				'Il tuo indirizzo email &egrave; <b>'.$user['email'].'</b>',
+				'Il tuo session_id &egrave; <b>'.$user['session_id'].'</b>',
+				'Il tuo ip_address &egrave; <b>'.$user['ip_address'].'</b>',
+				'Il tuo user_agent &egrave; <b>'.$user['user_agent'].'</b>',
+				'La tua last_activity &egrave; <b>'.$user['last_activity'].'</b>'
+			));
 			if( $user['rights'] == 0 )
-				$this->load->view('par', array('par' => 'Il tuo account ha normali permessi utente'));
+				array_push($view_data['p'], 'Il tuo account ha normali permessi utente');
 			elseif( $user['rights'] == 1 )
-				$this->load->view('par', array('par' => 'Il tuo &egrave; un account amministratore'));
+				array_push($view_data['p'], 'Il tuo &egrave; un account amministratore');
+			$this->load->view('paragraphs', $view_data);
 		}
 		$this->load->view('template/coda');
 	}
@@ -91,7 +94,7 @@ class User extends CI_Controller {
 		echo $this->email->print_debugger();
 	}
 
-	public function activation($ID, $activation_key)
+	public function activation($ID = NULL, $activation_key = NULL)
 	{
 		$this->load->view('template/head');
 		$this->load->view('template/body');
@@ -116,7 +119,7 @@ class User extends CI_Controller {
 			else
 				$msg = 'Activation key errata';
 		}
-		$this->load->view('par', array( 'par' => $msg ));
+		$this->load->view('paragraphs', array('p' => $msg));
 		$this->load->view('template/coda');
 	}
 
@@ -129,7 +132,6 @@ class User extends CI_Controller {
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 
-		$msg = '';
 		$reset_data = $this->config->item('reset_data');
 		$input = $this->input->post('user_or_email');
 		$reset_data['reset_form_data']['value'] = $input;
@@ -152,7 +154,8 @@ class User extends CI_Controller {
 		elseif( $input )
 			$msg = 'I parametri inseriti non corrispondono a nessun utente';
 		$this->load->view('form/reset', $reset_data);
-		$this->load->view('par', array('par' => $msg));
+		if( isset($msg) )
+			$this->load->view('paragraphs', array('p' => $msg));
 		$this->load->view('template/coda');
 	}
 
@@ -205,8 +208,7 @@ class User extends CI_Controller {
 		}
 		else
 			$msg = 'Errore nel reset password';
-		$data = array( 'par' => $msg );
-		$this->load->view('par', $data);
+		$this->load->view('paragraphs', array('p' => $msg));
 		$this->load->view('template/coda');
 	}
 
@@ -241,7 +243,6 @@ class User extends CI_Controller {
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 		$this->load->view('form/login', $login_data);
-		$this->load->view('validation_errors');
 		$this->load->view('template/coda');
 	}
 }

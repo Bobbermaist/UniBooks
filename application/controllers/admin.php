@@ -18,7 +18,7 @@ class Admin extends CI_Controller {
 		$this->load->config('form_data');
 		$this->load->helper('form');
 		$user = $this->session->all_userdata();
-		$this->load->view('par', array('par' => 'Benvenuto, amministratore <b>'.$user['user_name'].'!</b>'));
+		$this->load->view('paragraphs', array('p' => 'Benvenuto, amministratore <b>'.$user['user_name'].'!</b>'));
 		$this->load->view('template/coda');
 	}
 }

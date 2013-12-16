@@ -12,10 +12,11 @@ class Book extends CI_Controller {
 	public function index()
 	{
 		$this->load->helper('form');
+		$this->load->config('form_data');
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-		$this->load->view('form/book_search');
+		$this->load->view('form/book_search', $this->config->item('book_search_data'));
 		$this->load->view('template/coda');
 	}
 
@@ -60,12 +61,12 @@ class Book extends CI_Controller {
 			$this->Book_model->set_info($google_data, $book_select);
 			if( $book_id = $this->Book_model->insert_book($this->session->userdata('ISBN')) )
 			{
-				echo  'Libro inserito con successo con id ' . $book_id;
+				$this->load->view('paragraphs', array('p' => 'Libro inserito con successo con id ' . $book_id));
 				$this->session->unset_userdata();
 			}
 		}
 		else
-			echo '<p>Session data non presenti</p>';
+			$this->load->view('paragraphs', array('p' => 'Session data non presenti'));
 		$this->load->view('template/coda');
 	}
 }
