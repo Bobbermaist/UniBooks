@@ -53,8 +53,8 @@ class Book_model extends CI_Model {
 
 	public function google_fetch($data = NULL)
 	{
-		$this->load->library('My_books');
-		$book = new My_books;
+		$this->load->library('MY_books');
+		$book = new MY_books;
 		if( isset($this->ISBN) )
 			return $book->get_by_isbn($this->ISBN);
 		return $book->get($data);
@@ -117,19 +117,6 @@ class Book_model extends CI_Model {
 			'categories'				=> $this->join_links('categories', 'category', $book->ID),
 			'language'					=> $this->get_by_id('languages', 'name', $book->language_id)
 		);
-	}
-
-	public function create_sale($user_id, $book_id, $price)
-	{
-		$this->load->database();
-		$user_id = intval($user_id);
-		$book_id = intval($book_id);
-		$price = str_replace(',', '.', $price);
-		$this->db->from('books_for_sale')->where(array('user_id' => $user_id, 'book_id' => $book_id));
-		if( $this->db->get()->num_rows > 0 )
-			return FALSE;
-		$this->db->insert('books_for_sale', array('user_id' => $user_id, 'book_id' => $book_id, 'price' => $price));
-		return TRUE;
 	}
 
 	private function insert_info($table, $value)
