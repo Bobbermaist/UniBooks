@@ -94,7 +94,7 @@ class Migration_Db extends CI_Migration {
   						`ISBN` varchar(9) NOT NULL DEFAULT '000000000',
   						`title` varchar(255) NOT NULL DEFAULT '',
   						`publisher_id` int(9) unsigned NOT NULL DEFAULT 0,
-  						`publication_year` year(4) DEFAULT NULL,
+  						`publication_year` int(4) DEFAULT NULL,
   						`pages` int(5) unsigned DEFAULT NULL,
   						`language_id` int(5) unsigned NOT NULL DEFAULT 0,
   						PRIMARY KEY (`ID`),
