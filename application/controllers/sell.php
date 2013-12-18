@@ -76,13 +76,11 @@ class Sell extends CI_Controller {
 		$book_id = $this->session->userdata('book_id');
 		$book_price = $this->session->userdata('price');
 		if( $this->Sell_model->insert($user_id, $book_id, $book_price) )
-		{
 			$this->load->view('paragraphs', array('p' => 'Vendita creata con successo'));
-			$this->load->view('book', $book_info);
-			$this->load->view('paragraphs', array('p' => '€ ' . $this->Sell_model->get_price($user_id, $book_id)));
-		}
 		else
 			$this->load->view('paragraphs', array('p' => 'Hai gi&agrave; messo in vendita questo libro'));
+		$this->load->view('book', $book_info);
+		$this->load->view('paragraphs', array('p' => '€ ' . $this->Sell_model->get_price($user_id, $book_id)));
 		$this->load->view('template/coda');
 	}
 }
