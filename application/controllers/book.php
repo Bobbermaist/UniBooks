@@ -19,8 +19,17 @@ class Book extends CI_Controller {
 
 		$this->session->set_userdata(array('action' => 'book/search_result'));
 		$view_data = $this->config->item('book_search_data');
-		$view_data['title'] = 'Ricerca un libro';
-		$this->load->view('form/book', $view_data);
+		$view_data = array(
+			'input_type' => array(
+     		'name'      => 'book_search',
+     		'maxlength' => '255'
+    	),
+    	'redirect'			=> 'book/search',
+    	'title' 				=> 'Ricerca un libro',
+    	'submit_name'		=> 'search',
+    	'submit_value'	=> 'Cerca'
+		);
+		$this->load->view('form/single', $view_data);
 		$this->load->view('template/coda');
 	}
 

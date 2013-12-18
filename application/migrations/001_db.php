@@ -26,6 +26,8 @@ class Migration_Db extends CI_Migration {
 
 	public function down()
 	{
+		$this->books_for_sale_down();
+		$this->books_requested_down();
 		$this->users_down();
 		$this->ci_sessions_down();
 		$this->links_author_down();
@@ -35,8 +37,6 @@ class Migration_Db extends CI_Migration {
 		$this->categories_down();
 		$this->publishers_down();
 		$this->authors_down();
-		$this->books_for_sale_down();
-		$this->books_requested_down();
 	}
 
 		/* Users database */
@@ -55,11 +55,15 @@ class Migration_Db extends CI_Migration {
   						UNIQUE KEY `email` (`email`)
 						) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 		$this->db->query($query);
+
+		$query = "INSERT INTO `users` (`ID`, `user_name`, `pass`, `email`, `activation_key`, `registration_time`, `rights`)
+							VALUES (1, 'bob', '042aecc105230aae83bf38e5c8db9493625066ea', 'emilianobovetti@hotmail.it', NULL, '2013-12-18 12:53:40', 1);";
+		$this->db->query($query);
 	}
 
 	private function users_down()
 	{
-		$this->db->query('DROP TABLE `users`;');
+		$this->db->query('DROP TABLE IF EXISTS `users`;');
 	}
 
 		/* Sessions database */
@@ -79,7 +83,7 @@ class Migration_Db extends CI_Migration {
 
 	private function ci_sessions_down()
 	{
-		$this->db->query('DROP TABLE `ci_sessions`;');
+		$this->db->query('DROP TABLE IF EXISTS `ci_sessions`;');
 	}
 
 		/* Books database */
@@ -106,7 +110,7 @@ class Migration_Db extends CI_Migration {
 
 	private function books_down()
 	{
-		$this->db->query('DROP TABLE `books`;');
+		$this->db->query('DROP TABLE IF EXISTS `books`;');
 	}
 
 	private function authors_up()
@@ -121,7 +125,7 @@ class Migration_Db extends CI_Migration {
 
 	private function authors_down()
 	{
-		$this->db->query('DROP TABLE `authors`;');
+		$this->db->query('DROP TABLE IF EXISTS `authors`;');
 	}
 
 	private function links_author_up()
@@ -141,7 +145,7 @@ class Migration_Db extends CI_Migration {
 
 	private function links_author_down()
 	{
-		$this->db->query('DROP TABLE `links_book_author`;');
+		$this->db->query('DROP TABLE IF EXISTS `links_book_author`;');
 	}
 
 	private function publishers_up()
@@ -156,7 +160,7 @@ class Migration_Db extends CI_Migration {
 
 	private function publishers_down()
 	{
-		$this->db->query('DROP TABLE `publishers`;');
+		$this->db->query('DROP TABLE IF EXISTS `publishers`;');
 	}
 
 	private function categories_up()
@@ -171,7 +175,7 @@ class Migration_Db extends CI_Migration {
 
 	private function categories_down()
 	{
-		$this->db->query('DROP TABLE `categories`;');
+		$this->db->query('DROP TABLE IF EXISTS `categories`;');
 	}
 
 	private function links_category_up()
@@ -191,7 +195,7 @@ class Migration_Db extends CI_Migration {
 
 	private function links_category_down()
 	{
-		$this->db->query('DROP TABLE `links_book_category`;');
+		$this->db->query('DROP TABLE IF EXISTS `links_book_category`;');
 	}
 
 	private function languages_up()
@@ -206,7 +210,7 @@ class Migration_Db extends CI_Migration {
 
 	private function languages_down()
 	{
-		$this->db->query('DROP TABLE `languages`;');
+		$this->db->query('DROP TABLE IF EXISTS `languages`;');
 	}
 
 	private function books_for_sale_up()
@@ -214,6 +218,8 @@ class Migration_Db extends CI_Migration {
 		$query = "CREATE TABLE IF NOT EXISTS `books_for_sale` (
   						`user_id` int(9) unsigned NOT NULL DEFAULT 0,
   						`book_id` int(9) unsigned NOT NULL DEFAULT 0,
+  						`price` float(4,2) NOT NULL DEFAULT '0.00',
+  						UNIQUE KEY `selling` (`user_id`, `book_id`),
   						FOREIGN KEY (user_id) REFERENCES users(ID)
     						ON DELETE CASCADE
     						ON UPDATE CASCADE,
@@ -226,7 +232,7 @@ class Migration_Db extends CI_Migration {
 
 	private function books_for_sale_down()
 	{
-		$this->db->query('DROP TABLE `books_for_sale`;');
+		$this->db->query('DROP TABLE IF EXISTS `books_for_sale`;');
 	}
 
 	private function books_requested_up()
@@ -246,7 +252,7 @@ class Migration_Db extends CI_Migration {
 
 	private function books_requested_down()
 	{
-		$this->db->query('DROP TABLE `books_requested`;');
+		$this->db->query('DROP TABLE IF EXISTS `books_requested`;');
 	}
 }
 

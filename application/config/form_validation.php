@@ -36,7 +36,16 @@ $config = array(
       'label'   => 'Password',
       'rules'   => 'required|min_length[4]|max_length[32]'
     )
-	)
+	),
+
+  'sell/choose_price' => array(
+    array(
+      'field'   => 'price',
+      'label'   => 'Book price',
+      'rules'   => 'required|valid_price'
+      //'rules'   => 'required|regex_match[/\d+([\.|,]?\d{1,2})?/]'
+    )
+  )
 );
 
 /* End of file form_validation.php */

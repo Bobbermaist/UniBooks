@@ -19,6 +19,8 @@ class Migration extends CI_Controller {
 	public function down()
 	{
 		$this->load->database();
+		$this->db->query('DROP TABLE IF EXISTS `books_for_sale`;');
+		$this->db->query('DROP TABLE IF EXISTS `books_requested`;');
 		$this->db->query('DROP TABLE IF EXISTS `users`;');
 		$this->db->query('DROP TABLE IF EXISTS `ci_sessions`;');
 		$this->db->query('DROP TABLE IF EXISTS `links_book_author`;');
@@ -29,8 +31,6 @@ class Migration extends CI_Controller {
 		$this->db->query('DROP TABLE IF EXISTS `publishers`;');
 		$this->db->query('DROP TABLE IF EXISTS `authors`;');
 		$this->db->query('DROP TABLE IF EXISTS `migrations`;');
-		$this->db->query('DROP TABLE IF EXISTS `books_for_sale`;');
-		$this->db->query('DROP TABLE IF EXISTS `books_requested`;');
 		echo 'Tutte le tabelle sono state eliminate';
 	}
 }

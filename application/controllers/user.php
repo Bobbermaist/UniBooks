@@ -51,7 +51,6 @@ class User extends CI_Controller {
 
 		$valid = FALSE;
 		$signup_data = $this->config->item('signup_data');
-		//$this->form_validation->set_rules($this->config->item('signup_rules'));
 		if( ($post = $this->input->post()) )
 		{
 			$valid = $this->form_validation->run();
