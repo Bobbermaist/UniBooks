@@ -214,6 +214,8 @@ class Book_model extends CI_Model {
 
 	private function uncutISBN($code)
 	{
+		if( ! $code )
+			return 0;
 		$isbn = '978' . $code;
 		$check = 0;
     for($i = 0; $i < 13; $i+=2) $check += substr($isbn, $i, 1);

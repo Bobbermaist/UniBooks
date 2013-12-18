@@ -8,7 +8,7 @@ class Test extends CI_Controller {
 		$this->load->helper('url');
 	}
 
-	public function index($book_id)
+	public function index($book_id = 1)
 	{
 		$this->load->view('template/head');
 		$this->load->view('template/body');

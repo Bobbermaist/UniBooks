@@ -71,15 +71,16 @@ class Book extends CI_Controller {
 		if( $google_data )
 		{
 			$this->Book_model->set_info($google_data, $book_select);
+			print_r($this->Book_model->get_info());
 			if( $book_id = $this->Book_model->insert_book($this->session->userdata('ISBN')) )
 			{
 				$this->session->unset_userdata('ISBN');
 				$this->session->unset_userdata('google_data');
 				$this->session->set_userdata(array('book_id' => $book_id));
-				if( $action = $this->session->userdata('action') )
-					redirect($action);
+				if( $action = $this->session->userdata('action') );
+					//redirect($action);
 				else
-					redirect('sell/search_result');
+					redirect('book/search_result');
 			}
 		}
 	}

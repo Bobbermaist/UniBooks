@@ -1,4 +1,3 @@
-
 <ul>
 <?php
 if( strcmp($title, 'Unknown') )
