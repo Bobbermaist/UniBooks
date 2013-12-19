@@ -5,7 +5,6 @@ class Sell extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model('Book_model');
 		$this->load->library('session');
 		$this->load->helper('url');
 		if( ! $this->session->userdata('ID') )
@@ -67,6 +66,7 @@ class Sell extends CI_Controller {
 	{
 		$this->load->view('template/head');
 		$this->load->view('template/body');
+		$this->load->model('Book_model');
 		$this->load->model('Sell_model');
 
 		$book_info = $this->Book_model->get_book($this->session->userdata('book_id'));

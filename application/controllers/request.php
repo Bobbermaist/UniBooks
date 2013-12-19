@@ -5,7 +5,6 @@ class Request extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->model('Book_model');
 		$this->load->library('session');
 		$this->load->helper('url');
 		if( ! $this->session->userdata('ID') )
@@ -29,7 +28,7 @@ class Request extends CI_Controller {
      		'maxlength' => '255'
     	),
     	'redirect'			=> 'book/search',
-    	'title' 				=> 'Cerca un libro da vendere',
+    	'title' 				=> 'Inserisci una richiesta',
     	'submit_name'		=> 'search',
     	'submit_value'	=> 'Cerca'
 		);
@@ -41,18 +40,17 @@ class Request extends CI_Controller {
 	{
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-		$this->load->model('Sell_model');
+		$this->load->model('Book_model');
+		$this->load->model('Request_model');
 
 		$book_info = $this->Book_model->get_book($this->session->userdata('book_id'));
 		$user_id = $this->session->userdata('ID');
 		$book_id = $this->session->userdata('book_id');
-		$book_price = $this->session->userdata('price');
-		if( $this->Sell_model->insert($user_id, $book_id, $book_price) )
-			$this->load->view('paragraphs', array('p' => 'Vendita creata con successo'));
+		if( $this->Request_model->insert($user_id, $book_id) )
+			$this->load->view('paragraphs', array('p' => 'Richiesta inserita con successo'));
 		else
-			$this->load->view('paragraphs', array('p' => 'Hai gi&agrave; messo in vendita questo libro'));
+			$this->load->view('paragraphs', array('p' => 'Hai gi&agrave; inserito una richiesta per questo libro'));
 		$this->load->view('book', $book_info);
-		$this->load->view('paragraphs', array('p' => '€ ' . $this->Sell_model->get_price($user_id, $book_id)));
 		$this->load->view('template/coda');
 	}
 }
