@@ -77,8 +77,8 @@ class Book extends CI_Controller {
 				$this->session->unset_userdata('ISBN');
 				$this->session->unset_userdata('google_data');
 				$this->session->set_userdata(array('book_id' => $book_id));
-				if( $action = $this->session->userdata('action') );
-					//redirect($action);
+				if( $action = $this->session->userdata('action') )
+					redirect($action);
 				else
 					redirect('book/search_result');
 			}
@@ -90,8 +90,10 @@ class Book extends CI_Controller {
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 
-		$book_info = $this->Book_model->get_book($this->session->userdata('book_id'));
-		print_r($book_info);
+		if( $book_info = $this->Book_model->get_book($this->session->userdata('book_id')) )
+			$this->load->view('book', $book_info);
+		else
+			$this->load->view('paragraphs', array('p' => 'Session data non presenti'));
 		$this->load->view('template/coda');
 	}
 
