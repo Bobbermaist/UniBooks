@@ -10,7 +10,7 @@ class Sell extends CI_Controller {
 		if( ! $this->session->userdata('ID') )
 		{
 			$this->session->set_userdata(array('redirect' => 'sell'));
-			redirect('user');
+			redirect('user/login');
 		}
 	}
 

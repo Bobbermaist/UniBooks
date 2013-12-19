@@ -220,11 +220,11 @@ class Book_model extends CI_Model {
 			return 0;
 		$isbn = '978' . $code;
 		$check = 0;
-    for($i = 0; $i < 13; $i+=2) $check += substr($isbn, $i, 1);
-    for($i = 1; $i < 12; $i+=2) $check += 3 * substr($isbn, $i, 1);
+		for($i = 0; $i < 13; $i+=2) $check += substr($isbn, $i, 1);
+		for($i = 1; $i < 12; $i+=2) $check += 3 * substr($isbn, $i, 1);
 		if( $check % 10 == 0 )
 			return $isbn . 0;
-    return $isbn . (10 - $check % 10);
+		return $isbn . (10 - $check % 10);
 	}
 
 	private function validate()
@@ -258,10 +258,10 @@ class Book_model extends CI_Model {
 
 	private function validate13($ISBN13)
 	{
-    $check = 0;
-    for($i = 0; $i < 13; $i+=2) $check += substr($ISBN13, $i, 1);
-    for($i = 1; $i < 12; $i+=2) $check += 3 * substr($ISBN13, $i, 1);
-    return $check % 10 == 0;
+		$check = 0;
+		for($i = 0; $i < 13; $i+=2) $check += substr($ISBN13, $i, 1);
+		for($i = 1; $i < 12; $i+=2) $check += 3 * substr($ISBN13, $i, 1);
+		return $check % 10 == 0;
 	}
 }
 

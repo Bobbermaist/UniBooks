@@ -10,7 +10,7 @@ class Request extends CI_Controller {
 		if( ! $this->session->userdata('ID') )
 		{
 			$this->session->set_userdata(array('redirect' => 'request'));
-			redirect('user');
+			redirect('user/login');
 		}
 	}
 
