@@ -92,6 +92,8 @@ class Book_model extends CI_Model {
 
 	public function get_id($table, $field, $value)
 	{
+		if( strcmp($table, 'books') == 0 AND strcmp($field, 'ISBN') == 0 AND ! $value )
+			return 0;
 		$this->db->select('ID')->from($table)->where($field, $value)->limit(1);
 		$query = $this->db->get();
 		if( $query->num_rows == 1 )
