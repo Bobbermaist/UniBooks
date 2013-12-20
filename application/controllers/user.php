@@ -56,20 +56,12 @@ class User extends CI_Controller {
 			$valid = $this->form_validation->run();
 			$signup_data['user_name_data']['value'] = $post['user_name'];
 			$signup_data['email_data']['value'] = $post['email'];
-			//$signup_data['pass_data']['value'] = $post['pass'];
-			//$signup_data['passconf_data']['value'] = $post['passconf'];
 		}
 		if( ! $valid )
 			$this->load->view('form/registration', $signup_data);
 		else
 		{
-			$user_data = array(
-				'user_name' => $post['user_name'],
-				'pass' => sha1($post['pass']),
-				'email' => $post['email'],
-				'activation_key' => substr(md5(rand()),0,15),
-				'registration_time' => date("Y-m-d H:i:s")
-			);
+			$user_data = $this->User_model->create_user_data($post);
 			$user_data['ID'] = $this->User_model->insert_user($user_data);
 			$this->send_activation($user_data);
 		}
@@ -99,7 +91,7 @@ class User extends CI_Controller {
 		$this->load->view('template/body');
 		$this->load->model('User_model');
 		$user = $this->User_model->select_where('ID', $ID);
-		if( $user == NULL )
+		if( ! $user )
 		{
 			$msg = 'ID non presente nel database';
 		}
@@ -182,7 +174,7 @@ class User extends CI_Controller {
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 		$user = $this->User_model->select_where('ID', $ID);
-		if( $user != NULL AND $user->rights > -1 AND strcmp($activation_key, $user->activation_key) == 0 )
+		if( $user AND $user->rights > -1 AND strcmp($activation_key, $user->activation_key) == 0 )
 		{
 			$reset_data = $this->config->item('new_password_data');
 			$reset_data['ID'] = $user->ID;
@@ -199,9 +191,9 @@ class User extends CI_Controller {
 		$this->load->model('User_model');
 		$post = $this->input->post();
 		$user = $this->User_model->select_where('ID', $post['ID']);
-		if( $user != NULL AND $user->rights > -1 AND strcmp($post['activation_key'], $user->activation_key) == 0 )
+		if( $user AND $user->rights > -1 AND strcmp($post['activation_key'], $user->activation_key) == 0 )
 		{
-			$data = array('pass' => sha1($post['pass']), 'activation_key' => '');
+			$data = array('pass' => sha1($post['pass']), 'activation_key' => NULL);
 			$this->User_model->update_by_ID($user->ID, $data);
 			$msg = 'La password &egrave; stata resettata con successo';
 		}
@@ -222,25 +214,14 @@ class User extends CI_Controller {
 
 		$valid = FALSE;
 		$post = $this->input->post();
-		//$this->form_validation->set_rules($this->config->item('login_rules'));
 		$valid = $this->form_validation->run();
 		$user = $this->User_model->select_where('user_name', $post['user_name']);
-		if( $valid AND $user != NULL AND strcmp($user->pass, sha1($post['pass'])) == 0 AND $user->rights >= 0 )
+		$session_data = $this->User_model->login($user, $post['pass']);
+		if( $valid AND $session_data )
 		{
-			$session = array(
-				'ID'					=> $user->ID,
-				'rights'			=> $user->rights,
-				'user_name'		=> $user->user_name,
-				'email'				=> $user->email
-			);
-			$this->session->set_userdata($session);
-			if( $redirect = $this->session->userdata('redirect') )
-			{
-				$this->session->unset_userdata('redirect');
-				redirect($redirect);
-			}
-			else
-				redirect('user');
+			$this->session->set_userdata($session_data);
+			$redirect_path = $this->session->userdata('redirect') ? $this->session->userdata('redirect') : 'user';
+			redirect($redirect_path);
 		}
 		$login_data = $this->config->item('login_data');
 		$login_data['user_name']['value'] = $post['user_name'];

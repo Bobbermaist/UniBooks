@@ -45,7 +45,7 @@ class Migration_Db extends CI_Migration {
 		$query = "CREATE TABLE IF NOT EXISTS `users` (
   						`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
   						`user_name` varchar(20) NOT NULL DEFAULT '',
-  						`pass` varchar(40) NOT NULL DEFAULT '',
+  						`pass` varchar(60) NOT NULL DEFAULT '',
  							`email` varchar(64) NOT NULL DEFAULT '',
   						`activation_key` varchar(15) DEFAULT NULL,
   						`registration_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -56,9 +56,9 @@ class Migration_Db extends CI_Migration {
 						) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 		$this->db->query($query);
 
-		$query = "INSERT INTO `users` (`ID`, `user_name`, `pass`, `email`, `activation_key`, `registration_time`, `rights`)
+		/*$query = "INSERT INTO `users` (`ID`, `user_name`, `pass`, `email`, `activation_key`, `registration_time`, `rights`)
 							VALUES (1, 'bob', '042aecc105230aae83bf38e5c8db9493625066ea', 'emilianobovetti@hotmail.it', NULL, '2013-12-18 12:53:40', 1);";
-		$this->db->query($query);
+		$this->db->query($query);*/
 	}
 
 	private function users_down()

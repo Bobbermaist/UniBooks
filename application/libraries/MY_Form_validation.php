@@ -14,5 +14,5 @@ class MY_Form_validation extends CI_Form_validation {
 	}
 }
 
-/* End of file Form_validation.php */
-/* Location: ./application/libraries/Form_validation.php */
+/* End of file MY_Form_validation.php */
+/* Location: ./application/libraries/MY_Form_validation.php */

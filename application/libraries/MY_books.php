@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-define('SRC_PATH', APPPATH . '/third_party/google_api/src/');
+define('SRC_PATH', APPPATH . 'third_party/google_api/src/');
 
 require_once SRC_PATH . 'Google_Client.php';
 require_once SRC_PATH . 'contrib/Google_BooksService.php';
@@ -35,5 +35,5 @@ class MY_books {
   }
 }
 
-/* End of file My_books.php */
-/* Location: ./application/libraries/My_books.php */ 
+/* End of file MY_books.php */
+/* Location: ./application/libraries/MY_books.php */ 
