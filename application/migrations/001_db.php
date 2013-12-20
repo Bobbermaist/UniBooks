@@ -56,9 +56,9 @@ class Migration_Db extends CI_Migration {
 						) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 		$this->db->query($query);
 
-		/*$query = "INSERT INTO `users` (`ID`, `user_name`, `pass`, `email`, `activation_key`, `registration_time`, `rights`)
-							VALUES (1, 'bob', '042aecc105230aae83bf38e5c8db9493625066ea', 'emilianobovetti@hotmail.it', NULL, '2013-12-18 12:53:40', 1);";
-		$this->db->query($query);*/
+		$query = "INSERT INTO `users` (`ID`, `user_name`, `pass`, `email`, `activation_key`, `registration_time`, `rights`)
+							VALUES (1, 'bob', '\$2a\$08\$HIRyxB7T8zohpHt25DPKSu.AOuUKkjl2ImYTj9NEanT/IYRR.JP3G', 'emilianobovetti@hotmail.it', NULL, '2013-12-18 12:53:40', 1);";
+		$this->db->query($query);
 	}
 
 	private function users_down()

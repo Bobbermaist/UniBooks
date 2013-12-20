@@ -2,9 +2,12 @@
 
 class MY_Form_validation extends CI_Form_validation {
 
+	var $CI;
+
   public function __construct($rules = array())
   {
   	parent::__construct($rules);
+  	$this->CI =& get_instance();
   }
 
 	public function valid_price($str)
@@ -12,6 +15,7 @@ class MY_Form_validation extends CI_Form_validation {
 		//[0-9]+[[\.|,][0-9]{1,2}]?$
 		return ( ! preg_match('/^([0-9]+)([\.|,][0-9]{1,2})?$/', $str)) ? FALSE : TRUE;
 	}
+	
 }
 
 /* End of file MY_Form_validation.php */
