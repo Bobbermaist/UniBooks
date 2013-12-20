@@ -8,15 +8,15 @@ class User_model extends CI_Model {
 		$this->load->database();
 	}
 
-	public function create_user_data($post)
+	public function create_user_data($post, $registration = TRUE)
 	{
 		$this->load->helper('security');
 		return array(
-			'user_name'					=> $post['user_name'],
-			'pass'							=> do_hash($post['pass']),
-			'email'							=> $post['email'],
-			'activation_key'		=> substr(md5(rand()),0,15),
-			'registration_time'	=> date("Y-m-d H:i:s")
+			'user_name'					=> isset($post['user_name']) ? $post['user_name'] : NULL,
+			'pass'							=> isset($post['pass']) ? do_hash($post['pass']) : NULL,
+			'email'							=> isset($post['email']) ? $post['email'] : NULL,
+			'activation_key'		=> $registration ? substr(md5(rand()),0,15) : NULL,
+			'registration_time'	=> $registration ? date("Y-m-d H:i:s") : NULL
 		);
 	}
 
@@ -40,8 +40,15 @@ class User_model extends CI_Model {
 
 	public function update_by_ID($ID, $data)
 	{
-		$this->db->where('ID', $ID);
-		$this->db->update('users', $data);
+		foreach ($data as $key => $field)
+			if( $field === NULL )
+				unset($data[$key]);
+		$this->db->where('ID', $ID)->update('users', $data);
+	}
+
+	public function empty_activation_key($user_id)
+	{
+		$this->db->where('ID', $user_id)->update('users', array('activation_key' => NULL));
 	}
 
 	public function login($user, $pass)

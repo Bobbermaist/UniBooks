@@ -103,8 +103,9 @@ class User extends CI_Controller {
 			}
 			elseif( strcmp($activation_key, $user->activation_key) == 0 )
 			{
-				$data = array('rights' => 0, 'activation_key' => NULL);
+				$data = array('rights' => 0);
 				$this->User_model->update_by_ID($user->ID, $data);
+				$this->User_model->empty_activation_key($user->ID);
 				$msg = 'Attivazione effettuata con successo';
 			}
 			else
@@ -193,8 +194,9 @@ class User extends CI_Controller {
 		$user = $this->User_model->select_where('ID', $post['ID']);
 		if( $user AND $user->rights > -1 AND strcmp($post['activation_key'], $user->activation_key) == 0 )
 		{
-			$data = array('pass' => sha1($post['pass']), 'activation_key' => NULL);
+			$data = $this->User_model->create_user_data(array('pass' => $post['pass']));
 			$this->User_model->update_by_ID($user->ID, $data);
+			$this->User_model->empty_activation_key($user->ID);
 			$msg = 'La password &egrave; stata resettata con successo';
 		}
 		else
