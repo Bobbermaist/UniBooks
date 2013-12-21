@@ -38,10 +38,16 @@ class Request_model extends CI_Model {
 			foreach($requests->result() as $request)
 			{
 				$book = $this->Book_model->get($request->book_id);
+				$book['ID'] = $request->book_id;
 				array_push($books, $book);
 			}
 			return $books;
 		}
+	}
+
+	public function delete($user_id, $book_id)
+	{
+		$this->db->delete('books_requested', array('user_id' => $user_id, 'book_id' => $book_id));
 	}
 }
 

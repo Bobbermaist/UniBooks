@@ -43,7 +43,7 @@ class Request extends CI_Controller {
 		$this->load->model('Book_model');
 		$this->load->model('Request_model');
 
-		$book_info = $this->Book_model->get_book($this->session->userdata('book_id'));
+		$book_info = $this->Book_model->get($this->session->userdata('book_id'));
 		$user_id = $this->session->userdata('ID');
 		$book_id = $this->session->userdata('book_id');
 		if( $this->Request_model->insert($user_id, $book_id) )
@@ -51,6 +51,20 @@ class Request extends CI_Controller {
 		else
 			$this->load->view('paragraphs', array('p' => 'Hai gi&agrave; inserito una richiesta per questo libro'));
 		$this->load->view('book', $book_info);
+		$this->load->view('template/coda');
+	}
+
+	public function delete()
+	{
+		$this->load->model('Request_model');
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$user_id = $this->session->userdata('ID');
+		if( $post = $this->input->post() )
+		{
+			$this->Request_model->delete($user_id, $post['book_id']);
+			$this->load->view('paragraphs', array('p' => 'Annuncio eliminato correttamente'));
+		}
 		$this->load->view('template/coda');
 	}
 }

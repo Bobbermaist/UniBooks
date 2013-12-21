@@ -41,6 +41,7 @@ class Sell_model extends CI_Model {
 			{
 				$book = $this->Book_model->get($sell->book_id);
 				$book['price'] = $sell->price;
+				$book['ID'] = $sell->book_id;
 				array_push($books, $book);
 			}
 			return $books;
@@ -50,6 +51,11 @@ class Sell_model extends CI_Model {
 	public function get_price($user_id, $book_id)
 	{
 		return $this->get($user_id, $book_id)->price;
+	}
+
+	public function delete($user_id, $book_id)
+	{
+		$this->db->delete('books_for_sale', array('user_id' => $user_id, 'book_id' => $book_id));
 	}
 }
 

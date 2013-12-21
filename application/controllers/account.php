@@ -145,10 +145,12 @@ class Account extends CI_Controller {
 			{
 				$this->load->view('book', $book);
 				$this->load->view('paragraphs', array('p' => '€ ' . $book['price']));
+				$this->load->view('form/delete', array('action' => 'sell/delete', 'book_id' => $book['ID']));
 			}
 		}
 		else
 			$this->load->view('paragraphs', array('p' => 'Nessun libro in vendita'));
+		$this->load->view('paragraphs', array('p' => 'Inserisci una ' . anchor('sell', 'vendita')));
 
 		$this->load->view('template/coda');
 	}
@@ -158,6 +160,7 @@ class Account extends CI_Controller {
 		$this->load->model('Request_model');
 		$this->load->view('template/head');
 		$this->load->view('template/body');
+
 		$books = $this->Request_model->get($this->session->userdata('ID'));
 		if( $books )
 		{
@@ -165,10 +168,12 @@ class Account extends CI_Controller {
 			foreach($books as $book)
 			{
 				$this->load->view('book', $book);
+				$this->load->view('form/delete', array('action' => 'request/delete', 'book_id' => $book['ID']));
 			}
 		}
 		else
 			$this->load->view('paragraphs', array('p' => 'Nessuna richiesta inserita'));
+		$this->load->view('paragraphs', array('p' => 'Inserisci una ' . anchor('request', 'richiesta')));
 
 		$this->load->view('template/coda');
 	}
