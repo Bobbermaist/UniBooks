@@ -132,16 +132,21 @@ class User extends CI_Controller {
 			$user = $this->User_model->select_where('user_name', $input);
 		if( $user )
 		{
-			$msg = 'Hey '.$user->user_name.' ti &egrave; stata inviata un\'email 
-				con le istruzioni per effettuare il reset della password ;)';
+			
 			$user_data = array(
-				'ID'				=> $user->ID,
-				'user_name' => $user->user_name,
-				'email'			=> $user->email,
-				'activation_key'	=> substr(md5(rand()),0,15)
+				'ID'								=> $user->ID,
+				'user_name'					=> $user->user_name,
+				'email'							=> $user->email,
+				'confirm_code'		=> substr(md5(rand()),0,15)
 			);
-			$this->User_model->update_by_ID($user->ID, array('activation_key' => $user_data['activation_key']));
-			$this->send_reset($user_data);
+			if( $this->User_model->insert_tmp($user->ID, array('confirm_password' => $user_data['confirm_code'])) )
+			{
+				$this->send_reset($user_data);
+				$msg = 'Hey '.$user->user_name.' ti &egrave; stata inviata un\'email 
+					con le istruzioni per effettuare il reset della password ;)';
+			}
+			else
+				$msg = 'C\'&egrave; una richiesta pendente di reset per questo account';
 		}
 		elseif( $input )
 			$msg = 'I parametri inseriti non corrispondono a nessun utente';
@@ -159,7 +164,7 @@ class User extends CI_Controller {
 		$this->email->subject('Reset password');
 		$email_data = array(
 				'user_name' => $user_data['user_name'],
-				'link' => site_url('user/choose_new_pass/'.$user_data['ID'].'/'.$user_data['activation_key'])
+				'link' => site_url('user/choose_new_pass/'.$user_data['ID'].'/'.$user_data['confirm_code'])
 			);
 		$msg = $this->load->view('email/reset', $email_data, TRUE);
 		$this->email->message($msg);
@@ -167,7 +172,7 @@ class User extends CI_Controller {
 		echo $this->email->print_debugger();
 	}
 
-	public function choose_new_pass($ID = NULL, $activation_key = NULL)
+	public function choose_new_pass($ID = NULL, $confirm_code = NULL)
 	{
 		$this->load->model('User_model');
 		$this->load->helper('form');
@@ -175,11 +180,11 @@ class User extends CI_Controller {
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 		$user = $this->User_model->select_where('ID', $ID);
-		if( $user AND $user->rights > -1 AND strcmp($activation_key, $user->activation_key) == 0 )
+		if( $user AND $user->rights > -1 AND $this->User_model->check_tmp_value($user->ID, 'confirm_password', $confirm_code) )
 		{
 			$reset_data = $this->config->item('new_password_data');
 			$reset_data['ID'] = $user->ID;
-			$reset_data['activation_key'] = $user->activation_key;
+			$reset_data['confirm_code'] = $confirm_code;
 			$this->load->view('form/new_password', $reset_data);
 		}
 		$this->load->view('template/coda');
@@ -192,11 +197,11 @@ class User extends CI_Controller {
 		$this->load->model('User_model');
 		$post = $this->input->post();
 		$user = $this->User_model->select_where('ID', $post['ID']);
-		if( $user AND $user->rights > -1 AND strcmp($post['activation_key'], $user->activation_key) == 0 )
+		if( $user AND $user->rights > -1 AND $this->User_model->check_tmp_value($user->ID, 'confirm_password', $post['confirm_code']) )
 		{
 			$data = $this->User_model->create_user_data(array('pass' => $post['pass']));
 			$this->User_model->update_by_ID($user->ID, $data);
-			$this->User_model->empty_activation_key($user->ID);
+			$this->User_model->empty_tmp_value($user->ID, 'confirm_password');
 			$msg = 'La password &egrave; stata resettata con successo';
 		}
 		else

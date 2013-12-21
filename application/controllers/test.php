@@ -37,6 +37,15 @@ class Test extends CI_Controller {
 			$this->load->view('paragraphs', array('p' => 'Codice ISBN errato'));
 		$this->load->view('template/coda');
 	}
+
+	public function garbage()
+	{
+		$this->load->model('User_model');
+		if( $this->User_model->check_tmp_value(2, 'confirm_password', 'dsadsadsa') )
+			echo 'TRUE';
+		else
+			echo 'FALSE';
+	}
 }
 
 /* End of file test.php */

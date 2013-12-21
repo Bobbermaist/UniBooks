@@ -4,7 +4,7 @@
 	  <p> <?php echo form_password($new_password_form_data); ?> </p>
 <?php
 		echo form_hidden('ID', $ID);
-		echo form_hidden('activation_key', $activation_key);
+		echo form_hidden('confirm_code', $confirm_code);
 		echo form_submit('reset_pass', 'Conferma');
 echo form_close(); 
 ?>
