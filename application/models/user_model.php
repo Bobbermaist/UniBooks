@@ -95,10 +95,18 @@ class User_model extends CI_Model {
 	{
 		if( ! $user_id )
 			return FALSE;
-		$this->db->select($field)->from('tmp_users')->where('user_id', $user_id)->limit(1);
-		if( $tmp_user = $this->db->get()->row() )
-			return $tmp_user->$field === NULL ? FALSE : $tmp_user->$field;
+		$this->db->from('tmp_users')->where('user_id', $user_id)->limit(1);
+		if( $tmp = $this->db->get()->row() )
+			return $tmp->$field === NULL ? FALSE : $tmp->$field;
 		return FALSE;
+	}
+
+	private function clean_tmp($user_id)
+	{
+		$this->db->from('tmp_users')->where('user_id', $user_id)->limit(1);
+		$tmp = $this->db->get()->row();
+		if( $tmp->confirm_password === NULL AND $tmp->tmp_email === NULL AND $tmp->confirm_email === NULL )
+			$this->db->delete('tmp_users', array('user_id' => $user_id));
 	}
 
 	public function empty_tmp($user_id, $fields)
@@ -111,7 +119,8 @@ class User_model extends CI_Model {
 				$data[$field] = NULL;
 		else
 			$data[$fields] = NULL;
-		return $this->db->where('user_id', $user_id)->update('tmp_users', $data);
+		$this->db->where('user_id', $user_id)->update('tmp_users', $data);
+		$this->clean_tmp($user_id);
 	}
 }
 
