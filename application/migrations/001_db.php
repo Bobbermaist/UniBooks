@@ -23,6 +23,7 @@ class Migration_Db extends CI_Migration {
 		$this->links_category_up();
 		$this->books_for_sale_up();
 		$this->books_requested_up();
+		$this->language_groups_up();
 	}
 
 	public function down()
@@ -39,6 +40,7 @@ class Migration_Db extends CI_Migration {
 		$this->categories_down();
 		$this->publishers_down();
 		$this->authors_down();
+		$this->language_groups_down();
 	}
 
 		/* Users database */
@@ -272,6 +274,26 @@ class Migration_Db extends CI_Migration {
 	private function books_requested_down()
 	{
 		$this->db->query('DROP TABLE IF EXISTS `books_requested`;');
+	}
+
+	private function language_groups_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `language_groups` (
+  						`code` varchar(5) NOT NULL DEFAULT '0',
+  						`name` varchar(128) NOT NULL DEFAULT '',
+  						PRIMARY KEY (`code`)
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+		$this->db->query($query);
+		$pop_path = APPPATH . 'migrations/populate_language_groups.sql';
+		$pop_open = fopen($pop_path, 'r');
+		$populate = fread($pop_open, filesize($pop_path));
+		$this->db->query($populate);
+		fclose($pop_open);
+	}
+
+	private function language_groups_down()
+	{
+		$this->db->query('DROP TABLE IF EXISTS `language_groups`;');
 	}
 }
 
