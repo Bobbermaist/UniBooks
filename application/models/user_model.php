@@ -28,13 +28,15 @@ class User_model extends CI_Model {
 
 	public function exists($field, $value)
 	{
-		$this->db->from('users')->where($field, trim($value))->limit(1);
+		$this->db->from('users')->where($field, $value)->limit(1);
 		return (boolean) $this->db->get()->num_rows();
 	}
 
 	public function select_where($field, $value)
 	{
-		$this->db->from('users')->where($field, trim($value))->limit(1);
+		if( ! $value )
+			return FALSE;
+		$this->db->from('users')->where($field, $value)->limit(1);
 		return $this->db->get()->row();
 	}
 

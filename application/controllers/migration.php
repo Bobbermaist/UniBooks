@@ -22,6 +22,7 @@ class Migration extends CI_Controller {
 		$this->db->query('DROP TABLE IF EXISTS `books_for_sale`;');
 		$this->db->query('DROP TABLE IF EXISTS `books_requested`;');
 		$this->db->query('DROP TABLE IF EXISTS `users`;');
+		$this->db->query('DROP TABLE IF EXISTS `tmp_users`;');
 		$this->db->query('DROP TABLE IF EXISTS `ci_sessions`;');
 		$this->db->query('DROP TABLE IF EXISTS `links_book_author`;');
 		$this->db->query('DROP TABLE IF EXISTS `links_book_category`;');

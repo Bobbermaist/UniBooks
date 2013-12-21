@@ -50,15 +50,29 @@ $config = array(
   	)
   ),
     /* Account change */
-  'account_change_data' => array(
-    'user_name_data' => array(
+  'change_user_name_data' => array(
+    'redirect' => 'account/user_name',
+    'title' => 'Modifica User name',
+    'submit_name' => 'change',
+    'submit_value' => 'Modifica',
+    'input_type' => array(
       'name'      => 'user_name',
       'maxlength' => '20'
-    ),
-    'email_data' => array(
+    )
+  ),
+
+  'change_email_data' => array(
+    'redirect' => 'account/email',
+    'title' => 'Modifica Email',
+    'submit_name' => 'change',
+    'submit_value' => 'Modifica',
+    'input_type' => array(
       'name'      => 'email',
       'maxlength' => '64'
-    ),
+    )
+  ),
+
+  'change_password_data' => array(
     'old_pass_data' => array(
       'name'      => 'old_pass',
       'maxlength' => '64'

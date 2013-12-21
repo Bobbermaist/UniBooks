@@ -12,6 +12,7 @@ class Migration_Db extends CI_Migration {
 	public function up()
 	{
 		$this->users_up();
+		$this->tmp_users_up();
 		$this->ci_sessions_up();
 		$this->languages_up();
 		$this->categories_up();
@@ -29,6 +30,7 @@ class Migration_Db extends CI_Migration {
 		$this->books_for_sale_down();
 		$this->books_requested_down();
 		$this->users_down();
+		$this->tmp_users_down();
 		$this->ci_sessions_down();
 		$this->links_author_down();
 		$this->links_category_down();
@@ -64,6 +66,23 @@ class Migration_Db extends CI_Migration {
 	private function users_down()
 	{
 		$this->db->query('DROP TABLE IF EXISTS `users`;');
+	}
+
+	private function tmp_users_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `tmp_users` (
+  						`user_id` int(9) unsigned NOT NULL DEFAULT 0,
+  						`confirm_password` varchar(15) DEFAULT NULL,
+  						`tmp_email` varchar(64) DEFAULT NULL,
+ 							`confirm_email` varchar(15) DEFAULT NULL,
+  						PRIMARY KEY (`user_id`)
+						) ENGINE=MEMORY DEFAULT CHARSET=utf8";
+		$this->db->query($query);
+	}
+
+	private function tmp_users_down()
+	{
+		$this->db->query('DROP TABLE IF EXISTS `tmp_users`;');
 	}
 
 		/* Sessions database */

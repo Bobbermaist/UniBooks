@@ -14,5 +14,5 @@ function check_hash($hashedPassword, $str)
 	return $hasher->CheckPassword($str, $hashedPassword);
 }
 
-/* End of file MY_security_helper */
-/* Location: ./application/helpers/MY_security_helper */
+/* End of file MY_security_helper.php */
+/* Location: ./application/helpers/MY_security_helper.php */
