@@ -52,13 +52,21 @@ class Account extends CI_Controller {
 		$this->load->view('template/coda');
 	}
 
-	public function email($user_id = NULL, $activation_key = NULL)
+	public function email($user_id = NULL, $confirm_code = NULL)
 	{
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 		$this->load->config('form_data');
+		$msg = '';
 		$user = $this->session->all_userdata();
-		if( ! $post = $this->input->post() )
+		if( $this->User_model->check_tmp($user_id, 'confirm_email', $confirm_code) )
+		{
+			$new_email = $this->User_model->get_tmp($user_id, 'tmp_email');
+			$this->User_model->update_by_ID($user_id, array('email' => $new_email));
+			$this->User_model->empty_tmp($user_id, array('tmp_email', 'confirm_email'));
+			$msg = 'L\'indirizzo ' . $new_email . ' &egrave; stato confermato correttamente';
+		}
+		elseif( ! $post = $this->input->post() )
 		{
 			$form_data = $this->config->item('change_email_data');
 			$form_data['input_type']['value'] = $user['email'];
@@ -67,12 +75,57 @@ class Account extends CI_Controller {
 		else
 		{
 			$user_data = array(
-				'tmp_email' => $post['email'],
-				'activation_key' => substr(md5(rand()),0,15)
+				'tmp_email'			=> $post['email'],
+				'confirm_email'	=> substr(md5(rand()),0,15)
 			);
-			$this->User_model->update_by_ID($user['ID'], $user_data);
-			$this->load->view('paragraphs', array('p' => '&Egrave; stata inviata un\'email di conferma all\'indirizzo indicato'));
+			if( $this->User_model->insert_tmp($user['ID'], $user_data) )
+			{
+				$this->send_confirm($user_data);
+				$msg = '&Egrave; stata inviata un\'email di conferma all\'indirizzo indicato';
+			}
+			else
+				$msg = 'C\'&egrave; gi&agrave; una richiesta per questo account';
 		}
+		$this->load->view('paragraphs', array('p' => $msg));
+		$this->load->view('template/coda');
+	}
+
+	private function send_confirm($user_data)
+	{
+		$this->load->library('email');
+		$this->email->from('reset@unibooks.it');
+		$this->email->to($user_data['tmp_email']);
+		$this->email->subject('Conferma email');
+		$email_data = array(
+			'link' => site_url('account/email/'.$this->session->userdata('ID').'/'.$user_data['confirm_email'])
+		);
+		$msg = $this->load->view('email/confirm', $email_data, TRUE);
+		$this->email->message($msg);
+		$this->email->send();
+		echo $this->email->print_debugger();
+	}
+
+	public function password()
+	{
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$this->load->library('form_validation');
+		$this->load->config('form_data');
+		$user = $this->session->all_userdata();
+		$msg = '';
+		if( $post = $this->input->post() AND $this->form_validation->run() )
+		{
+			if( $this->User_model->login($this->User_model->select_where('ID', $user['ID']), $post['old_pass']) )
+			{
+				$user_data = $this->User_model->create_user_data(array('pass' => $post['new_pass']), FALSE);
+				$this->User_model->update_by_ID($user['ID'], $user_data);
+				$msg = 'Password modificata correttamente';
+			}
+			else
+				$msg = 'La password immessa non &egrave; corretta';
+		}
+		$this->load->view('form/new_password', $this->config->item('change_password_data'));
+		$this->load->view('paragraphs', array('p' => $msg));
 		$this->load->view('template/coda');
 	}
 }

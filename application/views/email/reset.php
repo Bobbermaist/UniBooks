@@ -9,4 +9,3 @@
 			<a href="<?= $link ?>"><b><?= $link ?></b></a> </p>
 	</body>
 </html>
- 

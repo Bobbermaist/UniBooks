@@ -69,7 +69,7 @@ class User_model extends CI_Model {
 	public function insert_tmp($user_id, $data)
 	{
 		foreach( $data as $key => $value )
-			if( $this->isset_tmp_value($user_id, $key) )
+			if( $this->get_tmp($user_id, $key) )
 				return FALSE;
 		$data['user_id'] = $user_id;
 		$query = $this->db->insert_string('tmp_users', $data) . ' ON DUPLICATE KEY UPDATE ';
@@ -80,7 +80,7 @@ class User_model extends CI_Model {
 		return (boolean) $this->db->query($query);
 	}
 
-	public function check_tmp_value($user_id, $field, $value)
+	public function check_tmp($user_id, $field, $value)
 	{
 		if( ! $user_id OR ! $value )
 			return FALSE;
@@ -91,22 +91,27 @@ class User_model extends CI_Model {
 			return FALSE;
 	}
 
-	public function isset_tmp_value($user_id, $field)
+	public function get_tmp($user_id, $field)
 	{
 		if( ! $user_id )
 			return FALSE;
 		$this->db->select($field)->from('tmp_users')->where('user_id', $user_id)->limit(1);
 		if( $tmp_user = $this->db->get()->row() )
-			return $tmp_user->$field !== NULL;
-		else
-			return FALSE;
+			return $tmp_user->$field === NULL ? FALSE : $tmp_user->$field;
+		return FALSE;
 	}
 
-	public function empty_tmp_value($user_id, $field)
+	public function empty_tmp($user_id, $fields)
 	{
 		if( ! $user_id )
 			return FALSE;
-		return $this->db->where('user_id', $user_id)->update('tmp_users', array($field => NULL));
+		$data = array();
+		if( is_array($fields) )
+			foreach ($fields as $field)
+				$data[$field] = NULL;
+		else
+			$data[$fields] = NULL;
+		return $this->db->where('user_id', $user_id)->update('tmp_users', $data);
 	}
 }
 

@@ -1,12 +1,13 @@
-
-<?php echo form_open('user/reset_pass'); ?>
-	  <h1>Scegli una nuova password</h1>
-	  <p> <?php echo form_password($new_password_form_data); ?> </p>
 <?php
-		echo form_hidden('ID', $ID);
-		echo form_hidden('confirm_code', $confirm_code);
-		echo form_submit('reset_pass', 'Conferma');
-echo form_close(); 
+	echo form_open('account/password');
+?>
+	  <h1>Modifica password</h1>
+	  <p>Vecchia password: <?php echo form_password($old_pass_data); ?> </p>
+	  <p>Nuova password: <?php echo form_password($new_pass_data); ?> </p>
+	  <p>Conferma password: <?php echo form_password($passconf_data); ?> </p>
+<?php
+		echo form_submit('change', 'Modifica');
+	echo form_close(); 
+echo validation_errors();
 ?>
 
- 

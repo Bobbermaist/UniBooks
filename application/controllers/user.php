@@ -50,7 +50,6 @@ class User extends CI_Controller {
 		$this->load->view('template/body');
 
 		$valid = FALSE;
-		$signup_data = $this->config->item('signup_data');
 		if( ($post = $this->input->post()) )
 		{
 			$valid = $this->form_validation->run();
@@ -58,7 +57,7 @@ class User extends CI_Controller {
 			$signup_data['email_data']['value'] = $post['email'];
 		}
 		if( ! $valid )
-			$this->load->view('form/registration', $signup_data);
+			$this->load->view('form/registration', $this->config->item('signup_data'));
 		else
 		{
 			$user_data = $this->User_model->create_user_data($post);
@@ -165,7 +164,7 @@ class User extends CI_Controller {
 		$email_data = array(
 				'user_name' => $user_data['user_name'],
 				'link' => site_url('user/choose_new_pass/'.$user_data['ID'].'/'.$user_data['confirm_code'])
-			);
+		);
 		$msg = $this->load->view('email/reset', $email_data, TRUE);
 		$this->email->message($msg);
 		$this->email->send();
@@ -180,12 +179,12 @@ class User extends CI_Controller {
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 		$user = $this->User_model->select_where('ID', $ID);
-		if( $user AND $user->rights > -1 AND $this->User_model->check_tmp_value($user->ID, 'confirm_password', $confirm_code) )
+		if( $user AND $user->rights > -1 AND $this->User_model->check_tmp($user->ID, 'confirm_password', $confirm_code) )
 		{
 			$reset_data = $this->config->item('new_password_data');
 			$reset_data['ID'] = $user->ID;
 			$reset_data['confirm_code'] = $confirm_code;
-			$this->load->view('form/new_password', $reset_data);
+			$this->load->view('form/reset_password', $reset_data);
 		}
 		$this->load->view('template/coda');
 	}
@@ -197,11 +196,11 @@ class User extends CI_Controller {
 		$this->load->model('User_model');
 		$post = $this->input->post();
 		$user = $this->User_model->select_where('ID', $post['ID']);
-		if( $user AND $user->rights > -1 AND $this->User_model->check_tmp_value($user->ID, 'confirm_password', $post['confirm_code']) )
+		if( $user AND $user->rights > -1 AND $this->User_model->check_tmp($user->ID, 'confirm_password', $post['confirm_code']) )
 		{
-			$data = $this->User_model->create_user_data(array('pass' => $post['pass']));
+			$data = $this->User_model->create_user_data(array('pass' => $post['pass']), FALSE);
 			$this->User_model->update_by_ID($user->ID, $data);
-			$this->User_model->empty_tmp_value($user->ID, 'confirm_password');
+			$this->User_model->empty_tmp($user->ID, 'confirm_password');
 			$msg = 'La password &egrave; stata resettata con successo';
 		}
 		else
@@ -217,7 +216,7 @@ class User extends CI_Controller {
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		$this->load->config('form_data');
-		$this->load->database();
+		//$this->load->database();
 
 		$valid = FALSE;
 		$post = $this->input->post();

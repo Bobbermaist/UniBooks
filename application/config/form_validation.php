@@ -38,12 +38,29 @@ $config = array(
     )
 	),
 
+  'account/password' => array(
+    array(
+      'field'   => 'old_pass',
+      'label'   => 'Old password',
+      'rules'   => 'required'
+    ),
+    array(
+      'field'   => 'new_pass', 
+      'label'   => 'New password', 
+      'rules'   => 'required|min_length[4]|max_length[32]|matches[passconf]'
+    ),
+    array(
+      'field'   => 'passconf', 
+      'label'   => 'Password Confirmation', 
+      'rules'   => 'required'
+    )
+  ),
+
   'sell/choose_price' => array(
     array(
       'field'   => 'price',
       'label'   => 'Book price',
       'rules'   => 'required|valid_price'
-      //'rules'   => 'required|regex_match[/\d+([\.|,]?\d{1,2})?/]'
     )
   )
 );
