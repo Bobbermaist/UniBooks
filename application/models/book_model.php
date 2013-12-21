@@ -189,6 +189,22 @@ class Book_model extends CI_Model {
 		return $books_data;
 	}
 
+	public function language_group()
+	{
+		if( ! isset($this->ISBN) )
+			return FALSE;
+		$this->load->database();
+		$isbn = strlen($this->ISBN) != 13 ? $this->ISBN : substr($this->ISBN, 3);
+		for($digits = 1; $digits < 6; $digits++)
+		{
+			$this->db->from('language_groups')->where('code', substr($isbn, 0, $digits));
+			$res = $this->db->get();
+			if( $res->num_rows > 0 )
+				break;
+		}
+		return $res->row()->name;
+	}
+
 	private function industryID_to_ISBN($industryIdentifiers)
 	{
 		$isbn10 = NULL;
