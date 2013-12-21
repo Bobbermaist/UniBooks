@@ -60,7 +60,7 @@ class Book_model extends CI_Model {
 		return $book->get($data);
 	}
 
-	public function insert_book($isbn = NULL)
+	public function insert($isbn = NULL)
 	{
 		if( ! isset($this->info) )
 			exit;
@@ -101,7 +101,7 @@ class Book_model extends CI_Model {
 		return FALSE;
 	}
 
-	public function get_book($id)
+	public function get($id)
 	{
 		$this->load->database();
 		$this->db->from('books')->where('ID', intval($id))->limit(1);

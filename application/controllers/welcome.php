@@ -37,6 +37,8 @@ class Welcome extends CI_Controller {
 			'Puoi cercare un libro tramite le API di google books qui: '.anchor('book', 'Ricerca libro', 'title="search"'),
 			'Una volta effettuato il log in metti in vendita un libro: '.anchor('sell', 'Vendi', 'title="sell"'),
 			'Inserisci una richiesta per un libro: '.anchor('request', 'Richiedi', 'title="request"'),
+			'Gestisci il tuo account, modificando nome utente, email, password <br>
+				e visualizza gli annunci inseriti: '.anchor('account', 'Account'),
 			'Gli amministratori possono accedere ad un\'area riservata: '.anchor('admin', 'Admin area', 'title="admin"'),
 			'Esegui current migration: '.anchor('migration', 'Current migration'),
 			'Drop database: '.anchor('migration/down', 'Drop all'),

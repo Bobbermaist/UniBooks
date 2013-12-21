@@ -40,11 +40,12 @@ class Test extends CI_Controller {
 
 	public function garbage()
 	{
-		$this->load->model('User_model');
-		if( $this->User_model->check_tmp_value(2, 'confirm_password', 'dsadsadsa') )
-			echo 'TRUE';
-		else
+		$this->load->model('Sell_model');
+		if( ($books = $this->Sell_model->get(1)) === FALSE)
 			echo 'FALSE';
+		else
+			foreach($books as $book)
+				print_r($book);
 	}
 }
 

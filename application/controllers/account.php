@@ -25,7 +25,9 @@ class Account extends CI_Controller {
 		$view_data['p'] = array(
 			'User name: ' . $user['user_name'] . ' ' . anchor('account/user_name', 'Modifica'),
 			'Email: ' . $user['email'] . ' ' . anchor('account/email', 'Modifica'),
-			anchor('account/password', 'Modifica password')
+			anchor('account/password', 'Modifica password'),
+			'Visualizza ' . anchor('account/sells', 'annunci'),
+			'Visualizza ' . anchor('account/requests', 'richieste'),
 		);
 		$this->load->view('paragraphs', $view_data);
 		$this->load->view('template/coda');
@@ -126,6 +128,48 @@ class Account extends CI_Controller {
 		}
 		$this->load->view('form/new_password', $this->config->item('change_password_data'));
 		$this->load->view('paragraphs', array('p' => $msg));
+		$this->load->view('template/coda');
+	}
+
+	public function sells()
+	{
+		$this->load->model('Sell_model');
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+
+		$books = $this->Sell_model->get($this->session->userdata('ID'));
+		if( $books )
+		{
+			$this->load->view('paragraphs', array('p' => 'Libri in vendita'));
+			foreach($books as $book)
+			{
+				$this->load->view('book', $book);
+				$this->load->view('paragraphs', array('p' => '€ ' . $book['price']));
+			}
+		}
+		else
+			$this->load->view('paragraphs', array('p' => 'Nessun libro in vendita'));
+
+		$this->load->view('template/coda');
+	}
+
+	public function requests()
+	{
+		$this->load->model('Request_model');
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$books = $this->Request_model->get($this->session->userdata('ID'));
+		if( $books )
+		{
+			$this->load->view('paragraphs', array('p' => 'Richieste inserite'));
+			foreach($books as $book)
+			{
+				$this->load->view('book', $book);
+			}
+		}
+		else
+			$this->load->view('paragraphs', array('p' => 'Nessuna richiesta inserita'));
+
 		$this->load->view('template/coda');
 	}
 }

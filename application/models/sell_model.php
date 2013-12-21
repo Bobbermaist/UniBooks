@@ -19,14 +19,32 @@ class Sell_model extends CI_Model {
 		return TRUE;
 	}
 
-	public function get($user_id, $book_id)
+	public function get($user_id, $book_id = NULL)
 	{
-		$this->db->from('books_for_sale')->where(array('user_id' => $user_id, 'book_id' => $book_id));
-		$query = $this->db->get();
-		if( $query->num_rows == 0 )
-			return FALSE;
+		if( $book_id )
+		{
+			$this->db->from('books_for_sale')->where(array('user_id' => $user_id, 'book_id' => $book_id));
+			$query = $this->db->get();
+			if( $query->num_rows == 0 )
+				return FALSE;
+			else
+				return $query->row();
+		}
 		else
-			return $query->row();
+		{
+			$this->load->model('Book_model');
+			//$this->db->from('books')->where('user_id', $user_id)->join('books_for_sale', 'books_for_sale.book_id = books.ID');
+			$this->db->from('books_for_sale')->where('user_id', $user_id);
+			$sells = $this->db->get();
+			$books = array();
+			foreach($sells->result() as $sell)
+			{
+				$book = $this->Book_model->get($sell->book_id);
+				$book['price'] = $sell->price;
+				array_push($books, $book);
+			}
+			return $books;
+		}
 	}
 
 	public function get_price($user_id, $book_id)

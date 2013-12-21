@@ -72,7 +72,7 @@ class Book extends CI_Controller {
 		{
 			$this->Book_model->set_info($google_data, $book_select);
 			print_r($this->Book_model->get_info());
-			if( $book_id = $this->Book_model->insert_book($this->session->userdata('ISBN')) )
+			if( $book_id = $this->Book_model->insert($this->session->userdata('ISBN')) )
 			{
 				$this->session->unset_userdata('ISBN');
 				$this->session->unset_userdata('google_data');
@@ -90,7 +90,7 @@ class Book extends CI_Controller {
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 
-		if( $book_info = $this->Book_model->get_book($this->session->userdata('book_id')) )
+		if( $book_info = $this->Book_model->get($this->session->userdata('book_id')) )
 			$this->load->view('book', $book_info);
 		else
 			$this->load->view('paragraphs', array('p' => 'Session data non presenti'));
