@@ -13,7 +13,7 @@ class Test extends CI_Controller {
 		$this->load->model('Book_model');
 		$this->Book_model->setISBN($isbn);
 		$par = array(
-			$this->Book_model->get_language(),
+			$this->Book_model->get_country(),
 			$this->Book_model->get_publisher()
 		);
 		$this->load->view('paragraphs', array('p' => $par));

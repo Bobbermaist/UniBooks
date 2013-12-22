@@ -12,11 +12,11 @@ class Book_model extends CI_Model {
 
 	public function setISBN($isbn)
 	{
-		$this->ISBN = strtoupper(preg_replace('/[^\d^X]+/i', '', $isbn));
-		if( $this->validate() )
-			return TRUE;
-		unset( $this->ISBN );
-		return FALSE;
+		$isbn = strtoupper(preg_replace('/[^\d^X]+/i', '', $isbn));
+		if( ! $this->validate($isbn) )
+			return FALSE;
+		$this->ISBN = $isbn;
+		return TRUE;
 	}
 
 	public function getISBN()
@@ -29,15 +29,17 @@ class Book_model extends CI_Model {
 		return isset($this->ISBN);
 	}
 
-	public function set_info($google_data, $index)
+	public function set_info($google_data, $index, $isbn = NULL)
 	{
 		if( ! isset($google_data['items'][intval($index)]) )
 			exit;
 		$google_data = $google_data['items'][intval($index)]['volumeInfo'];
+		$this->setISBN($isbn);
+		$this->setISBN($this->industryID_to_ISBN($google_data['industryIdentifiers']));
 		$this->info = array(
-			'ISBN'							=> $this->industryID_to_ISBN($google_data['industryIdentifiers']),
+			'ISBN'							=> isset($this->ISBN) ? $this->ISBN : NULL,
 			'title'							=> isset($google_data['title']) ? $google_data['title'] : NULL,
-			'publisher'					=> isset($google_data['publisher']) ? $google_data['publisher'] : NULL,
+			'publisher'					=> isset($google_data['publisher']) ? $google_data['publisher'] : $this->get_publisher(),
 			'authors'						=> isset($google_data['authors']) ? $google_data['authors'] : NULL,
 			'publication_year'	=> isset($google_data['publishedDate']) ? substr($google_data['publishedDate'], 0, 4) : NULL,
 			'pages'							=> isset($google_data['pageCount']) ? $google_data['pageCount'] : NULL,
@@ -55,19 +57,15 @@ class Book_model extends CI_Model {
 	{
 		$this->load->library('MY_books');
 		$book = new MY_books;
-		if( isset($this->ISBN) )
-			return $book->get_by_isbn($this->ISBN);
-		return $book->get($data);
+		return isset($this->ISBN) ? $book->get_by_isbn($this->ISBN) : $book->get($data);
 	}
 
-	public function insert($isbn = NULL)
+	public function insert()
 	{
 		if( ! isset($this->info) )
 			exit;
 		$this->load->database();
 		$this->setISBN($this->info['ISBN']);
-		if( ! isset($this->ISBN) AND $isbn )
-			$this->setISBN($isbn);
 		if( $id = $this->get_id('books', 'ISBN', $this->cutISBN()) )
 			return $id;
 		$language_id = $this->insert_info('languages', $this->info['language']);
@@ -92,13 +90,11 @@ class Book_model extends CI_Model {
 
 	public function get_id($table, $field, $value)
 	{
-		if( strcmp($table, 'books') == 0 AND strcmp($field, 'ISBN') == 0 AND ! $value )
+		if( $table === 'books' AND $field === 'ISBN' AND ! $value )
 			return 0;
 		$this->db->select('ID')->from($table)->where($field, $value)->limit(1);
 		$query = $this->db->get();
-		if( $query->num_rows == 1 )
-			return $query->row()->ID;
-		return FALSE;
+		return $query->num_rows == 1 ? $query->row()->ID : 0;
 	}
 
 	public function get($id)
@@ -176,12 +172,12 @@ class Book_model extends CI_Model {
 		{
 			$book = $book['volumeInfo'];
 			array_push($books_data, array(
-				isset($book['title']) ? $book['title'] : '',
-				isset($book['authors']) ? implode(', ', $book['authors']) : '',
-				isset($book['publishedDate']) ? substr($book['publishedDate'], 0, 4) : '',
+				isset($book['title']) ? $book['title'] : NULL,
+				isset($book['authors']) ? implode(', ', $book['authors']) : NULL,
+				isset($book['publishedDate']) ? substr($book['publishedDate'], 0, 4) : NULL,
 				$this->industryID_to_ISBN($book['industryIdentifiers']),
-				isset($book['pageCount']) ? $book['pageCount'] : '',
-				isset($book['categories']) ? implode(', ', $book['categories']) : ''/*,
+				isset($book['pageCount']) ? $book['pageCount'] : NULL,
+				isset($book['categories']) ? implode(', ', $book['categories']) : NULL/*,
 				isset($book['language']) ? $book['language'] : ''*/
 			));
 		}
@@ -189,10 +185,10 @@ class Book_model extends CI_Model {
 		return $books_data;
 	}
 
-	public function get_language()
+	public function get_country()
 	{
 		if( ! isset($this->ISBN) )
-			return FALSE;
+			return NULL;
 		$this->load->database();
 		$isbn = $this->cutISBN();
 		for($digits = 1; $digits < 6; $digits++)
@@ -200,15 +196,15 @@ class Book_model extends CI_Model {
 			$this->db->from('language_groups')->where('code', substr($isbn, 0, $digits));
 			$res = $this->db->get();
 			if( $res->num_rows > 0 )
-				break;
+				return $res->row()->name;
 		}
-		return $res->row()->name;
+		return NULL;
 	}
 
 	public function get_publisher()
 	{
 		if( ! isset($this->ISBN) )
-			return FALSE;
+			return NULL;
 		$this->load->database();
 		$isbn = $this->cutISBN();
 		for($digits = 7; $digits > 3; $digits--)
@@ -216,23 +212,22 @@ class Book_model extends CI_Model {
 			$this->db->from('publisher_codes')->where('code', substr($isbn, 0, $digits));
 			$res = $this->db->get();
 			if( $res->num_rows > 0 )
-				break;
+				return $res->row()->name;
 		}
-		$publisher = $res->row();
-		return is_object($publisher) ? $publisher->name : FALSE;
+		return NULL;
 	}
 
 	private function industryID_to_ISBN($industryIdentifiers)
 	{
 		$isbn10 = NULL;
-		foreach ($industryIdentifiers as $iid)
+		foreach($industryIdentifiers as $iid)
 		{
-			if( strcmp($iid['type'], 'ISBN_13') == 0 )
+			if( $iid['type'] === 'ISBN_13' )
 			{
 				$isbn13 = $iid['identifier'];
 				break;
 			}
-			elseif( strcmp($iid['type'], 'ISBN_10') == 0 )
+			elseif( $iid['type'] === 'ISBN_10' )
 				$isbn10 = $iid['identifier'];
 		}
 		return isset($isbn13) ? $isbn13 : $isbn10;
@@ -260,18 +255,15 @@ class Book_model extends CI_Model {
 		return $isbn . (10 - $check % 10);
 	}
 
-	private function validate()
+	private function validate($str)
 	{
-		$len = strlen($this->ISBN);
+		$len = strlen($str);
 		if( $len != 13 && $len != 10 )
 			return FALSE;
-		if( $len == 10 && $this->validate10($this->ISBN) )
+		if( $len == 10 && $this->validate10($str) )
 			return TRUE;
 		elseif( $len == 10 )
-		{
-			$this->ISBN = '978' . $this->ISBN;
-			return $this->validate13($this->ISBN);
-		}
+			return $this->validate13('978' . $str);
 		else
 			return $this->validate13($this->ISBN);
 	}
