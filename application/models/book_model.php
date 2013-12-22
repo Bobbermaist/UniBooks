@@ -219,7 +219,6 @@ class Book_model extends CI_Model {
 				break;
 		}
 		$publisher = $res->row();
-		echo $publisher->code;
 		return is_object($publisher) ? $publisher->name : FALSE;
 	}
 

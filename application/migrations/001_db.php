@@ -306,11 +306,17 @@ class Migration_Db extends CI_Migration {
 							PRIMARY KEY (`code`)
 						) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 		$this->db->query($query);
-		$pop_path = APPPATH . 'migrations/populate_publisher_codes.sql';
+		$pop_path = APPPATH . 'migrations/populate_publisher_codes_from_wikipedia.sql';
 		$pop_open = fopen($pop_path, 'r');
-		$populate = fread($pop_open, filesize($pop_path));
+		$populate_from_wikipedia = fread($pop_open, filesize($pop_path));
 		fclose($pop_open);
-		$this->db->query($populate);
+		$pop_path = APPPATH . 'migrations/populate_publisher_codes_from_books-by-isbn.com.sql';
+		$pop_open = fopen($pop_path, 'r');
+		$populate_from_books = fread($pop_open, filesize($pop_path));
+		fclose($pop_open);
+
+		$this->db->query($populate_from_wikipedia);
+		$this->db->query($populate_from_books);
 	}
 
 	private function publisher_codes_down()
