@@ -38,8 +38,6 @@ class Book extends CI_Controller {
 		$this->load->helper('form');
 		$this->load->helper('url');
 		$this->load->library('table');
-		$this->load->view('template/head');
-		$this->load->view('template/body');
 		
 		if( $search_key = $this->input->post('book_search') )
 		{
@@ -47,11 +45,16 @@ class Book extends CI_Controller {
 				$this->session->set_userdata(array('ISBN' => $this->Book_model->getISBN()));
 			$this->session->set_userdata(array('google_data' => $this->Book_model->google_fetch($search_key)));
 		}
-
+		/*
+		if( ! $this->session->userdata('google_data') )
+			redirect($somewhere)
+		*/
 		$google_data = $this->session->userdata('google_data');
 		$books_data = $this->Book_model->gdata_to_table($google_data);
-		$this->load->view('form/book_select', array('books_data' => $books_data));
 
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$this->load->view('form/book_select', array('books_data' => $books_data));
 		$this->load->view('template/coda');
 	}
 
@@ -65,8 +68,8 @@ class Book extends CI_Controller {
 			$this->Book_model->set_info($google_data, $book_select, $this->session->userdata('ISBN'));
 			if( $book_id = $this->Book_model->insert() )
 			{
-				$this->session->unset_userdata('ISBN');
-				$this->session->unset_userdata('google_data');
+				//$this->session->unset_userdata('ISBN');
+				//$this->session->unset_userdata('google_data');
 				$this->session->set_userdata(array('book_id' => $book_id));
 				if( $action = $this->session->userdata('action') )
 					redirect($action);
