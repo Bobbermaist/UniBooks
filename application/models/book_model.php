@@ -189,12 +189,12 @@ class Book_model extends CI_Model {
 		return $books_data;
 	}
 
-	public function language_group()
+	public function get_language()
 	{
 		if( ! isset($this->ISBN) )
 			return FALSE;
 		$this->load->database();
-		$isbn = strlen($this->ISBN) != 13 ? $this->ISBN : substr($this->ISBN, 3);
+		$isbn = $this->cutISBN();
 		for($digits = 1; $digits < 6; $digits++)
 		{
 			$this->db->from('language_groups')->where('code', substr($isbn, 0, $digits));
@@ -203,6 +203,24 @@ class Book_model extends CI_Model {
 				break;
 		}
 		return $res->row()->name;
+	}
+
+	public function get_publisher()
+	{
+		if( ! isset($this->ISBN) )
+			return FALSE;
+		$this->load->database();
+		$isbn = $this->cutISBN();
+		for($digits = 7; $digits > 3; $digits--)
+		{
+			$this->db->from('publisher_codes')->where('code', substr($isbn, 0, $digits));
+			$res = $this->db->get();
+			if( $res->num_rows > 0 )
+				break;
+		}
+		$publisher = $res->row();
+		echo $publisher->code;
+		return is_object($publisher) ? $publisher->name : FALSE;
 	}
 
 	private function industryID_to_ISBN($industryIdentifiers)

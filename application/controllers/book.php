@@ -40,25 +40,18 @@ class Book extends CI_Controller {
 		$this->load->library('table');
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-
-		$search_key = $this->input->post('book_search');
-		if( $search_key )
+		
+		if( $search_key = $this->input->post('book_search') )
 		{
 			$this->Book_model->setISBN($search_key);
-				/* In alcuni casi manca l'ISBN ai dati di google
-				 * se l'ha inserito l'utente utilizzo quello 
-				 * Es: 8817868833 */
 			if( $this->Book_model->issetISBN() )
 				$this->session->set_userdata(array('ISBN' => $this->Book_model->getISBN()));
-			$google_data = $this->Book_model->google_fetch($search_key);
-			$this->session->set_userdata(array('google_data' => $google_data));
-			$books_data = $this->Book_model->gdata_to_table($google_data);
-			$this->load->view('form/book_select', array('books_data' => $books_data));
+			$this->session->set_userdata(array('google_data' => $this->Book_model->google_fetch($search_key)));
 		}
-		elseif( $google_data = $this->session->userdata('google_data') )
-			$this->load->view('form/book_select', array('books_data' => $this->Book_model->gdata_to_table($google_data)));
-		else
-			redirect('book');
+
+		$google_data = $this->session->userdata('google_data');
+		$books_data = $this->Book_model->gdata_to_table($google_data);
+		$this->load->view('form/book_select', array('books_data' => $books_data));
 
 		$this->load->view('template/coda');
 	}

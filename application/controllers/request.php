@@ -17,10 +17,9 @@ class Request extends CI_Controller {
 	public function index()
 	{
 		$this->load->helper('form');
-
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-
+		
 		$this->session->set_userdata(array('action' => 'request/complete'));
 		$view_data = array(
 			'input_type' => array(

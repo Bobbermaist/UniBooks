@@ -1,7 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $config = array(
-
 	'user/registration' => array(
     array(
       'field'   => 'user_name', 
@@ -24,7 +23,6 @@ $config = array(
       'rules'   => 'required|valid_email|is_unique[users.email]'
     )
   ),
-
   'user/login' => array(
     array(
       'field'   => 'user_name',
@@ -37,7 +35,6 @@ $config = array(
       'rules'   => 'required|min_length[4]|max_length[32]'
     )
 	),
-
   'account/password' => array(
     array(
       'field'   => 'old_pass',
@@ -55,7 +52,13 @@ $config = array(
       'rules'   => 'required'
     )
   ),
-
+  'request/index' => array(
+    array(
+      'field'   => 'book_search',
+      'label'   => 'Chiave di ricerca',
+      'rules'   => 'valid_ISBN'
+    )
+  ),
   'sell/choose_price' => array(
     array(
       'field'   => 'price',

@@ -16,6 +16,11 @@ class MY_Form_validation extends CI_Form_validation {
 		return ( ! preg_match('/^([0-9]+)([\.|,][0-9]{1,2})?$/', $str)) ? FALSE : TRUE;
 	}
 	
+	public function valid_ISBN($str)
+	{
+		$this->CI->load->model('Book_model');
+		return $this->CI->Book_model->setISBN($str);
+	}
 }
 
 /* End of file MY_Form_validation.php */
