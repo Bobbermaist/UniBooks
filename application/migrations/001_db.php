@@ -24,6 +24,7 @@ class Migration_Db extends CI_Migration {
 		$this->books_for_sale_up();
 		$this->books_requested_up();
 		$this->language_groups_up();
+		$this->publisher_codes_up();
 	}
 
 	public function down()
@@ -41,6 +42,7 @@ class Migration_Db extends CI_Migration {
 		$this->publishers_down();
 		$this->authors_down();
 		$this->language_groups_down();
+		$this->publisher_codes_down();
 	}
 
 		/* Users database */
@@ -279,21 +281,41 @@ class Migration_Db extends CI_Migration {
 	private function language_groups_up()
 	{
 		$query = "CREATE TABLE IF NOT EXISTS `language_groups` (
-  						`code` varchar(5) NOT NULL DEFAULT '0',
-  						`name` varchar(128) NOT NULL DEFAULT '',
-  						PRIMARY KEY (`code`)
+							`code` varchar(5) NOT NULL DEFAULT '0',
+							`name` varchar(128) NOT NULL DEFAULT '',
+							PRIMARY KEY (`code`)
 						) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 		$this->db->query($query);
 		$pop_path = APPPATH . 'migrations/populate_language_groups.sql';
 		$pop_open = fopen($pop_path, 'r');
 		$populate = fread($pop_open, filesize($pop_path));
-		$this->db->query($populate);
 		fclose($pop_open);
+		$this->db->query($populate);
 	}
 
 	private function language_groups_down()
 	{
 		$this->db->query('DROP TABLE IF EXISTS `language_groups`;');
+	}
+
+	private function publisher_codes_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `publisher_codes` (
+							`code` varchar(7) NOT NULL DEFAULT '0',
+							`name` varchar(255) NOT NULL DEFAULT '',
+							PRIMARY KEY (`code`)
+						) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+		$this->db->query($query);
+		$pop_path = APPPATH . 'migrations/populate_publisher_codes.sql';
+		$pop_open = fopen($pop_path, 'r');
+		$populate = fread($pop_open, filesize($pop_path));
+		fclose($pop_open);
+		$this->db->query($populate);
+	}
+
+	private function publisher_codes_down()
+	{
+		$this->db->query('DROP TABLE IF EXISTS `publisher_codes`;');
 	}
 }
 

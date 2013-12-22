@@ -32,6 +32,7 @@ class Migration extends CI_Controller {
 		$this->db->query('DROP TABLE IF EXISTS `publishers`;');
 		$this->db->query('DROP TABLE IF EXISTS `authors`;');
 		$this->db->query('DROP TABLE IF EXISTS `language_groups`;');
+		$this->db->query('DROP TABLE IF EXISTS `publisher_codes`;');
 		$this->db->query('DROP TABLE IF EXISTS `migrations`;');
 		echo 'Tutte le tabelle sono state eliminate';
 	}
