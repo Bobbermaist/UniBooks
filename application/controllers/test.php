@@ -11,12 +11,16 @@ class Test extends CI_Controller {
 	public function index($isbn = NULL)
 	{
 		$this->load->model('Book_model');
-		$this->Book_model->setISBN($isbn);
-		$par = array(
-			$this->Book_model->get_country(),
-			$this->Book_model->get_publisher()
-		);
-		$this->load->view('paragraphs', array('p' => $par));
+		if( $this->Book_model->setISBN($isbn) === TRUE )
+		{
+			$par = array(
+				$this->Book_model->get_country(),
+				$this->Book_model->get_publisher()
+			);
+			$this->load->view('paragraphs', array('p' => $par));
+		}
+		else
+			$this->load->view('paragraphs', array('p' => 'ISBN non valido'));
 	}
 }
 

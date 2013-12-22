@@ -10,13 +10,23 @@ class Book_model extends CI_Model {
 		parent::__construct();
 	}
 
-	public function setISBN($isbn)
+	public function setISBN($str)
 	{
-		$isbn = strtoupper(preg_replace('/[^\d^X]+/i', '', $isbn));
-		if( ! $this->validate($isbn) )
-			return FALSE;
-		$this->ISBN = $isbn;
-		return TRUE;
+		$str = strtoupper(preg_replace('/[^\d^X]+/i', '', $str));
+		$valid = FALSE;
+		$len = strlen($str);
+		if( $len == 10 )
+		{
+			$valid = $this->validate10($str);
+			if( ! $valid )
+			{
+				$str = '978' . $str;
+				$valid = $this->validate13($str);
+			}
+		}
+		elseif( $len == 13 )
+			$valid = $this->validate13($str);
+		return $valid ? (boolean) ($this->ISBN = $str) : FALSE;
 	}
 
 	public function getISBN()
@@ -255,37 +265,24 @@ class Book_model extends CI_Model {
 		return $isbn . (10 - $check % 10);
 	}
 
-	private function validate($str)
-	{
-		$len = strlen($str);
-		if( $len != 13 && $len != 10 )
-			return FALSE;
-		if( $len == 10 && $this->validate10($str) )
-			return TRUE;
-		elseif( $len == 10 )
-			return $this->validate13('978' . $str);
-		else
-			return $this->validate13($this->ISBN);
-	}
-
-	private function validate10($ISBN10)
+	private function validate10($str)
 	{
 		$a = 0;
 		for($i = 0; $i < 10; $i++)
 		{
-			if( $ISBN10[$i] == 'X' )
+			if( $str[$i] == 'X' )
 				$a += 10 * intval(10 - $i);
 			else
-				$a += intval($ISBN10[$i]) * intval(10 - $i);
+				$a += intval($str[$i]) * intval(10 - $i);
 		}
 		return ($a % 11 == 0);
 	}
 
-	private function validate13($ISBN13)
+	private function validate13($str)
 	{
 		$check = 0;
-		for($i = 0; $i < 13; $i+=2) $check += substr($ISBN13, $i, 1);
-		for($i = 1; $i < 12; $i+=2) $check += 3 * substr($ISBN13, $i, 1);
+		for($i = 0; $i < 13; $i+=2) $check += substr($str, $i, 1);
+		for($i = 1; $i < 12; $i+=2) $check += 3 * substr($str, $i, 1);
 		return $check % 10 == 0;
 	}
 }
