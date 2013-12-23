@@ -13,11 +13,10 @@ class Admin extends CI_Controller {
 
 	public function index()
 	{
+		$user = $this->session->all_userdata();
+		
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-		$this->load->config('form_data');
-		$this->load->helper('form');
-		$user = $this->session->all_userdata();
 		$this->load->view('paragraphs', array('p' => 'Benvenuto, amministratore <b>'.$user['user_name'].'!</b>'));
 		$this->load->view('template/coda');
 	}

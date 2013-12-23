@@ -17,11 +17,6 @@ class Sell extends CI_Controller {
 	public function index()
 	{
 		$this->load->helper('form');
-
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-
-		$this->session->set_userdata(array('action' => 'sell/choose_price'));
 		$view_data = array(
 			'input_type' => array(
      		'name'      => 'book_search',
@@ -32,6 +27,10 @@ class Sell extends CI_Controller {
     	'submit_name'		=> 'search',
     	'submit_value'	=> 'Cerca'
 		);
+		$this->session->set_userdata(array('action' => 'sell/choose_price'));
+
+		$this->load->view('template/head');
+		$this->load->view('template/body');
 		$this->load->view('form/single', $view_data);
 		$this->load->view('template/coda');
 	}
@@ -40,14 +39,11 @@ class Sell extends CI_Controller {
 	{
 		$this->load->library('form_validation');
 		$this->load->helper('form');
-		//$this->form_validation->set_rules('price', 'Price', 'regex_match[//]');
 		if( $this->form_validation->run() )
 		{
 			$this->session->set_userdata(array('price' => $this->input->post('price')));
 			redirect('sell/complete');
 		}
-		$this->load->view('template/head');
-		$this->load->view('template/body');
 		$view_data = array(
 			'input_type' => array(
      		'name'      => 'price',
@@ -58,41 +54,46 @@ class Sell extends CI_Controller {
     	'submit_name'		=> 'submit_price',
     	'submit_value'	=> 'Inserisci'
 		);
+
+		$this->load->view('template/head');
+		$this->load->view('template/body');
 		$this->load->view('form/single', $view_data);
 		$this->load->view('template/coda');
 	}
 
 	public function complete()
 	{
-		$this->load->view('template/head');
-		$this->load->view('template/body');
 		$this->load->model('Book_model');
 		$this->load->model('Sell_model');
-
 		$book_info = $this->Book_model->get($this->session->userdata('book_id'));
 		$user_id = $this->session->userdata('ID');
 		$book_id = $this->session->userdata('book_id');
 		$book_price = $this->session->userdata('price');
 		if( $this->Sell_model->insert($user_id, $book_id, $book_price) )
-			$this->load->view('paragraphs', array('p' => 'Vendita creata con successo'));
+			$view_data = array('p' => 'Vendita creata con successo');
 		else
-			$this->load->view('paragraphs', array('p' => 'Hai gi&agrave; messo in vendita questo libro'));
+			$view_data = array('p' => 'Hai gi&agrave; messo in vendita questo libro');
+		
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$this->load->view('paragraphs', $view_data);
 		$this->load->view('book', $book_info);
-		$this->load->view('paragraphs', array('p' => '€ ' . $this->Sell_model->get_price($user_id, $book_id)));
 		$this->load->view('template/coda');
 	}
 
 	public function delete()
 	{
 		$this->load->model('Sell_model');
-		$this->load->view('template/head');
-		$this->load->view('template/body');
 		$user_id = $this->session->userdata('ID');
 		if( $post = $this->input->post() )
 		{
 			$this->Sell_model->delete($user_id, $post['book_id']);
-			$this->load->view('paragraphs', array('p' => 'Vendita eliminata correttamente'));
+			$view_data = array('p' => 'Vendita eliminata correttamente');
 		}
+
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$this->load->view('paragraphs', $view_data);
 		$this->load->view('template/coda');
 	}
 }

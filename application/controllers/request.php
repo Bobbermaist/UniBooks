@@ -17,10 +17,6 @@ class Request extends CI_Controller {
 	public function index()
 	{
 		$this->load->helper('form');
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-		
-		$this->session->set_userdata(array('action' => 'request/complete'));
 		$view_data = array(
 			'input_type' => array(
      		'name'      => 'book_search',
@@ -31,14 +27,16 @@ class Request extends CI_Controller {
     	'submit_name'		=> 'search',
     	'submit_value'	=> 'Cerca'
 		);
+		$this->session->set_userdata(array('action' => 'request/complete'));
+
+		$this->load->view('template/head');
+		$this->load->view('template/body');
 		$this->load->view('form/single', $view_data);
 		$this->load->view('template/coda');
 	}
 
 	public function complete()
 	{
-		$this->load->view('template/head');
-		$this->load->view('template/body');
 		$this->load->model('Book_model');
 		$this->load->model('Request_model');
 
@@ -46,9 +44,13 @@ class Request extends CI_Controller {
 		$user_id = $this->session->userdata('ID');
 		$book_id = $this->session->userdata('book_id');
 		if( $this->Request_model->insert($user_id, $book_id) )
-			$this->load->view('paragraphs', array('p' => 'Richiesta inserita con successo'));
+			$view_data = array('p' => 'Richiesta inserita con successo');
 		else
-			$this->load->view('paragraphs', array('p' => 'Hai gi&agrave; inserito una richiesta per questo libro'));
+			$view_data = array('p' => 'Hai gi&agrave; inserito una richiesta per questo libro');
+
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$this->load->view('paragraphs', $view_data);
 		$this->load->view('book', $book_info);
 		$this->load->view('template/coda');
 	}
@@ -56,14 +58,16 @@ class Request extends CI_Controller {
 	public function delete()
 	{
 		$this->load->model('Request_model');
-		$this->load->view('template/head');
-		$this->load->view('template/body');
 		$user_id = $this->session->userdata('ID');
 		if( $post = $this->input->post() )
 		{
 			$this->Request_model->delete($user_id, $post['book_id']);
-			$this->load->view('paragraphs', array('p' => 'Annuncio eliminato correttamente'));
+			$view_data = array('p' => 'Annuncio eliminato correttamente');
 		}
+
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$this->load->view('paragraphs', $view_data);
 		$this->load->view('template/coda');
 	}
 }

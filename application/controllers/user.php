@@ -11,15 +11,17 @@ class User extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->view('template/head');
-		$this->load->view('template/body');
 		$this->load->config('form_data');
 		$this->load->helper('form');
 		$user = $this->session->all_userdata();
 		if( ! isset($user['ID']) )
-			$this->load->view('form/login', $this->config->item('login_data'));
+		{
+			$view_name = 'form/login';
+			$view_data = $this->config->item('login_data');
+		}
 		else
 		{		/* Test variabili sessione */
+			$view_name = 'paragraphs';
 			$view_data = array('p' => array(
 				'Hey, <b>'.$user['user_name'].'!</b>',
 				'Il tuo ID utente &egrave; <b>'.$user['ID'].'</b>',
@@ -33,38 +35,45 @@ class User extends CI_Controller {
 				array_push($view_data['p'], 'Il tuo account ha normali permessi utente');
 			elseif( $user['rights'] == 1 )
 				array_push($view_data['p'], 'Il tuo &egrave; un account amministratore');
-			$this->load->view('paragraphs', $view_data);
 		}
+
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$this->load->view($view_name, $view_data);
 		$this->load->view('template/coda');
 	}
 
 	public function registration()
 	{
-			/* Load */
 		$this->load->model('User_model');
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		$this->load->config('form_data');
 		$this->load->database();
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-
 		$valid = FALSE;
-		if( ($post = $this->input->post()) )
+		if( $post = $this->input->post() )
 		{
 			$valid = $this->form_validation->run();
 			$signup_data['user_name_data']['value'] = $post['user_name'];
 			$signup_data['email_data']['value'] = $post['email'];
 		}
 		if( ! $valid )
-			$this->load->view('form/registration', $this->config->item('signup_data'));
+		{
+			$view_name = 'form/registration';
+			$view_data = $this->config->item('signup_data');
+		}
 		else
 		{
 			$user_data = $this->User_model->create_user_data($post);
 			$user_data['ID'] = $this->User_model->insert_user($user_data);
 			$this->send_activation($user_data);
-		}
+			$view_name = 'paragraphs';
+			$view_data = array('p' => 'Controlla la tua casella email per l\'attivazione account');
+ 		}
 
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$this->load->view($view_name, $view_data);
 		$this->load->view('template/coda');
 	}
 
@@ -86,72 +95,69 @@ class User extends CI_Controller {
 
 	public function activation($ID = NULL, $activation_key = NULL)
 	{
-		$this->load->view('template/head');
-		$this->load->view('template/body');
 		$this->load->model('User_model');
 		$user = $this->User_model->select_where('ID', $ID);
 		if( ! $user )
-		{
-			$msg = 'ID non presente nel database';
-		}
+			$view_data = array('p' => 'ID non presente nel database');
 		else
 		{
 			if( $user->rights > -1 )
-			{
-				$msg = 'Utente già registrato';
-			}
+				$view_data = array('p' => 'Utente già registrato');
 			elseif( strcmp($activation_key, $user->activation_key) == 0 )
 			{
 				$data = array('rights' => 0);
 				$this->User_model->update_by_ID($user->ID, $data);
 				$this->User_model->empty_activation_key($user->ID);
-				$msg = 'Attivazione effettuata con successo';
+				$view_data = array('p' => 'Attivazione effettuata con successo');
 			}
 			else
-				$msg = 'Activation key errata';
+				$view_data = array('p' => 'Activation key errata');
 		}
-		$this->load->view('paragraphs', array('p' => $msg));
+
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$this->load->view('paragraphs', $view_data);
 		$this->load->view('template/coda');
 	}
 
 	public function reset()
 	{
-			/* Load */
 		$this->load->model('User_model');
 		$this->load->helper('form');
 		$this->load->config('form_data');
-		$this->load->view('template/head');
-		$this->load->view('template/body');
 
-		$reset_data = $this->config->item('reset_data');
 		$input = $this->input->post('user_or_email');
-		$reset_data['reset_form_data']['value'] = $input;
 		$user = $this->User_model->select_where('email', $input);
-		if( ! $user )
-			$user = $this->User_model->select_where('user_name', $input);
+		$user = ( ! $user ) ? $this->User_model->select_where('user_name', $input) : $user;
+		$view_name = 'form/reset';
+		$view_data = $this->config->item('reset_data');
+		$view_data['reset_form_data']['value'] = $input;
 		if( $user )
 		{
-			
 			$user_data = array(
-				'ID'								=> $user->ID,
-				'user_name'					=> $user->user_name,
-				'email'							=> $user->email,
-				'confirm_code'		=> substr(md5(rand()),0,15)
+				'ID'						=> $user->ID,
+				'user_name'			=> $user->user_name,
+				'email'					=> $user->email,
+				'confirm_code'	=> substr(md5(rand()),0,15)
 			);
 			if( $this->User_model->insert_tmp($user->ID, array('confirm_password' => $user_data['confirm_code'])) )
 			{
 				$this->send_reset($user_data);
-				$msg = 'Hey '.$user->user_name.' ti &egrave; stata inviata un\'email 
-					con le istruzioni per effettuare il reset della password ;)';
+				$view_name = 'paragraphs';
+				$view_data = array('p' => 'Hey '.$user->user_name.' ti &egrave; stata inviata un\'email 
+					con le istruzioni per effettuare il reset della password');
 			}
 			else
-				$msg = 'C\'&egrave; una richiesta pendente di reset per questo account';
+				$view_error = array('p' => 'C\'&egrave; una richiesta pendente di reset per questo account');
 		}
 		elseif( $input )
-			$msg = 'I parametri inseriti non corrispondono a nessun utente';
-		$this->load->view('form/reset', $reset_data);
-		if( isset($msg) )
-			$this->load->view('paragraphs', array('p' => $msg));
+			$view_error = array('p' => 'I parametri inseriti non corrispondono a nessun utente');
+
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$this->load->view($view_name, $view_data);
+		if( isset($view_error) )
+			$this->load->view('paragraphs', $view_error);
 		$this->load->view('template/coda');
 	}
 
@@ -176,23 +182,23 @@ class User extends CI_Controller {
 		$this->load->model('User_model');
 		$this->load->helper('form');
 		$this->load->config('form_data');
-		$this->load->view('template/head');
-		$this->load->view('template/body');
 		$user = $this->User_model->select_where('ID', $ID);
 		if( $user AND $user->rights > -1 AND $this->User_model->check_tmp($user->ID, 'confirm_password', $confirm_code) )
 		{
 			$reset_data = $this->config->item('new_password_data');
 			$reset_data['ID'] = $user->ID;
 			$reset_data['confirm_code'] = $confirm_code;
-			$this->load->view('form/reset_password', $reset_data);
 		}
+
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		if( isset($reset_data) )
+			$this->load->view('form/reset_password', $reset_data);
 		$this->load->view('template/coda');
 	}
 
 	public function reset_pass()
 	{
-		$this->load->view('template/head');
-		$this->load->view('template/body');
 		$this->load->model('User_model');
 		$post = $this->input->post();
 		$user = $this->User_model->select_where('ID', $post['ID']);
@@ -201,24 +207,24 @@ class User extends CI_Controller {
 			$data = $this->User_model->create_user_data(array('pass' => $post['pass']), FALSE);
 			$this->User_model->update_by_ID($user->ID, $data);
 			$this->User_model->empty_tmp($user->ID, 'confirm_password');
-			$msg = 'La password &egrave; stata resettata con successo';
+			$view_data = array('p' => 'La password &egrave; stata resettata con successo');
 		}
 		else
-			$msg = 'Errore nel reset password';
-		$this->load->view('paragraphs', array('p' => $msg));
+			$view_data = array('p' => 'Errore nel reset password');
+
+		$this->load->view('template/head');
+		$this->load->view('template/body');
+		$this->load->view('paragraphs', $view_data);
 		$this->load->view('template/coda');
 	}
 
 	public function login()
 	{
-			/* Load */
 		$this->load->model('User_model');
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		$this->load->config('form_data');
-		//$this->load->database();
-
-		$valid = FALSE;
+		
 		$post = $this->input->post();
 		$valid = $this->form_validation->run();
 		$user = $this->User_model->select_where('user_name', $post['user_name']);

@@ -1,10 +1,12 @@
 
 <?php
+if( ! isset($p) ) return;
+
 if( is_array($p) )
 {
 	foreach($p as $par)
-		echo "<p>$par</p>\n";
+		echo "\t<p>$par</p>\n";
 }
 else
-	echo "<p>$p</p>\n";
+	echo "\t<p>$p</p>\n";
 ?> 

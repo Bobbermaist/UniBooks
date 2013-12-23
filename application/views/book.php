@@ -1,31 +1,42 @@
-<ul>
+  <ul>
 <?php
-if( strcmp($title, 'Unknown') )
-	echo '<li>Titolo: ' . $title . '</li>';
 
-if( strcmp($authors[0], 'Unknown') )
+if( $title !== 'Unknown' )
+	echo "\t<li>Titolo: $title</li>\n";
+
+if( $authors[0] !== 'Unknown' )
 {
 	if( count($authors) == 1 )
-		echo '<li>Autore: ' . $authors[0] . '</li>';
+		echo "\t<li>Autore: " . $authors[0] . "</li>\n";
 	else
-		echo '<li>Autori: ' . implode(', ', $authors) . '</li>';
+		echo "\t<li>Autori: " . implode(', ', $authors) . "</li>\n";
 }
-if( strcmp($publisher, 'Unknown') )
-	echo '<li>Editore: ' . $publisher . '</li>';
+
+if( $publisher !== 'Unknown' )
+	echo "\t<li>Editore: $publisher</li>\n";
+
 if( $publication_year )
-	echo '<li>Anno: ' . $publication_year . '</li>';
+	echo "\t<li>Anno: $publication_year</li>\n";
+
 if( $pages )
-	echo '<li>Pagine: ' . $pages . '</li>';
-if( strcmp($categories[0], 'Unknown') )
+	echo "\t<li>Pagine: $pages</li>\n";
+
+if( $categories[0] !== 'Unknown' )
 {
 	if( count($categories) == 1 )
-		echo '<li>Categoria: ' . $categories[0] . '</li>';
+		echo "\t<li>Categoria: " . $categories[0] . "</li>\n";
 	else
-		echo '<li>Categoria: ' . implode(', ', $categories) . '</li>';
+		echo "\t<li>Categoria: " . implode(', ', $categories) . "</li>\n";
 }
-if( strcmp($language, 'Unknown') )
-	echo '<li>Lingua: ' . $language . '</li>';
+
+if( $language !== 'Unknown' )
+	echo "\t<li>Lingua: $language</li>\n";
+
 if( $ISBN )
-	echo '<li>ISBN: ' . $ISBN . '</li>';
+	echo "\t<li>ISBN: $ISBN</li>\n";
+
+if( isset($price) )
+	echo "\t<li>Prezzo di vendita: € $price</li>\n";
+
 ?>
-</ul>
+  </ul>
