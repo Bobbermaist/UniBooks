@@ -5,22 +5,13 @@ class Test extends CI_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->helper('url');
+		//$this->load->helper('url');
 	}
 
-	public function index($isbn = NULL)
+	public function index()
 	{
-		$this->load->model('Book_model');
-		if( $this->Book_model->setISBN($isbn) === TRUE )
-		{
-			$par = array(
-				$this->Book_model->get_country(),
-				$this->Book_model->get_publisher()
-			);
-			$this->load->view('paragraphs', array('p' => $par));
-		}
-		else
-			$this->load->view('paragraphs', array('p' => 'ISBN non valido'));
+		$count = 16;
+		echo strlen(file_get_contents("http://www.random.org/cgi-bin/randbyte?nbytes=$count"));
 	}
 }
 

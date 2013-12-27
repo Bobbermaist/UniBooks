@@ -48,11 +48,16 @@ class PasswordHash {
 	function get_random_bytes($count)
 	{
 		$output = '';
-		if (is_readable('/dev/urandom') &&
+		//if (is_readable('/dev/urandom') &&
+		if (@is_readable('/dev/urandom') &&
 		    ($fh = @fopen('/dev/urandom', 'rb'))) {
 			$output = fread($fh, $count);
 			fclose($fh);
 		}
+		/* What about
+		$output = file_get_contents("http://www.random.org/cgi-bin/randbyte?nbytes=$count");
+		?
+		*/
 
 		if (strlen($output) < $count) {
 			$output = '';
@@ -249,5 +254,3 @@ class PasswordHash {
 		return $hash == $stored_hash;
 	}
 }
-
-?>
