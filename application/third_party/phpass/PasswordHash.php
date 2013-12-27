@@ -54,10 +54,6 @@ class PasswordHash {
 			$output = fread($fh, $count);
 			fclose($fh);
 		}
-		/* What about
-		$output = file_get_contents("http://www.random.org/cgi-bin/randbyte?nbytes=$count");
-		?
-		*/
 
 		if (strlen($output) < $count) {
 			$output = '';

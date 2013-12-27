@@ -10,8 +10,15 @@ class Test extends CI_Controller {
 
 	public function index()
 	{
-		$count = 16;
-		echo strlen(file_get_contents("http://www.random.org/cgi-bin/randbyte?nbytes=$count"));
+		$this->load->helper('security');
+		$ran_utf8 = utf8_encode(get_random_bytes(15));
+		$ran_url = urlencode($ran_utf8);
+		echo $ran_utf8 . '<br>';
+		echo $ran_url . '<br>';
+		if($ran_utf8 === urldecode($ran_url))
+			echo 'TRUE';
+		else
+			echo 'FALSE';
 	}
 }
 

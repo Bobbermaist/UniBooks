@@ -14,5 +14,10 @@ function check_hash($hashedPassword, $str)
 	return $hasher->CheckPassword($str, $hashedPassword);
 }
 
+function get_random_bytes($bytes)
+{
+	return file_get_contents("http://www.random.org/cgi-bin/randbyte?nbytes=$bytes");
+}
+
 /* End of file MY_security_helper.php */
 /* Location: ./application/helpers/MY_security_helper.php */
