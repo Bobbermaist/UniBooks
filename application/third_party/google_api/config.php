@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+require_once(__DIR__ . '/../../config/constants.php');
+
 global $apiConfig;
 $apiConfig = array(
     // True if objects should be returned by the service classes.
@@ -45,10 +47,13 @@ $apiConfig = array(
 
     // IO Class dependent configuration, you only have to configure the values
     // for the class that was configured as the ioClass above
+    /*
     'ioFileCache_directory'  =>
         (function_exists('sys_get_temp_dir') ?
             sys_get_temp_dir() . '/Google_Client' :
         '/tmp/Google_Client'),
+    */
+    'ioFileCache_directory'  => GOOGLE_CACHE,
 
     // Definition of service specific values like scopes, oauth token URLs, etc
     'services' => array(

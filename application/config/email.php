@@ -1,7 +1,7 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $config = array(
-  'protocol'	=> 'sendmail',
+  'protocol'	=> 'mail',
   'mailpath'	=> '/usr/sbin/sendmail',
   'mailtype'	=> 'html',
   'charset'		=> 'utf-8'

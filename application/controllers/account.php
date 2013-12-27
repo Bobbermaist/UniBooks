@@ -150,9 +150,9 @@ class Account extends CI_Controller {
 		$config['base_url'] = site_url('account/sells');
 		$config['use_page_numbers'] = TRUE;
 		$config['total_rows'] = count($books);
-		$config['per_page'] = SELLS_PER_PAGE;
+		$config['per_page'] = 3;
 		$this->pagination->initialize($config);
-		$books_to_show = array_chunk($books, SELLS_PER_PAGE);
+		$books_to_show = array_chunk($books, 3);
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');
@@ -181,9 +181,11 @@ class Account extends CI_Controller {
 		$config['base_url'] = site_url('account/requests');
 		$config['use_page_numbers'] = TRUE;
 		$config['total_rows'] = count($books);
-		$config['per_page'] = REQUESTS_PER_PAGE;
+		//$config['per_page'] = REQUESTS_PER_PAGE;
+		$config['per_page'] = 3;
 		$this->pagination->initialize($config);
-		$books_to_show = array_chunk($books, REQUESTS_PER_PAGE);
+		//$books_to_show = array_chunk($books, REQUESTS_PER_PAGE);
+		$books_to_show = array_chunk($books, 3);
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');

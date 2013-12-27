@@ -38,12 +38,21 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
 /*
 |--------------------------------------------------------------------------
-| Pagination values requests and sells
+| Google API path needed by MY_books library
 |--------------------------------------------------------------------------
 */
 
-define('REQUESTS_PER_PAGE', 3);
-define('SELLS_PER_PAGE', 3);
+define('GOOGLE_API_PATH', APPPATH . 'third_party/google_api/');
+
+/*
+|--------------------------------------------------------------------------
+| Google API cache directory
+|--------------------------------------------------------------------------
+*/
+
+define('GOOGLE_CACHE', function_exists('sys_get_temp_dir') ?
+	sys_get_temp_dir() . '/Google_Client' :
+	'/tmp/Google_Client');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

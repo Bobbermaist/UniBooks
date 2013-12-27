@@ -1,9 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-define('SRC_PATH', APPPATH . 'third_party/google_api/src/');
-
-require_once SRC_PATH . 'Google_Client.php';
-require_once SRC_PATH . 'contrib/Google_BooksService.php';
+require_once GOOGLE_API_PATH . 'Google_Client.php';
+require_once GOOGLE_API_PATH . 'contrib/Google_BooksService.php';
 
 class MY_books {
 
