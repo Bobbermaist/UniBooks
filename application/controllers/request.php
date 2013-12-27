@@ -64,6 +64,8 @@ class Request extends CI_Controller {
 			$this->Request_model->delete($user_id, $post['book_id']);
 			$view_data = array('p' => 'Annuncio eliminato correttamente');
 		}
+		else
+			$view_data = array('p' => 'Errore');
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');

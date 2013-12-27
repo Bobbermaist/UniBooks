@@ -141,17 +141,26 @@ class Account extends CI_Controller {
 		$this->load->view('template/coda');
 	}
 
-	public function sells()
+	public function sells($page = 1)
 	{
+		$this->load->library('pagination');
 		$this->load->model('Sell_model');
 		$books = $this->Sell_model->get($this->session->userdata('ID'));
+
+		$config['base_url'] = site_url('account/sells');
+		$config['use_page_numbers'] = TRUE;
+		$config['total_rows'] = count($books);
+		$config['per_page'] = SELLS_PER_PAGE;
+		$this->pagination->initialize($config);
+		$books_to_show = array_chunk($books, SELLS_PER_PAGE);
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 		if( $books )
 		{
 			$this->load->view('paragraphs', array('p' => 'Libri in vendita'));
-			foreach($books as $book)
+			$this->load->view('paragraphs', array('p' => $this->pagination->create_links()));
+			foreach($books_to_show[$page - 1] as $book)
 			{
 				$this->load->view('book', $book);
 				$this->load->view('form/delete', array('action' => 'sell/delete', 'book_id' => $book['ID']));
@@ -163,17 +172,26 @@ class Account extends CI_Controller {
 		$this->load->view('template/coda');
 	}
 
-	public function requests()
+	public function requests($page = 1)
 	{
+		$this->load->library('pagination');
 		$this->load->model('Request_model');
 		$books = $this->Request_model->get($this->session->userdata('ID'));
-		
+
+		$config['base_url'] = site_url('account/requests');
+		$config['use_page_numbers'] = TRUE;
+		$config['total_rows'] = count($books);
+		$config['per_page'] = REQUESTS_PER_PAGE;
+		$this->pagination->initialize($config);
+		$books_to_show = array_chunk($books, REQUESTS_PER_PAGE);
+
 		$this->load->view('template/head');
 		$this->load->view('template/body');
 		if( $books )
 		{
 			$this->load->view('paragraphs', array('p' => 'Richieste inserite'));
-			foreach($books as $book)
+			$this->load->view('paragraphs', array('p' => $this->pagination->create_links()));
+			foreach($books_to_show[$page - 1] as $book)
 			{
 				$this->load->view('book', $book);
 				$this->load->view('form/delete', array('action' => 'request/delete', 'book_id' => $book['ID']));

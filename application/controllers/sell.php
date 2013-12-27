@@ -90,6 +90,8 @@ class Sell extends CI_Controller {
 			$this->Sell_model->delete($user_id, $post['book_id']);
 			$view_data = array('p' => 'Vendita eliminata correttamente');
 		}
+		else
+			$view_data = array('p' => 'Errore');
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');
