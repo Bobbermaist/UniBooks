@@ -50,9 +50,7 @@ define('GOOGLE_API_PATH', APPPATH . 'third_party/google_api/');
 |--------------------------------------------------------------------------
 */
 
-define('GOOGLE_CACHE', function_exists('sys_get_temp_dir') ?
-	sys_get_temp_dir() . '/Google_Client' :
-	'/tmp/Google_Client');
+define('GOOGLE_CACHE', FCPATH . APPPATH . 'cache/Google_Client');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */
