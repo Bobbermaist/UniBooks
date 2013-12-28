@@ -19,5 +19,20 @@ function get_random_bytes($bytes)
 	return file_get_contents("http://www.random.org/cgi-bin/randbyte?nbytes=$bytes");
 }
 
+function get_random_string($length)
+{
+	return utf8_encode(get_random_bytes($length));
+}
+
+function url_encode_utf8($str)
+{
+	return preg_replace('/%/', '.', urlencode($str));
+}
+
+function url_decode_utf8($str)
+{
+	return urldecode(preg_replace('/\./', '%', $str));
+}
+
 /* End of file MY_security_helper.php */
 /* Location: ./application/helpers/MY_security_helper.php */
