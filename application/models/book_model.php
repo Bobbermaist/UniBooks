@@ -41,7 +41,7 @@ class Book_model extends CI_Model {
 
 	public function set_info($google_data, $index, $isbn = NULL)
 	{
-		if( ! isset($google_data['items'][intval($index)]) )
+		if ( ! isset($google_data['items'][intval($index)]))
 			exit;
 		$google_data = $google_data['items'][intval($index)]['volumeInfo'];
 		$this->setISBN($isbn);
@@ -72,11 +72,11 @@ class Book_model extends CI_Model {
 
 	public function insert()
 	{
-		if( ! isset($this->info) )
+		if ( ! isset($this->info))
 			exit;
 		$this->load->database();
 		$this->setISBN($this->info['ISBN']);
-		if( $id = $this->get_id('books', 'ISBN', $this->cutISBN()) )
+		if ($id = $this->get_id('books', 'ISBN', $this->cutISBN()))
 			return $id;
 		$language_id = $this->insert_info('languages', $this->info['language']);
 		$categories_id = $this->insert_info('categories', $this->info['categories']);
@@ -100,7 +100,7 @@ class Book_model extends CI_Model {
 
 	public function get_id($table, $field, $value)
 	{
-		if( $table === 'books' AND $field === 'ISBN' AND ! $value )
+		if ($table === 'books' AND $field === 'ISBN' AND ! $value)
 			return 0;
 		$this->db->select('ID')->from($table)->where($field, $value)->limit(1);
 		$query = $this->db->get();
@@ -112,7 +112,7 @@ class Book_model extends CI_Model {
 		$this->load->database();
 		$this->db->from('books')->where('ID', intval($id))->limit(1);
 		$query = $this->db->get();
-		if( $query->num_rows == 0 )
+		if ($query->num_rows == 0)
 			return NULL;
 		$book = $query->row();
 		return array(
@@ -129,11 +129,11 @@ class Book_model extends CI_Model {
 
 	private function insert_info($table, $value)
 	{
-		if( ! $value )
+		if ( ! $value)
 			return $this->insert_info($table, 'Unknown');
-		if( ! is_array($value) )
+		if ( ! is_array($value))
 		{
-			if( $id = $this->get_id($table, 'name', $value) )
+			if ($id = $this->get_id($table, 'name', $value))
 				return $id;
 			$this->db->insert($table, array('name' => $value));
 			return $this->db->insert_id();
@@ -146,7 +146,7 @@ class Book_model extends CI_Model {
 
 	private function create_links($table, $field, $book_id, $ids)
 	{
-		if( ! is_array($ids) )
+		if ( ! is_array($ids))
 			$this->db->insert($table, array('book_id' => $book_id, $field => $ids));
 		else
 			foreach ($ids as $id)
@@ -157,7 +157,7 @@ class Book_model extends CI_Model {
 	{
 		$this->db->select($field)->from($table)->where('ID', $id)->limit(1);
 		$query = $this->db->get();
-		if( $query->num_rows == 0)
+		if ($query->num_rows == 0)
 			return NULL;
 		return $query->row()->$field;
 	}
@@ -175,7 +175,7 @@ class Book_model extends CI_Model {
 
 	public function gdata_to_table($google_data)
 	{
-		if( $google_data['totalItems'] == 0 )
+		if ($google_data['totalItems'] == 0)
 			return NULL;
 		$books_data = array();
 		foreach( $google_data['items'] as $book )
@@ -197,7 +197,7 @@ class Book_model extends CI_Model {
 
 	public function get_country()
 	{
-		if( ! isset($this->ISBN) )
+		if ( ! isset($this->ISBN))
 			return NULL;
 		$this->load->database();
 		$isbn = $this->cutISBN();
@@ -205,7 +205,7 @@ class Book_model extends CI_Model {
 		{
 			$this->db->from('language_groups')->where('code', substr($isbn, 0, $digits));
 			$res = $this->db->get();
-			if( $res->num_rows > 0 )
+			if ($res->num_rows > 0)
 				return $res->row()->name;
 		}
 		return NULL;
@@ -213,7 +213,7 @@ class Book_model extends CI_Model {
 
 	public function get_publisher()
 	{
-		if( ! isset($this->ISBN) )
+		if ( ! isset($this->ISBN))
 			return NULL;
 		$this->load->database();
 		$isbn = $this->cutISBN();
@@ -221,7 +221,7 @@ class Book_model extends CI_Model {
 		{
 			$this->db->from('publisher_codes')->where('code', substr($isbn, 0, $digits));
 			$res = $this->db->get();
-			if( $res->num_rows > 0 )
+			if ($res->num_rows > 0)
 				return $res->row()->name;
 		}
 		return NULL;
@@ -232,12 +232,12 @@ class Book_model extends CI_Model {
 		$isbn10 = NULL;
 		foreach($industryIdentifiers as $iid)
 		{
-			if( $iid['type'] === 'ISBN_13' )
+			if ($iid['type'] === 'ISBN_13')
 			{
 				$isbn13 = $iid['identifier'];
 				break;
 			}
-			elseif( $iid['type'] === 'ISBN_10' )
+			elseif ($iid['type'] === 'ISBN_10')
 				$isbn10 = $iid['identifier'];
 		}
 		return isset($isbn13) ? $isbn13 : $isbn10;
@@ -245,22 +245,22 @@ class Book_model extends CI_Model {
 
 	private function cutISBN()
 	{
-		if( ! isset($this->ISBN) )
+		if ( ! isset($this->ISBN))
 			return 0;
-		if( strlen($this->ISBN) == 13 )
+		if (strlen($this->ISBN) == 13)
 			return substr($this->ISBN, 3, -1);
 		return substr($this->ISBN, 0, -1);
 	}
 
 	private function uncutISBN($code)
 	{
-		if( ! $code )
+		if ( ! $code)
 			return 0;
 		$isbn = '978' . $code;
 		$check = 0;
 		for($i = 0; $i < 13; $i+=2) $check += substr($isbn, $i, 1);
 		for($i = 1; $i < 12; $i+=2) $check += 3 * substr($isbn, $i, 1);
-		if( $check % 10 == 0 )
+		if ($check % 10 == 0)
 			return $isbn . 0;
 		return $isbn . (10 - $check % 10);
 	}
@@ -270,7 +270,7 @@ class Book_model extends CI_Model {
 		$a = 0;
 		for($i = 0; $i < 10; $i++)
 		{
-			if( $str[$i] == 'X' )
+			if ($str[$i] == 'X')
 				$a += 10 * intval(10 - $i);
 			else
 				$a += intval($str[$i]) * intval(10 - $i);

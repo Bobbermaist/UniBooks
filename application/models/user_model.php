@@ -116,12 +116,17 @@ class User_model extends CI_Model {
 		return TRUE;
 	}
 
+	public function check_password($password)
+	{
+		if ( ! isset($this->user_data))
+			return FALSE;
+		$this->load->helper('security');
+		return check_hash($this->user_data->pass, $password);
+	}
+
 	public function login($password)
 	{
-		//$this->load->library('session');
-		$this->load->helper('security');
-		if ( ! isset($this->user_data) OR $this->user_data->rights < 0
-				OR ! check_hash($this->user_data->pass, $password))
+		if ( ! $this->check_password($password) OR $this->user_data->rights < 0)
 			return FALSE;
 		$this->session->set_userdata(array(
 			'ID'					=> $this->user_data->ID,

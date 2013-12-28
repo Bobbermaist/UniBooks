@@ -11,9 +11,13 @@ class Test extends CI_Controller {
 	public function index()
 	{
 		$this->load->helper('security');
-		$fh = fopen('/dev/random', 'rb');
-		$output = fread($fh, 15);
-		echo $output;
+		for($c = 0; $c < 256; $c++)
+		{
+			$char = chr($c);
+			if ($char != ' ')
+				echo $c . ': ' . $char;
+			echo '<br>';
+		}
 	}
 }
 

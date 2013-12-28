@@ -9,7 +9,7 @@ class Account extends CI_Controller {
 		$this->load->helper('form');
 		$this->load->helper('url');
 		$this->load->model('User_model');
-		if( ! $this->session->userdata('ID') )
+		if ( ! $this->session->userdata('ID'))
 		{
 			$this->session->set_userdata(array('redirect' => 'account'));
 			redirect('user/login');
@@ -37,7 +37,7 @@ class Account extends CI_Controller {
 	{
 		$this->load->config('form_data');
 		$user = $this->session->all_userdata();
-		if( ! $post = $this->input->post() )
+		if ( ! $post = $this->input->post())
 		{
 			$view = 'form/single';
 			$data = $this->config->item('change_user_name_data');
@@ -59,9 +59,10 @@ class Account extends CI_Controller {
 
 	public function email($user_id = NULL, $confirm_code = NULL)
 	{
+		$this->load->helper('security');
 		$this->load->config('form_data');
 		$user = $this->session->all_userdata();
-		if( $this->User_model->check_tmp($user_id, 'confirm_email', $confirm_code) )
+		if ($this->User_model->check_tmp($user_id, 'confirm_email', url_decode_utf8($confirm_code)))
 		{
 			$view = 'paragraphs';
 			$new_email = $this->User_model->get_tmp($user_id, 'tmp_email');
@@ -69,7 +70,7 @@ class Account extends CI_Controller {
 			$this->User_model->empty_tmp($user_id, array('tmp_email', 'confirm_email'));
 			$data = array('p' => 'L\'indirizzo ' . $new_email . ' &egrave; stato confermato correttamente');
 		}
-		elseif( ! $post = $this->input->post() )
+		elseif ( ! $post = $this->input->post())
 		{
 			$view = 'form/single';
 			$data = $this->config->item('change_email_data');
@@ -80,10 +81,11 @@ class Account extends CI_Controller {
 			$view = 'paragraphs';
 			$user_data = array(
 				'tmp_email'			=> $post['email'],
-				'confirm_email'	=> substr(md5(rand()),0,15)
+				'confirm_email'	=> get_random_string(15),
 			);
-			if( $this->User_model->insert_tmp($user['ID'], $user_data) )
+			if ($this->User_model->insert_tmp($user['ID'], $user_data))
 			{
+				$user_data['confirm_email'] = url_encode_utf8($user_data['confirm_email']);
 				$this->send_confirm($user_data);
 				$data = array('p' => '&Egrave; stata inviata un\'email di conferma all\'indirizzo indicato');
 			}
@@ -117,10 +119,12 @@ class Account extends CI_Controller {
 		$this->load->library('form_validation');
 		$this->load->config('form_data');
 		$user = $this->session->all_userdata();
-		if( $post = $this->input->post() AND $this->form_validation->run() )
+		print_r($user);
+		if ($post = $this->input->post() AND $this->form_validation->run())
 		{
 			$view = 'paragraphs';
-			if( $this->User_model->login($this->User_model->select_where('ID', $user['ID']), $post['old_pass']) )
+			$this->User_model->select_where('ID', $user['ID']);
+			if ($this->User_model->check_password($post['old_pass']))
 			{
 				$user_data = $this->User_model->create_user_data(array('pass' => $post['new_pass']), FALSE);
 				$this->User_model->update_by_ID($user['ID'], $user_data);
@@ -156,7 +160,7 @@ class Account extends CI_Controller {
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-		if( $books )
+		if ($books)
 		{
 			$this->load->view('paragraphs', array('p' => 'Libri in vendita'));
 			$this->load->view('paragraphs', array('p' => $this->pagination->create_links()));
@@ -189,7 +193,7 @@ class Account extends CI_Controller {
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-		if( $books )
+		if ($books)
 		{
 			$this->load->view('paragraphs', array('p' => 'Richieste inserite'));
 			$this->load->view('paragraphs', array('p' => $this->pagination->create_links()));

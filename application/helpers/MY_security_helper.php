@@ -1,6 +1,6 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once APPPATH . 'third_party/phpass/PasswordHash.php';
+require_once PHPASS_PATH . 'PasswordHash.php';
 
 function do_hash($str)
 {
@@ -14,14 +14,18 @@ function check_hash($hashedPassword, $str)
 	return $hasher->CheckPassword($str, $hashedPassword);
 }
 
-function get_random_bytes($bytes)
+function get_random_char()
 {
-	return file_get_contents("http://www.random.org/cgi-bin/randbyte?nbytes=$bytes");
+	return chr(rand(0, 255));
 }
 
 function get_random_string($length)
 {
-	return utf8_encode(get_random_bytes($length));
+	$str = '';
+	for($c = 0; $c < $length; $c++)
+		$str .= get_random_char();
+
+	return utf8_encode($str);
 }
 
 function url_encode_utf8($str)

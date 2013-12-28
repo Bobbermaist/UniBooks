@@ -36,20 +36,10 @@ define('FOPEN_READ_WRITE_CREATE',				'a+b');
 define('FOPEN_WRITE_CREATE_STRICT',				'xb');
 define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
-/*
-|--------------------------------------------------------------------------
-| Google API path needed by MY_books library
-|--------------------------------------------------------------------------
-*/
-
-define('GOOGLE_API_PATH', APPPATH . 'third_party/google_api/');
-
-/*
-|--------------------------------------------------------------------------
-| Google API cache directory
-|--------------------------------------------------------------------------
-*/
-
+define('THIRD_PARTY', APPPATH . 'third_party/');
+define('PHPASS_PATH', THIRD_PARTY . 'phpass/');
+define('RAND_API_PATH', THIRD_PARTY . 'rand/');
+define('GOOGLE_API_PATH', THIRD_PARTY . 'google_api/');
 define('GOOGLE_CACHE', FCPATH . APPPATH . 'cache/Google_Client');
 
 /* End of file constants.php */
