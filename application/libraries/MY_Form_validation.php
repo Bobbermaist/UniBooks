@@ -10,9 +10,13 @@ class MY_Form_validation extends CI_Form_validation {
   	$this->CI =& get_instance();
   }
 
+  public function valid_email($str)
+  {
+  	return filter_var($str, FILTER_VALIDATE_EMAIL);
+  }
+
 	public function valid_price($str)
 	{
-		//[0-9]+[[\.|,][0-9]{1,2}]?$
 		return ( ! preg_match('/^([0-9]+)([\.|,][0-9]{1,2})?$/', $str)) ? FALSE : TRUE;
 	}
 	

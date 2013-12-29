@@ -15,13 +15,9 @@ class User extends CI_Controller {
 		$this->load->config('form_data');
 		$this->load->helper('form');
 		$user = $this->session->all_userdata();
-		if ( ! isset($user['ID']))
+		if ($this->User_model->is_logged())
 		{
-			$view_name = 'form/login';
-			$view_data = $this->config->item('login_data');
-		}
-		else
-		{		/* Test variabili sessione */
+				/* Test variabili sessione */
 			$view_name = 'paragraphs';
 			$view_data = array('p' => array(
 				'Hey, <b>'.$user['user_name'].'!</b>',
@@ -35,6 +31,11 @@ class User extends CI_Controller {
 					'Il tuo &egrave; un account amministratore' :
 					'Il tuo account ha normali permessi utente'
 			));
+		}
+		else
+		{
+			$view_name = 'form/login';
+			$view_data = $this->config->item('login_data');
 		}
 
 		$this->load->view('template/head');
@@ -79,7 +80,6 @@ class User extends CI_Controller {
 	{
 		$this->load->library('email');
 		$this->load->helper('security');
-
 		$this->email->from('registration@unibooks.it');
 		$this->email->to($user_data['email']);
 		$this->email->subject('Attivazione account');

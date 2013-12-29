@@ -9,7 +9,7 @@ class Account extends CI_Controller {
 		$this->load->helper('form');
 		$this->load->helper('url');
 		$this->load->model('User_model');
-		if ( ! $this->session->userdata('ID'))
+		if ( ! $this->User_model->is_logged())
 		{
 			$this->session->set_userdata(array('redirect' => 'account'));
 			redirect('user/login');
@@ -37,18 +37,20 @@ class Account extends CI_Controller {
 	{
 		$this->load->config('form_data');
 		$user = $this->session->all_userdata();
+		$view = 'paragraphs';
 		if ( ! $post = $this->input->post())
 		{
 			$view = 'form/single';
 			$data = $this->config->item('change_user_name_data');
 			$data['input_type']['value'] = $user['user_name'];
 		}
+		elseif ($this->User_model->update_user_name($post['user_name']))
+		{
+			$data = array('p' => 'User name modificato in: ' . $this->session->userdata('user_name'));
+		}
 		else
 		{
-			$view = 'paragraphs';
-			$this->User_model->update_by_ID($user['ID'], $this->User_model->create_user_data($post, FALSE));
-			$this->session->set_userdata(array('user_name' => $post['user_name']));
-			$data = array('p' => 'User name modificato in: ' . $this->session->userdata('user_name'));
+			$data = array('p' => 'User name non valido o gi&agrave; in uso');
 		}
 
 		$this->load->view('template/head');
@@ -59,16 +61,13 @@ class Account extends CI_Controller {
 
 	public function email($user_id = NULL, $confirm_code = NULL)
 	{
-		$this->load->helper('security');
 		$this->load->config('form_data');
+		$view = 'paragraphs';
 		$user = $this->session->all_userdata();
-		if ($this->User_model->check_tmp($user_id, 'confirm_email', url_decode_utf8($confirm_code)))
+
+		if ($this->User_model->update_email($user_id, $confirm_code))
 		{
-			$view = 'paragraphs';
-			$new_email = $this->User_model->get_tmp($user_id, 'tmp_email');
-			$this->User_model->update_by_ID($user_id, array('email' => $new_email));
-			$this->User_model->empty_tmp($user_id, array('tmp_email', 'confirm_email'));
-			$data = array('p' => 'L\'indirizzo ' . $new_email . ' &egrave; stato confermato correttamente');
+			$data = array('p' => 'L\'indirizzo ' . $this->session->userdata('email') . ' &egrave; stato confermato correttamente');
 		}
 		elseif ( ! $post = $this->input->post())
 		{
@@ -76,21 +75,14 @@ class Account extends CI_Controller {
 			$data = $this->config->item('change_email_data');
 			$data['input_type']['value'] = $user['email'];
 		}
+		elseif ($user_data = $this->User_model->update_email_request($post['email']))
+		{
+			$this->send_confirm($user_data);
+			$data = array('p' => '&Egrave; stata inviata un\'email di conferma all\'indirizzo indicato');
+		}
 		else
 		{
-			$view = 'paragraphs';
-			$user_data = array(
-				'tmp_email'			=> $post['email'],
-				'confirm_email'	=> get_random_string(15),
-			);
-			if ($this->User_model->insert_tmp($user['ID'], $user_data))
-			{
-				$user_data['confirm_email'] = url_encode_utf8($user_data['confirm_email']);
-				$this->send_confirm($user_data);
-				$data = array('p' => '&Egrave; stata inviata un\'email di conferma all\'indirizzo indicato');
-			}
-			else
-				$data = array('p' => 'C\'&egrave; gi&agrave; una richiesta per questo account');
+			$data = array('p' => 'Errore nella richiesta');
 		}
 
 		$this->load->view('template/head');
@@ -105,11 +97,8 @@ class Account extends CI_Controller {
 		$this->email->from('reset@unibooks.it');
 		$this->email->to($user_data['tmp_email']);
 		$this->email->subject('Conferma email');
-		$email_data = array(
-			'link' => site_url('account/email/'.$this->session->userdata('ID').'/'.$user_data['confirm_email'])
-		);
-		$msg = $this->load->view('email/confirm', $email_data, TRUE);
-		$this->email->message($msg);
+		$email_data = $this->User_model->create_email_data($user_data, 'account/email');
+		$this->email->message( $this->load->view('email/confirm', $email_data, TRUE) );
 		$this->email->send();
 		echo $this->email->print_debugger();
 	}
@@ -119,19 +108,13 @@ class Account extends CI_Controller {
 		$this->load->library('form_validation');
 		$this->load->config('form_data');
 		$user = $this->session->all_userdata();
-		print_r($user);
 		if ($post = $this->input->post() AND $this->form_validation->run())
 		{
 			$view = 'paragraphs';
-			$this->User_model->select_where('ID', $user['ID']);
-			if ($this->User_model->check_password($post['old_pass']))
-			{
-				$user_data = $this->User_model->create_user_data(array('pass' => $post['new_pass']), FALSE);
-				$this->User_model->update_by_ID($user['ID'], $user_data);
+			if ($this->User_model->update_password($post['old_pass'], $post['new_pass']))
 				$data = array('p' => 'Password modificata correttamente');
-			}
 			else
-				$data = array('p' => 'La password immessa non &egrave; corretta');
+				$data = array('p' => 'Errore nel reset');
 		}
 		else
 		{

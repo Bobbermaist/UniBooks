@@ -13,17 +13,6 @@ class User_model extends CI_Model {
 
 		/* Metodi di gestione database */
 
-	public function create_user_data($data, $registration = TRUE)
-	{
-		return array(
-			'user_name'					=> isset($data['user_name']) ? $data['user_name'] : NULL,
-			'pass'							=> isset($data['pass']) ? do_hash($data['pass']) : NULL,
-			'email'							=> isset($data['email']) ? $data['email'] : NULL,
-			'registration_time'	=> $registration ? date("Y-m-d H:i:s") : NULL,
-			'confirm_code'			=> $registration ? get_random_string(15) : NULL
-		);
-	}
-
 	public function insert_user($data)
 	{
 		$confirm_code = $data['confirm_code'];
@@ -46,8 +35,10 @@ class User_model extends CI_Model {
 			return;
 		$this->db->from('users')->where($field, $value)->limit(1);
 		$res = $this->db->get();
-		if ($res->num_rows == 1)
-			$this->user_data = $res->row();
+		if ($res->num_rows == 0)
+			return FALSE;
+		$this->user_data = $res->row();
+		return TRUE;
 	}
 
 	public function update_by_ID($ID, $data)
@@ -126,6 +117,51 @@ class User_model extends CI_Model {
 		return TRUE;
 	}
 
+	public function update_user_name($user_name)
+	{
+		if ($this->select_where('user_name', $user_name))
+			return FALSE;
+		$this->User_model->update_by_ID($this->session->userdata('ID'), array('user_name' => $user_name));
+		$this->session->set_userdata(array('user_name' => $user_name));
+		return TRUE;
+	}
+
+	public function update_email_request($email)
+	{
+		if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)
+				OR $this->select_where('email', $email))
+			return FALSE;
+		$user_data = array(
+			'confirm_code'	=> get_random_string(15),
+			'tmp_email'			=> $email,
+		);
+		if( ! $this->insert_tmp($this->session->userdata('ID'), $user_data))
+			return FALSE;
+		return $user_data;
+	}
+
+	public function update_email($user_id, $confirm_code)
+	{
+		if ( ! $this->check_confirm_code($user_id, $confirm_code))
+			return FALSE;
+		$email = $this->get_tmp($user_id, 'tmp_email');
+		$this->update_by_ID($user_id, array('email' => $email));
+		$this->empty_tmp($user_id);
+		$this->session->set_userdata(array('email' => $email));
+		return TRUE;
+	}
+
+	public function update_password($old_pass, $new_pass)
+	{
+		$user_id = $this->session->userdata('ID');
+		if( ! $this->select_where('ID', $user_id)
+				OR ! $this->check_password($old_pass))
+			return FALSE;
+		$user_data = $this->create_user_data(array('pass' => $new_pass), FALSE);
+		$this->User_model->update_by_ID($user_id, $user_data);
+		return TRUE;
+	}
+
 		/* Metodi di gestione database temporaneo */
 
 	public function insert_tmp($user_id, $data)
@@ -140,7 +176,8 @@ class User_model extends CI_Model {
 
 	public function check_confirm_code($user_id, $confirm_code)
 	{
-		if( ! ($code_cfr = $this->get_tmp($user_id, 'confirm_code')))
+		if( ! $user_id OR ! $confirm_code
+				OR ! ($code_cfr = $this->get_tmp($user_id, 'confirm_code')))
 			return FALSE;
 		return url_encode_utf8($code_cfr) === $confirm_code;
 	}
@@ -164,13 +201,31 @@ class User_model extends CI_Model {
 
 		/* Metodi di appoggio */
 
+	public function create_user_data($data, $registration = TRUE)
+	{
+		return array(
+			'user_name'					=> isset($data['user_name']) ? $data['user_name'] : NULL,
+			'pass'							=> isset($data['pass']) ? do_hash($data['pass']) : NULL,
+			'email'							=> isset($data['email']) ? $data['email'] : NULL,
+			'registration_time'	=> $registration ? date("Y-m-d H:i:s") : NULL,
+			'confirm_code'			=> $registration ? get_random_string(15) : NULL
+		);
+	}
+
 	public function create_email_data($user_data, $controller)
 	{
 		$this->load->helper('url');
+		if ( ! isset($user_data['ID']))
+			$user_data['ID'] = $this->session->userdata('ID');
 		return array(
-			'user_name'	=> $user_data['user_name'],
+			'user_name'	=> isset($user_data['user_name']) ? $user_data['user_name'] : NULL,
 			'link'			=> site_url("{$controller}/{$user_data['ID']}/" . url_encode_utf8($user_data['confirm_code']))
 		);
+	}
+
+	public function is_logged()
+	{
+		return (boolean) $this->session->userdata('ID');
 	}
 }
 
