@@ -17,7 +17,13 @@ class MY_books {
 
   public function __destruct()
   {
-    //$this->empty_google_cache();
+      /*
+       * C'è una possibilità su 50 che il
+       * distruttore cancelli tutta la
+       * cache di Google
+       */
+    if (rand(1, 50) == 1)
+      $this->empty_google_cache();
   }
 
   public function list_volumes($str)
