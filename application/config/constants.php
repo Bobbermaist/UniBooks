@@ -40,7 +40,7 @@ define('THIRD_PARTY', APPPATH . 'third_party/');
 define('PHPASS_PATH', THIRD_PARTY . 'phpass/');
 define('RAND_API_PATH', THIRD_PARTY . 'rand/');
 define('GOOGLE_API_PATH', THIRD_PARTY . 'google_api/');
-define('GOOGLE_CACHE', FCPATH . APPPATH . 'cache/Google_Client');
+define('GOOGLE_CACHE', FCPATH . APPPATH . 'cache/Google_Client/');
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

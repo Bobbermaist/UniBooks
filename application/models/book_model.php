@@ -36,9 +36,9 @@ class Book_model extends CI_Model {
 
 	public function set_info($google_data, $index, $isbn = NULL)
 	{
-		if ( ! isset($google_data['items'][$index]))
+		if ( ! isset($google_data[$index]))
 			return FALSE;
-		$book = $google_data['items'][$index];
+		$book = $google_data[$index];
 		
 		$this->setISBN($isbn);
 		if ($book['ISBN'] === NULL AND isset($this->ISBN))
@@ -173,10 +173,10 @@ class Book_model extends CI_Model {
 
 	public function books_to_table($books)
 	{
-		if ($books['total_items'] == 0)
+		if ( ! $books)
 			return NULL;
 		$table = array();
-		foreach( $books['items'] as $book )
+		foreach( $books as $book )
 		{
 			array_push($table, array(
 				$book['title'],

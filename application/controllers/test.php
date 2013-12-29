@@ -11,19 +11,19 @@ class Test extends CI_Controller {
 	public function index()
 	{
 		$this->load->model('Book_model');
-		//$this->Book_model->setISBN('8840813608');
-		//$this->Book_model->setISBN('8817868833');
-		//$this->Book_model->setISBN('8838662812');
-		//$this->Book_model->setISBN('8871924014');
-		//$this->Book_model->setISBN('8865431139');
-		$this->Book_model->setISBN('8845131837');
-		$google = $this->Book_model->google_fetch();
-		$book = $this->Book_model->get_book();
-		echo "GOOGLE FETCH\n";
-		print_r($google);
-		echo "\n\n";
-		echo "DATABASE FETCH\n";
-		print_r($book);
+		$this->rrmdir(GOOGLE_CACHE);
+	}
+
+	public function rrmdir($dir)
+	{
+		foreach(glob($dir . '/*') as $file)
+		{
+			if(is_dir($file))
+				$this->rrmdir($file);
+			else
+			unlink($file);
+		}
+		rmdir($dir);
 	}
 }
 

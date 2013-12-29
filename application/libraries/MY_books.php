@@ -38,8 +38,9 @@ class MY_books {
 
   private function array_format($google_fetch)
   {
-    $out = array('total_items' => $google_fetch['totalItems']);
-    $out['items'] = array();
+    if ($google_fetch['totalItems'] == 0)
+      return NULL;
+    $books = array();
     foreach($google_fetch['items'] as $item)
     {
       $item = $item['volumeInfo'];
@@ -67,9 +68,9 @@ class MY_books {
       $item['categories'] = (isset($item['categories'])) ? $item['categories'] : NULL;
       $item['language'] = (isset($item['language'])) ? $item['language'] : NULL;
 
-      array_push($out['items'], $item);
+      array_push($books, $item);
     }
-    return $out;
+    return $books;
   }
 
   public function get_publisher($isbn)
