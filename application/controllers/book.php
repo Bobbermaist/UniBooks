@@ -39,8 +39,6 @@ class Book extends CI_Controller {
 		$this->load->library('table');
 		if( $search_key = $this->input->post('book_search') )
 		{
-			if( $this->Book_model->setISBN($search_key) )
-				$this->session->set_userdata(array('ISBN' => $this->Book_model->getISBN()));
 			$this->session->set_userdata(array('google_data' => $this->Book_model->google_fetch($search_key)));
 		}
 		/*
