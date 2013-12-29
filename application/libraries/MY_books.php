@@ -15,6 +15,11 @@ class MY_books {
   	$this->service = new Google_BooksService($client);
   }
 
+  public function __destruct()
+  {
+    //$this->empty_google_cache();
+  }
+
   public function list_volumes($str)
   {
     return $this->array_format($this->service->volumes->listVolumes($str));
@@ -86,6 +91,12 @@ class MY_books {
         return $res->row()->name;
     }
     return NULL;
+  }
+
+  public function empty_google_cache()
+  {
+    $this->CI->load->helper('file');
+    delete_files(GOOGLE_CACHE, TRUE);
   }
 
   private function industryID_to_ISBN($industryIdentifiers)

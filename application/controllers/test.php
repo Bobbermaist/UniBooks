@@ -11,19 +11,22 @@ class Test extends CI_Controller {
 	public function index()
 	{
 		$this->load->model('Book_model');
-		$this->rrmdir(GOOGLE_CACHE);
+		$this->load->helper('file');
+		delete_files(GOOGLE_CACHE, TRUE);
+		//$this->empty_dir(GOOGLE_CACHE);
 	}
 
-	public function rrmdir($dir)
+	public function empty_dir($directory, $delete = FALSE)
 	{
-		foreach(glob($dir . '/*') as $file)
+		foreach(glob($directory . '*') as $item)
 		{
-			if(is_dir($file))
-				$this->rrmdir($file);
+			if (is_dir($item))
+				$this->empty_dir($item . '/', TRUE);
 			else
-			unlink($file);
+				unlink($item);
 		}
-		rmdir($dir);
+		if ($delete === TRUE)
+			rmdir($directory);
 	}
 }
 
