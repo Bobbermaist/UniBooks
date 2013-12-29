@@ -39,6 +39,7 @@ class Book extends CI_Controller {
 		$this->load->library('table');
 		if( $search_key = $this->input->post('book_search') )
 		{
+			$this->Book_model->setISBN($search_key);
 			$this->session->set_userdata(array('google_data' => $this->Book_model->google_fetch($search_key)));
 		}
 		/*
@@ -61,10 +62,9 @@ class Book extends CI_Controller {
 		$book_select = $this->input->post('book_select');
 		if( $google_data )
 		{
-			$this->Book_model->set_info($google_data, $book_select, $this->session->userdata('ISBN'));
+			$this->Book_model->set_info($google_data, $book_select);
 			if( $book_id = $this->Book_model->insert() )
 			{
-				//$this->session->unset_userdata('ISBN');
 				//$this->session->unset_userdata('google_data');
 				$this->session->set_userdata(array('book_id' => $book_id));
 			}

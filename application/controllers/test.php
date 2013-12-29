@@ -18,10 +18,12 @@ class Test extends CI_Controller {
 		//$this->Book_model->setISBN('8865431139');
 		$this->Book_model->setISBN('8845131837');
 		$google = $this->Book_model->google_fetch();
-		$book = $this->Book_model->get(3);
+		$book = $this->Book_model->get_book();
+		echo "GOOGLE FETCH\n";
 		print_r($google);
 		echo "\n\n";
-		//print_r($book);
+		echo "DATABASE FETCH\n";
+		print_r($book);
 	}
 }
 

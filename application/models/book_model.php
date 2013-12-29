@@ -43,7 +43,7 @@ class Book_model extends CI_Model {
 		$this->setISBN($isbn);
 		if ($book['ISBN'] === NULL AND isset($this->ISBN))
 			$book['ISBN'] = $this->ISBN;
-		
+
 		$this->info = $book;
 	}
 
@@ -114,6 +114,15 @@ class Book_model extends CI_Model {
 			'categories'				=> $this->join_links('categories', 'category', $book->ID),
 			'language'					=> $this->get_by_id('languages', 'name', $book->language_id)
 		);
+	}
+
+	public function get_book($search = NULL)
+	{
+		$this->load->database();
+		if (isset($this->ISBN))
+			$book_id = $this->get_id('books', 'ISBN', $this->cutISBN());
+		echo $this->cutISBN();
+		return $this->get($book_id);
 	}
 
 	private function insert_info($table, $value)
