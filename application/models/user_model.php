@@ -162,55 +162,6 @@ class User_model extends CI_Model {
 		$this->db->delete('tmp_users', array('user_id' => $user_id));
 	}
 
-	/*
-	public function insert_tmp($user_id, $data)
-	{
-		foreach( $data as $key => $value )
-			if ($this->get_tmp($user_id, $key))
-				return FALSE;
-		$data['user_id'] = $user_id;
-		$query = $this->db->insert_string('tmp_users', $data) . ' ON DUPLICATE KEY UPDATE ';
-		$query .= isset($data['confirm_password']) ? 'confirm_password=\'' . $data['confirm_password'] . '\',' : '';
-		$query .= isset($data['tmp_email']) ? 'tmp_email=\'' . $data['tmp_email'] . '\',' : '';
-		$query .= isset($data['confirm_email']) ? 'confirm_email=\'' . $data['confirm_email'] . '\',' : '';
-		$query = mb_substr($query, 0, -1, 'UTF-8');
-		return (boolean) $this->db->query($query);
-	}
-
-	public function check_tmp($user_id, $field, $value)
-	{
-		if ( ! $user_id OR ! $value)
-			return FALSE;
-		$this->db->from('tmp_users')->where('user_id', $user_id)->limit(1);
-		if ($tmp_user = $this->db->get()->row())
-			return $tmp_user->$field === $value;
-		else
-			return FALSE;
-	}
-
-	private function clean_tmp($user_id)
-	{
-		$this->db->from('tmp_users')->where('user_id', $user_id)->limit(1);
-		$tmp = $this->db->get()->row();
-		if ($tmp->confirm_code === NULL AND $tmp->tmp_email === NULL)
-			$this->db->delete('tmp_users', array('user_id' => $user_id));
-	}
-
-	public function empty_tmp($user_id, $fields)
-	{
-		if ( ! $user_id)
-			return FALSE;
-		$data = array();
-		if (is_array($fields))
-			foreach ($fields as $field)
-				$data[$field] = NULL;
-		else
-			$data[$fields] = NULL;
-		$this->db->where('user_id', $user_id)->update('tmp_users', $data);
-		$this->clean_tmp($user_id);
-	}
-	*/
-
 		/* Metodi di appoggio */
 
 	public function create_email_data($user_data, $controller)
