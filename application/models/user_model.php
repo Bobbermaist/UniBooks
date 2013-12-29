@@ -7,6 +7,7 @@ class User_model extends CI_Model {
 	function __construct()
 	{
 		parent::__construct();
+		$this->load->helper('security');
 		$this->load->database();
 	}
 
@@ -14,23 +15,23 @@ class User_model extends CI_Model {
 
 	public function create_user_data($data, $registration = TRUE)
 	{
-		$this->load->helper('security');
 		return array(
 			'user_name'					=> isset($data['user_name']) ? $data['user_name'] : NULL,
 			'pass'							=> isset($data['pass']) ? do_hash($data['pass']) : NULL,
 			'email'							=> isset($data['email']) ? $data['email'] : NULL,
-			'activation_key'		=> $registration ? url_encode_utf8(get_random_string(15)) : NULL,
-			//'activation_key'		=> $registration ? substr(md5(rand()),0,15) : NULL,
-			'registration_time'	=> $registration ? date("Y-m-d H:i:s") : NULL
+			'registration_time'	=> $registration ? date("Y-m-d H:i:s") : NULL,
+			'confirm_code'			=> $registration ? get_random_string(15) : NULL
 		);
 	}
 
 	public function insert_user($data)
 	{
-		$this->load->helper('security');
-		$data['activation_key'] = url_decode_utf8($data['activation_key']);
+		$confirm_code = $data['confirm_code'];
+		unset($data['confirm_code']);
 		$this->db->insert('users', $data);
-		return $this->db->insert_id();
+		$user_id = $this->db->insert_id();
+		$this->insert_tmp($user_id, $confirm_code);
+		return $user_id;
 	}
 
 	public function exists($field, $value)
@@ -57,24 +58,17 @@ class User_model extends CI_Model {
 		$this->db->where('ID', $ID)->update('users', $data);
 	}
 
-	public function empty_activation_key($user_id)
-	{
-		$this->db->where('ID', $user_id)->update('users', array('activation_key' => NULL));
-	}
-
 		/* Metodi di gestione utente */
 
 	public function activate($activation_key)
 	{
-		$this->load->helper('security');
-		if ( ! $this->user_data OR ! $activation_key OR $this->user_data->rights > -1)
-			return FALSE;
-		if (url_encode_utf8($this->user_data->activation_key) !== $activation_key)
+		if ( ! $this->user_data OR $this->user_data->rights > -1
+				OR ! $this->check_confirm_code($this->user_data->ID, $activation_key))
 			return FALSE;
 
 		$this->user_data->rights = 0;
 		$this->update_by_ID($this->user_data->ID, (array) $this->user_data);
-		$this->User_model->empty_activation_key($this->user_data->ID);
+		$this->empty_tmp($this->user_data->ID);
 		return TRUE;
 	}
 
@@ -82,37 +76,33 @@ class User_model extends CI_Model {
 	{
 		if ( ! isset($this->user_data))
 			return FALSE;
-		$this->load->helper('security');
 		$confirm_code = get_random_string(15);
-		$request = $this->insert_tmp($this->user_data->ID, array('confirm_password' => $confirm_code));
-		return (! $request) ?
+		$request = $this->insert_tmp($this->user_data->ID, $confirm_code);
+		return ( ! $request) ?
 			FALSE :
 			array(
 				'ID'						=> $this->user_data->ID,
 				'user_name'			=> $this->user_data->user_name,
 				'email'					=> $this->user_data->email,
-				'confirm_code'	=> url_encode_utf8($confirm_code)
+				'confirm_code'	=> $confirm_code
 			);
 	}
 
 	public function check_reset($confirm_code)
 	{
-		if ( ! isset($this->user_data) OR $confirm_code === NULL OR $this->user_data->rights < 0)
+		if ( ! isset($this->user_data) OR $this->user_data->rights < 0)
 			return FALSE;
-		$this->load->helper('security');
-		return $this->check_tmp($this->user_data->ID, 'confirm_password', url_decode_utf8($confirm_code));
+		return $this->check_confirm_code($this->user_data->ID, $confirm_code);
 	}
 
 	public function reset($confirm_code, $new_password)
 	{
-		if ( ! isset($this->user_data) OR $this->user_data->rights < 0)
-			return FALSE;
-		$this->load->helper('security');
-		if( ! $this->check_tmp($this->user_data->ID, 'confirm_password', url_decode_utf8($confirm_code)))
+		if ( ! isset($this->user_data) OR $this->user_data->rights < 0
+				OR ! $this->check_confirm_code($this->user_data->ID, $confirm_code))
 			return FALSE;
 		$data = $this->create_user_data(array('pass' => $new_password), FALSE);
 		$this->update_by_ID($this->user_data->ID, $data);
-		$this->empty_tmp($this->user_data->ID, 'confirm_password');
+		$this->empty_tmp($this->user_data->ID);
 		return TRUE;
 	}
 
@@ -120,7 +110,6 @@ class User_model extends CI_Model {
 	{
 		if ( ! isset($this->user_data))
 			return FALSE;
-		$this->load->helper('security');
 		return check_hash($this->user_data->pass, $password);
 	}
 
@@ -139,6 +128,41 @@ class User_model extends CI_Model {
 
 		/* Metodi di gestione database temporaneo */
 
+	public function insert_tmp($user_id, $data)
+	{
+		if ($this->get_tmp($user_id, 'confirm_code'))
+			return FALSE;
+		if( ! is_array($data))
+			$data = array('confirm_code' => $data);
+		$data['user_id'] = $user_id;
+		return (boolean) $this->db->insert('tmp_users', $data);
+	}
+
+	public function check_confirm_code($user_id, $confirm_code)
+	{
+		if( ! ($code_cfr = $this->get_tmp($user_id, 'confirm_code')))
+			return FALSE;
+		return url_encode_utf8($code_cfr) === $confirm_code;
+	}
+
+	public function get_tmp($user_id, $field)
+	{
+		if ( ! $user_id)
+			return FALSE;
+		$this->db->from('tmp_users')->where('user_id', $user_id)->limit(1);
+		if ($tmp = $this->db->get()->row())
+			return $tmp->$field === NULL ? FALSE : $tmp->$field;
+		return FALSE;
+	}
+
+	public function empty_tmp($user_id)
+	{
+		if ( ! $user_id)
+			return FALSE;
+		$this->db->delete('tmp_users', array('user_id' => $user_id));
+	}
+
+	/*
 	public function insert_tmp($user_id, $data)
 	{
 		foreach( $data as $key => $value )
@@ -164,21 +188,11 @@ class User_model extends CI_Model {
 			return FALSE;
 	}
 
-	public function get_tmp($user_id, $field)
-	{
-		if ( ! $user_id)
-			return FALSE;
-		$this->db->from('tmp_users')->where('user_id', $user_id)->limit(1);
-		if ($tmp = $this->db->get()->row())
-			return $tmp->$field === NULL ? FALSE : $tmp->$field;
-		return FALSE;
-	}
-
 	private function clean_tmp($user_id)
 	{
 		$this->db->from('tmp_users')->where('user_id', $user_id)->limit(1);
 		$tmp = $this->db->get()->row();
-		if ($tmp->confirm_password === NULL AND $tmp->tmp_email === NULL AND $tmp->confirm_email === NULL)
+		if ($tmp->confirm_code === NULL AND $tmp->tmp_email === NULL)
 			$this->db->delete('tmp_users', array('user_id' => $user_id));
 	}
 
@@ -194,6 +208,18 @@ class User_model extends CI_Model {
 			$data[$fields] = NULL;
 		$this->db->where('user_id', $user_id)->update('tmp_users', $data);
 		$this->clean_tmp($user_id);
+	}
+	*/
+
+		/* Metodi di appoggio */
+
+	public function create_email_data($user_data, $controller)
+	{
+		$this->load->helper('url');
+		return array(
+			'user_name'	=> $user_data['user_name'],
+			'link'			=> site_url("{$controller}/{$user_data['ID']}/" . url_encode_utf8($user_data['confirm_code']))
+		);
 	}
 }
 

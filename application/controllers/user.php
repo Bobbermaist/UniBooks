@@ -7,6 +7,7 @@ class User extends CI_Controller {
 		parent::__construct();
 		$this->load->library('session');
 		$this->load->helper('url');
+		$this->load->model('User_model');
 	}
 
 	public function index()
@@ -44,19 +45,17 @@ class User extends CI_Controller {
 
 	public function registration()
 	{
-		$this->load->model('User_model');
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		$this->load->config('form_data');
 		$this->load->database();
 
-		$valid = $this->form_validation->run();
 		if ($post = $this->input->post())
 		{
 			$signup_data['user_name_data']['value'] = $post['user_name'];
 			$signup_data['email_data']['value'] = $post['email'];
 		}
-		if ( ! $valid)
+		if ( ! $this->form_validation->run())
 		{
 			$view_name = 'form/registration';
 			$view_data = $this->config->item('signup_data');
@@ -79,22 +78,19 @@ class User extends CI_Controller {
 	private function send_activation($user_data)
 	{
 		$this->load->library('email');
+		$this->load->helper('security');
+
 		$this->email->from('registration@unibooks.it');
 		$this->email->to($user_data['email']);
 		$this->email->subject('Attivazione account');
-		$email_data = array(
-				'user_name' => $user_data['user_name'],
-				'link' => site_url('user/activation/'.$user_data['ID'].'/'.$user_data['activation_key'])
-		);
-		$msg = $this->load->view('email/signup', $email_data, TRUE);
-		$this->email->message($msg);
+		$email_data = $this->User_model->create_email_data($user_data, 'user/activation');
+		$this->email->message( $this->load->view('email/signup', $email_data, TRUE) );
 		$this->email->send();
 		echo $this->email->print_debugger();
 	}
 
 	public function activation($ID = NULL, $activation_key = NULL)
 	{
-		$this->load->model('User_model');
 		$this->User_model->select_where('ID', $ID);
 		if ($this->User_model->activate($activation_key) === TRUE)
 		{
@@ -113,7 +109,6 @@ class User extends CI_Controller {
 
 	public function reset()
 	{
-		$this->load->model('User_model');
 		$this->load->helper('form');
 		$this->load->config('form_data');
 
@@ -149,19 +144,14 @@ class User extends CI_Controller {
 		$this->email->from('reset@unibooks.it');
 		$this->email->to($user_data['email']);
 		$this->email->subject('Reset password');
-		$email_data = array(
-				'user_name' => $user_data['user_name'],
-				'link' => site_url('user/choose_new_pass/'.$user_data['ID'].'/'.$user_data['confirm_code'])
-		);
-		$msg = $this->load->view('email/reset', $email_data, TRUE);
-		$this->email->message($msg);
+		$email_data = $this->User_model->create_email_data($user_data, 'user/choose_new_pass');
+		$this->email->message( $this->load->view('email/reset', $email_data, TRUE) );
 		$this->email->send();
 		echo $this->email->print_debugger();
 	}
 
 	public function choose_new_pass($ID = NULL, $confirm_code = NULL)
 	{
-		$this->load->model('User_model');
 		$this->load->helper('form');
 		$this->load->config('form_data');
 
@@ -188,7 +178,6 @@ class User extends CI_Controller {
 
 	public function reset_pass()
 	{
-		$this->load->model('User_model');
 		$post = $this->input->post();
 		$this->User_model->select_where('ID', $post['ID']);
 		if ($this->User_model->reset($post['confirm_code'], $post['pass']))
@@ -208,7 +197,6 @@ class User extends CI_Controller {
 
 	public function login()
 	{
-		$this->load->model('User_model');
 		$this->load->helper('form');
 		$this->load->library('form_validation');
 		$this->load->config('form_data');
