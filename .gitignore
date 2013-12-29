@@ -1,6 +1,7 @@
 phpmyadmin/
 postfixadmin/
 config/db.php
+application/cache/*
 application/config/database.php
 application/config/config.php
 application/config/database.php
