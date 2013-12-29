@@ -10,14 +10,18 @@ class Test extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->helper('security');
-		for($c = 0; $c < 256; $c++)
-		{
-			$char = chr($c);
-			if ($char != ' ')
-				echo $c . ': ' . $char;
-			echo '<br>';
-		}
+		$this->load->model('Book_model');
+		//$this->Book_model->setISBN('8840813608');
+		//$this->Book_model->setISBN('8817868833');
+		//$this->Book_model->setISBN('8838662812');
+		//$this->Book_model->setISBN('8871924014');
+		//$this->Book_model->setISBN('8865431139');
+		$this->Book_model->setISBN('8845131837');
+		$google = $this->Book_model->google_fetch();
+		$book = $this->Book_model->get(3);
+		print_r($google);
+		echo "\n\n";
+		//print_r($book);
 	}
 }
 

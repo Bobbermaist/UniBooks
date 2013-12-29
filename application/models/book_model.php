@@ -1,4 +1,4 @@
-<?php
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class Book_model extends CI_Model {
 	
@@ -13,19 +13,14 @@ class Book_model extends CI_Model {
 	public function setISBN($str)
 	{
 		$str = strtoupper(preg_replace('/[^\d^X]+/i', '', $str));
-		$valid = FALSE;
-		$len = strlen($str);
-		if( $len == 10 )
+
+		$valid = $this->validate13($str);
+		$valid = ($valid) ? TRUE : $this->validate10($str);
+		if ( ! $valid)
 		{
-			$valid = $this->validate10($str);
-			if( ! $valid )
-			{
-				$str = '978' . $str;
-				$valid = $this->validate13($str);
-			}
-		}
-		elseif( $len == 13 )
+			$str = '978' . $str;
 			$valid = $this->validate13($str);
+		}
 		return $valid ? (boolean) ($this->ISBN = $str) : FALSE;
 	}
 
@@ -41,21 +36,13 @@ class Book_model extends CI_Model {
 
 	public function set_info($google_data, $index, $isbn = NULL)
 	{
-		if ( ! isset($google_data['items'][intval($index)]))
-			exit;
-		$google_data = $google_data['items'][intval($index)]['volumeInfo'];
+		if ( ! isset($google_data['items'][$index]))
+			return FALSE;
+		$book = $google_data['items'][$index];
 		$this->setISBN($isbn);
-		$this->setISBN($this->industryID_to_ISBN($google_data['industryIdentifiers']));
-		$this->info = array(
-			'ISBN'							=> isset($this->ISBN) ? $this->ISBN : NULL,
-			'title'							=> isset($google_data['title']) ? $google_data['title'] : NULL,
-			'publisher'					=> isset($google_data['publisher']) ? $google_data['publisher'] : $this->get_publisher(),
-			'authors'						=> isset($google_data['authors']) ? $google_data['authors'] : NULL,
-			'publication_year'	=> isset($google_data['publishedDate']) ? substr($google_data['publishedDate'], 0, 4) : NULL,
-			'pages'							=> isset($google_data['pageCount']) ? $google_data['pageCount'] : NULL,
-			'categories'				=> isset($google_data['categories']) ? $google_data['categories'] : NULL,
-			'language'					=> isset($google_data['language']) ? $google_data['language'] : NULL
-		);
+		if ($book['ISBN'] === NULL AND isset($this->ISBN))
+			$book['ISBN'] = $this->ISBN;
+		$this->info = $book;
 	}
 
 	public function get_info()
@@ -175,12 +162,11 @@ class Book_model extends CI_Model {
 
 	public function gdata_to_table($google_data)
 	{
-		if ($google_data['totalItems'] == 0)
+		if ($google_data['total_items'] == 0)
 			return NULL;
 		$books_data = array();
 		foreach( $google_data['items'] as $book )
 		{
-			$book = $book['volumeInfo'];
 			array_push($books_data, array(
 				isset($book['title']) ? $book['title'] : NULL,
 				isset($book['authors']) ? implode(', ', $book['authors']) : NULL,
@@ -211,38 +197,6 @@ class Book_model extends CI_Model {
 		return NULL;
 	}
 
-	public function get_publisher()
-	{
-		if ( ! isset($this->ISBN))
-			return NULL;
-		$this->load->database();
-		$isbn = $this->cutISBN();
-		for($digits = 7; $digits > 3; $digits--)
-		{
-			$this->db->from('publisher_codes')->where('code', substr($isbn, 0, $digits));
-			$res = $this->db->get();
-			if ($res->num_rows > 0)
-				return $res->row()->name;
-		}
-		return NULL;
-	}
-
-	private function industryID_to_ISBN($industryIdentifiers)
-	{
-		$isbn10 = NULL;
-		foreach($industryIdentifiers as $iid)
-		{
-			if ($iid['type'] === 'ISBN_13')
-			{
-				$isbn13 = $iid['identifier'];
-				break;
-			}
-			elseif ($iid['type'] === 'ISBN_10')
-				$isbn10 = $iid['identifier'];
-		}
-		return isset($isbn13) ? $isbn13 : $isbn10;
-	}
-
 	private function cutISBN()
 	{
 		if ( ! isset($this->ISBN))
@@ -267,6 +221,8 @@ class Book_model extends CI_Model {
 
 	private function validate10($str)
 	{
+		if (strlen($str) != 10)
+			return FALSE;
 		$a = 0;
 		for($i = 0; $i < 10; $i++)
 		{
@@ -280,6 +236,8 @@ class Book_model extends CI_Model {
 
 	private function validate13($str)
 	{
+		if (strlen($str) != 13)
+			return FALSE;
 		$check = 0;
 		for($i = 0; $i < 13; $i+=2) $check += substr($str, $i, 1);
 		for($i = 1; $i < 12; $i+=2) $check += 3 * substr($str, $i, 1);
