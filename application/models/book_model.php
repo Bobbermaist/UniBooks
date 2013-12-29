@@ -39,9 +39,11 @@ class Book_model extends CI_Model {
 		if ( ! isset($google_data['items'][$index]))
 			return FALSE;
 		$book = $google_data['items'][$index];
+		
 		$this->setISBN($isbn);
 		if ($book['ISBN'] === NULL AND isset($this->ISBN))
 			$book['ISBN'] = $this->ISBN;
+		
 		$this->info = $book;
 	}
 
@@ -160,25 +162,25 @@ class Book_model extends CI_Model {
 		return $data;
 	}
 
-	public function gdata_to_table($google_data)
+	public function books_to_table($books)
 	{
-		if ($google_data['total_items'] == 0)
+		if ($books['total_items'] == 0)
 			return NULL;
-		$books_data = array();
-		foreach( $google_data['items'] as $book )
+		$table = array();
+		foreach( $books['items'] as $book )
 		{
-			array_push($books_data, array(
-				isset($book['title']) ? $book['title'] : NULL,
-				isset($book['authors']) ? implode(', ', $book['authors']) : NULL,
-				isset($book['publishedDate']) ? substr($book['publishedDate'], 0, 4) : NULL,
-				$this->industryID_to_ISBN($book['industryIdentifiers']),
-				isset($book['pageCount']) ? $book['pageCount'] : NULL,
-				isset($book['categories']) ? implode(', ', $book['categories']) : NULL/*,
-				isset($book['language']) ? $book['language'] : ''*/
+			array_push($table, array(
+				$book['title'],
+				($book['authors'] !== NULL) ? implode(', ', $book['authors']) : NULL,
+				$book['publication_year'],
+				$book['ISBN'],
+				$book['pages'],
+				($book['categories'] !== NULL) ? implode(', ', $book['categories']) : NULL,
+				//$book['language']
 			));
 		}
-		array_walk_recursive($books_data, create_function('&$val', '$val = htmlentities($val);'));
-		return $books_data;
+		array_walk_recursive($table, create_function('&$val', '$val = htmlentities($val);'));
+		return $table;
 	}
 
 	public function get_country()

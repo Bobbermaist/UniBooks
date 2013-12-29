@@ -44,6 +44,11 @@ class MY_books {
     {
       $item = $item['volumeInfo'];
 
+      $item['ISBN'] = $this->industryID_to_ISBN($item['industryIdentifiers']);
+        /* Escludo i risultati senza ISBN */
+      if ($item['ISBN'] === NULL)
+        continue;
+      unset($item['industryIdentifiers']);
       unset($item['printType']);
       unset($item['averageRating']);
       unset($item['ratingsCount']);
@@ -53,8 +58,6 @@ class MY_books {
       unset($item['infoLink']);
       unset($item['canonicalVolumeLink']);
       unset($item['description']);
-      $item['ISBN'] = $this->industryID_to_ISBN($item['industryIdentifiers']);
-      unset($item['industryIdentifiers']);
       $item['publisher'] = (isset($item['publisher'])) ? $item['publisher'] : $this->get_publisher($item['ISBN']);
       $item['authors'] = (isset($item['authors'])) ? $item['authors'] : NULL;
       $item['publication_year'] = (isset($item['publishedDate'])) ? substr($item['publishedDate'], 0, 4) : NULL;

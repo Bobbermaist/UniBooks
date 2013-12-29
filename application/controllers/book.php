@@ -48,7 +48,7 @@ class Book extends CI_Controller {
 			redirect($somewhere)
 		*/
 		$google_data = $this->session->userdata('google_data');
-		$books_data = $this->Book_model->gdata_to_table($google_data);
+		$books_data = $this->Book_model->books_to_table($google_data);
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');
