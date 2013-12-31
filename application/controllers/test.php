@@ -10,23 +10,9 @@ class Test extends CI_Controller {
 
 	public function index()
 	{
-		$this->load->model('Book_model');
-		$this->load->helper('file');
-		delete_files(GOOGLE_CACHE, TRUE);
-		//$this->empty_dir(GOOGLE_CACHE);
-	}
-
-	public function empty_dir($directory, $delete = FALSE)
-	{
-		foreach(glob($directory . '*') as $item)
-		{
-			if (is_dir($item))
-				$this->empty_dir($item . '/', TRUE);
-			else
-				unlink($item);
-		}
-		if ($delete === TRUE)
-			rmdir($directory);
+		$str = '54x5435436x5x43x5X';
+		$correct_res = '5454354365435X';
+		echo preg_replace('/[^[0-9]([^[0-9][^X]$)/i', '', $str);
 	}
 }
 

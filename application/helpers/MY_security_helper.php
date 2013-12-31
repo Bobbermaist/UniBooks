@@ -30,12 +30,14 @@ function get_random_string($length)
 
 function url_encode_utf8($str)
 {
-	return preg_replace('/%/', '.', urlencode($str));
+	//return preg_replace('/%/', '.', urlencode($str));
+	return str_replace('%', '.', urlencode($str));
 }
 
 function url_decode_utf8($str)
 {
-	return urldecode(preg_replace('/\./', '%', $str));
+	//return urldecode(preg_replace('/\./', '%', $str));
+	return urldecode(str_replace('.', '%', $str));
 }
 
 /* End of file MY_security_helper.php */
