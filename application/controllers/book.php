@@ -7,19 +7,22 @@ class Book extends CI_Controller {
 		parent::__construct();
 		$this->load->model('Book_model');
 		$this->load->library('session');
+		$this->load->helper('url');
 	}
 
 	public function index()
 	{
 		$this->load->helper('form');
 		$this->load->config('form_data');
+		if ($search_key = $this->input->post('book_search'))
+			redirect("book/search/$search_key");
 		$view_data = $this->config->item('book_search_data');
 		$view_data = array(
 			'input_type' => array(
      		'name'      => 'book_search',
      		'maxlength' => '255'
     	),
-    	'redirect'			=> 'book/search',
+    	'redirect'			=> 'book/index',
     	'title' 				=> 'Ricerca un libro',
     	'submit_name'		=> 'search',
     	'submit_value'	=> 'Cerca'
@@ -32,35 +35,35 @@ class Book extends CI_Controller {
 		$this->load->view('template/coda');
 	}
 
-	public function search()
+	public function search($search_key = NULL, $page = 1)
 	{
 		$this->load->helper('form');
-		$this->load->helper('url');
 		$this->load->library('table');
-		if( $search_key = $this->input->post('book_search') )
-		{
-			$this->Book_model->setISBN($search_key);
-			$this->session->set_userdata(array('google_data' => $this->Book_model->google_fetch($search_key)));
-		}
-		/*
-		if( ! $this->session->userdata('google_data') )
-			redirect($somewhere)
-		*/
-		$google_data = $this->session->userdata('google_data');
-		$books_data = $this->Book_model->books_to_table($google_data);
+		$this->load->library('pagination');
+
+		$this->Book_model->setISBN($search_key);
+		$this->Book_model->google_fetch(urldecode($search_key), $page);
+		$books_table = $this->Book_model->books_to_table();
+
+		$config['base_url'] = site_url("book/search/$search_key");
+		$config['use_page_numbers'] = TRUE;
+		$config['total_rows'] = $this->Book_model->total_items;
+		$config['per_page'] = MAX_RESULTS;
+		$config["uri_segment"] = 4;
+		$this->pagination->initialize($config);
 
 		$this->load->view('template/head');
 		$this->load->view('template/body');
-		$this->load->view('form/book_select', array('books_data' => $books_data));
+		$this->load->view('paragraphs', array('p' => $this->pagination->create_links()));
+		$this->load->view('form/book_select', array('books_data' => $books_table));
 		$this->load->view('template/coda');
 	}
 
 	public function select_result()
 	{
-		$this->load->helper('url');
 		$google_data = $this->session->userdata('google_data');
 		$book_select = $this->input->post('book_select');
-		if( $google_data )
+		if ($google_data)
 		{
 			$this->Book_model->set_info($google_data, $book_select);
 			if( $book_id = $this->Book_model->insert() )

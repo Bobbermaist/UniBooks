@@ -42,5 +42,7 @@ define('RAND_API_PATH', THIRD_PARTY . 'rand/');
 define('GOOGLE_API_PATH', THIRD_PARTY . 'google_api/');
 define('GOOGLE_CACHE', FCPATH . APPPATH . 'cache/Google_Client/');
 
+define('MAX_RESULTS', 10);
+
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

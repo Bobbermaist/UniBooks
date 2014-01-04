@@ -7,6 +7,8 @@ class MY_books {
 
 	var $CI;
 	var $service;
+  var $volumes;
+  var $total_items;
 
   public function __construct()
   {
@@ -26,30 +28,39 @@ class MY_books {
       $this->empty_google_cache();
   }
 
-  public function list_volumes($str)
+  public function get($data, $index = 0)
   {
-    return $this->array_format($this->service->volumes->listVolumes($str));
-  }
-
-  public function get($data)
-  {
-  	if( ! is_array($data) )
-  		return $this->list_volumes($data);
+  	if ( ! is_array($data))
+    {
+      $this->list_volumes($data, $index);
+      return;
+    }
   	$query = isset($data['title']) ? 'intitle:' . $data['title'] . ' ' : '';
   	$query .= isset($data['author']) ? 'inauthor:' . $data['author'] . ' ' : '';
   	$query .= isset($data['publisher']) ? 'inpublisher:' . $data['publisher'] . ' ' : '';
   	$query .= isset($data['subject']) ? 'subject:' . $data['subject'] . ' ' : '';
-  	return $this->list_volumes($query);
+  	$this->list_volumes($query, $index);
   }
 
   public function get_by_isbn($isbn)
   {
-  	return $this->list_volumes("isbn:$isbn");
+  	$this->list_volumes("isbn:$isbn", 0);
   }
 
-  private function array_format($google_fetch)
+  private function list_volumes($str, $index)
   {
-    if ($google_fetch['totalItems'] == 0)
+    $opt_params = array(
+      'startIndex'  => $index,
+      'maxResults'  => MAX_RESULTS,
+    );
+    $google_fetch = $this->service->volumes->listVolumes($str, $opt_params);
+    $this->total_items = $google_fetch['totalItems'];
+    $this->volumes = $this->array_format($google_fetch, FALSE);
+  }
+
+  private function array_format($google_fetch, $with_isbn = TRUE)
+  {
+    if ($google_fetch['totalItems'] == 0 OR ! isset($google_fetch['items']))
       return NULL;
     $books = array();
     foreach($google_fetch['items'] as $item)
@@ -58,7 +69,7 @@ class MY_books {
 
       $item['ISBN'] = $this->industryID_to_ISBN($item['industryIdentifiers']);
         /* Escludo i risultati senza ISBN */
-      if ($item['ISBN'] === NULL)
+      if ($item['ISBN'] === NULL AND $with_isbn === TRUE)
         continue;
       unset($item['industryIdentifiers']);
       unset($item['printType']);
