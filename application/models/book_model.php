@@ -103,7 +103,7 @@ class Book_model extends CI_Model {
 
 		if ($book_id = $this->exists())
 			return $book_id;
-		
+
 		$language_id = $this->insert_info('languages', $this->info['language']);
 		$categories_id = $this->insert_info('categories', $this->info['categories']);
 		$publisher_id = $this->insert_info('publishers', $this->info['publisher']);
@@ -111,6 +111,7 @@ class Book_model extends CI_Model {
 
 		$data = array(
 			'ISBN'							=> $this->cutISBN($this->info['ISBN']),
+			'google_id'					=> $this->info['google_id'],
 			'title'							=> $this->info['title'],
 			'publisher_id'			=> $publisher_id,
 			'publication_year'	=> $this->info['publication_year'],
@@ -129,17 +130,11 @@ class Book_model extends CI_Model {
 		if ( ! $this->info())
 			return FALSE;
 
+		if ($this->info['google_id'] !== NULL)
+			return $this->get_id('books', 'google_id', $this->info['google_id']);
 		if ($this->info['ISBN'] !== NULL)
 			return $this->get_id('books', 'ISBN', $this->cutISBN($this->info['ISBN']));
-		$where_clause = array(
-			'title'							=> $this->info['title'],
-			'publisher_id'			=> $this->get_id('publishers', 'name', $this->info['publisher']),
-			'publication_year'	=> $this->info['publication_year'],
-			'pages'							=> $this->info['pages'],
-		);
-		$this->db->select('ID')->from('books')->where($where_clause)->limit(1);
-		$query = $this->db->get();
-		return $query->num_rows == 1 ? $query->row()->ID : FALSE;
+		return FALSE;
 	}
 
 	public function get_id($table, $field, $value)

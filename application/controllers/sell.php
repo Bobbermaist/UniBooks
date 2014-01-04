@@ -22,7 +22,7 @@ class Sell extends CI_Controller {
      		'name'      => 'book_search',
      		'maxlength' => '255'
     	),
-    	'redirect'			=> 'book/search',
+    	'redirect'			=> 'book/set_search_key',
     	'title' 				=> 'Cerca un libro da vendere',
     	'submit_name'		=> 'search',
     	'submit_value'	=> 'Cerca'

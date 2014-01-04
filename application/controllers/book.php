@@ -14,15 +14,13 @@ class Book extends CI_Controller {
 	{
 		$this->load->helper('form');
 		$this->load->config('form_data');
-		if ($search_key = $this->input->post('book_search'))
-			redirect("book/search/$search_key");
 		$view_data = $this->config->item('book_search_data');
 		$view_data = array(
 			'input_type' => array(
      		'name'      => 'book_search',
      		'maxlength' => '255'
     	),
-    	'redirect'			=> 'book/index',
+    	'redirect'			=> 'book/set_search_key',
     	'title' 				=> 'Ricerca un libro',
     	'submit_name'		=> 'search',
     	'submit_value'	=> 'Cerca'
@@ -33,6 +31,12 @@ class Book extends CI_Controller {
 		$this->load->view('template/body');
 		$this->load->view('form/single', $view_data);
 		$this->load->view('template/coda');
+	}
+
+	public function set_search_key()
+	{
+		$search_key = $this->input->post('book_search');
+		redirect("book/search/$search_key");
 	}
 
 	public function search($search_key = NULL, $page = 1)
@@ -64,7 +68,7 @@ class Book extends CI_Controller {
 	{
 		if ($book_id = $this->input->post('book_id'))
 			$this->session->set_userdata(array('book_id' => $book_id));
-		
+
 		if( $action = $this->session->userdata('action') )
 			redirect($action);
 		else

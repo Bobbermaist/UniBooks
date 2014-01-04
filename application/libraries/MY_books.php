@@ -58,39 +58,34 @@ class MY_books {
     $this->volumes = $this->array_format($google_fetch, FALSE);
   }
 
-  private function array_format($google_fetch, $with_isbn = TRUE)
+  private function array_format($google_fetch, $only_isbn = TRUE)
   {
     if ($google_fetch['totalItems'] == 0 OR ! isset($google_fetch['items']))
       return NULL;
     $books = array();
     foreach($google_fetch['items'] as $item)
     {
+      $google_id = $item['id'];
       $item = $item['volumeInfo'];
-
-      $item['ISBN'] = $this->industryID_to_ISBN($item['industryIdentifiers']);
-        /* Escludo i risultati senza ISBN */
-      if ($item['ISBN'] === NULL AND $with_isbn === TRUE)
+      $isbn = isset($item['industryIdentifiers']) ? 
+        $this->industryID_to_ISBN($item['industryIdentifiers']) :
+        NULL;
+      
+          /* Escludo i risultati senza ISBN */
+      if ($isbn === NULL AND $only_isbn === TRUE)
         continue;
-      unset($item['industryIdentifiers']);
-      unset($item['printType']);
-      unset($item['averageRating']);
-      unset($item['ratingsCount']);
-      unset($item['contentVersion']);
-      unset($item['imageLinks']);
-      unset($item['previewLink']);
-      unset($item['infoLink']);
-      unset($item['canonicalVolumeLink']);
-      unset($item['description']);
-      $item['publisher'] = (isset($item['publisher'])) ? $item['publisher'] : $this->get_publisher($item['ISBN']);
-      $item['authors'] = (isset($item['authors'])) ? $item['authors'] : NULL;
-      $item['publication_year'] = (isset($item['publishedDate'])) ? substr($item['publishedDate'], 0, 4) : NULL;
-      unset($item['publishedDate']);
-      $item['pages'] = (isset($item['pageCount'])) ? $item['pageCount'] : NULL;
-      unset($item['pageCount']);
-      $item['categories'] = (isset($item['categories'])) ? $item['categories'] : NULL;
-      $item['language'] = (isset($item['language'])) ? $item['language'] : NULL;
-
-      array_push($books, $item);
+      $book = array(
+        'ISBN'              => $isbn,
+        'google_id'         => $google_id,
+        'title'             => $item['title'],
+        'authors'           => isset($item['authors']) ? $item['authors'] : NULL,
+        'publisher'         => isset($item['publisher']) ? $item['publisher'] : $this->get_publisher($isbn),
+        'publication_year'  => isset($item['publishedDate']) ? substr($item['publishedDate'], 0, 4) : NULL,
+        'pages'             => isset($item['pageCount']) ? $item['pageCount'] : NULL,
+        'categories'        => isset($item['categories']) ? $item['categories'] : NULL,
+        'language'          => isset($item['language']) ? $item['language'] : NULL,
+      );
+      array_push($books, $book);
     }
     return $books;
   }

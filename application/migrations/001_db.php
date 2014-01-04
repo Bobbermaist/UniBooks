@@ -113,6 +113,7 @@ class Migration_Db extends CI_Migration {
 		$query = "CREATE TABLE IF NOT EXISTS `books` (
   						`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
   						`ISBN` varchar(9) NOT NULL DEFAULT '000000000',
+  						`google_id` varchar(12) DEFAULT NULL,
   						`title` varchar(255) NOT NULL DEFAULT '',
   						`publisher_id` int(9) unsigned NOT NULL DEFAULT 0,
   						`publication_year` int(4) DEFAULT NULL,

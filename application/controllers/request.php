@@ -22,7 +22,7 @@ class Request extends CI_Controller {
      		'name'      => 'book_search',
      		'maxlength' => '255'
     	),
-    	'redirect'			=> 'book/search',
+    	'redirect'			=> 'book/set_search_key',
     	'title' 				=> 'Inserisci una richiesta',
     	'submit_name'		=> 'search',
     	'submit_value'	=> 'Cerca'
