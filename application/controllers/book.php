@@ -43,6 +43,7 @@ class Book extends CI_Controller {
 
 		$this->Book_model->setISBN($search_key);
 		$this->Book_model->google_fetch(urldecode($search_key), $page);
+		$this->Book_model->insert();
 		$books_table = $this->Book_model->books_to_table();
 
 		$config['base_url'] = site_url("book/search/$search_key");
@@ -61,17 +62,9 @@ class Book extends CI_Controller {
 
 	public function select_result()
 	{
-		$google_data = $this->session->userdata('google_data');
-		$book_select = $this->input->post('book_select');
-		if ($google_data)
-		{
-			$this->Book_model->set_info($google_data, $book_select);
-			if( $book_id = $this->Book_model->insert() )
-			{
-				//$this->session->unset_userdata('google_data');
-				$this->session->set_userdata(array('book_id' => $book_id));
-			}
-		}
+		if ($book_id = $this->input->post('book_id'))
+			$this->session->set_userdata(array('book_id' => $book_id));
+		
 		if( $action = $this->session->userdata('action') )
 			redirect($action);
 		else
