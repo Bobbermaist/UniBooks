@@ -5,19 +5,19 @@ require_once GOOGLE_API_PATH . 'contrib/Google_BooksService.php';
 
 class MY_books {
 
-	var $CI;
-	var $service;
+  var $CI;
+  var $service;
   var $search_key;
   var $search_id = 0;
   var $index = 0;
-  var $volumes = NULL;
+  var $volumes;
   var $total_items;
 
   public function __construct()
   {
-		$this->CI =& get_instance();
-  	$client = new Google_Client();
-  	$this->service = new Google_BooksService($client);
+    $this->CI =& get_instance();
+    $client = new Google_Client();
+    $this->service = new Google_BooksService($client);
   }
 
   public function __destruct()
@@ -31,27 +31,32 @@ class MY_books {
       $this->empty_google_cache();
   }
 
+  public function set_search_key($str)
+  {
+    $this->search_key = trim($str);
+  }
+
   public function get($data, $index = 0)
   {
     $this->index = $index;
-  	if ( ! is_array($data))
+    if ( ! is_array($data))
     {
-      $this->search_key = $data;
+      $this->set_search_key($data);
       $this->list_volumes();
       return;
     }
-  	$query = isset($data['title']) ? 'intitle:' . $data['title'] . ' ' : '';
-  	$query .= isset($data['author']) ? 'inauthor:' . $data['author'] . ' ' : '';
-  	$query .= isset($data['publisher']) ? 'inpublisher:' . $data['publisher'] . ' ' : '';
-  	$query .= isset($data['subject']) ? 'subject:' . $data['subject'] . ' ' : '';
-    $this->search_key = $query;
-  	$this->list_volumes();
+    $query = isset($data['title']) ? 'intitle:' . $data['title'] . ' ' : '';
+    $query .= isset($data['author']) ? 'inauthor:' . $data['author'] . ' ' : '';
+    $query .= isset($data['publisher']) ? 'inpublisher:' . $data['publisher'] . ' ' : '';
+    $query .= isset($data['subject']) ? 'subject:' . $data['subject'] . ' ' : '';
+    $this->set_search_key($query);
+    $this->list_volumes();
   }
 
   public function get_by_isbn($isbn)
   {
-    $this->search_key = "isbn:$isbn";
-  	$this->list_volumes();
+    $this->set_search_key("isbn:$isbn");
+    $this->list_volumes();
   }
 
   private function list_volumes()
@@ -132,11 +137,22 @@ class MY_books {
     if ($this->total_items == 0 OR $this->total_items == 1)
       return;
     if ($this->total_items > 1000)
-      $this->total_items = 900;
-    $query = 'https://www.googleapis.com/books/v1/volumes?q=' . urlencode($this->search_key) . '&startIndex=' . $this->total_items;
+      $this->total_items -= 300;
+    $query = 'https://www.googleapis.com/books/v1/volumes?q='
+      . urlencode($this->search_key) . '&startIndex=' . $this->total_items;
     $regex = '/(?<=("totalItems":\s))(\d+)/';
-    preg_match($regex, file_get_contents($query, FALSE, NULL, -1, 50), $res);
-    $this->total_items = (int) $res[0];
+    $fetch = file_get_contents($query, FALSE, NULL, -1, 50);
+    preg_match($regex, $fetch, $res);
+    $total_items = isset($res[0]) ? (int) $res[0] : 0;
+    if ($total_items === 0)
+    {
+      $this->total_items -= 300;
+      $this->fetch_total_items();
+    }
+    else
+    {
+      $this->total_items = $total_items - 9;
+    }
   }
 
   private function array_format($google_fetch, $only_isbn = FALSE)

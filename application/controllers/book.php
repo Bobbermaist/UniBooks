@@ -7,6 +7,7 @@ class Book extends CI_Controller {
 		parent::__construct();
 		$this->load->model('Book_model');
 		$this->load->library('session');
+		$this->load->helper('security');
 		$this->load->helper('url');
 	}
 
@@ -36,7 +37,7 @@ class Book extends CI_Controller {
 	public function set_search_key()
 	{
 		$search_key = $this->input->post('book_search');
-		redirect("book/search/$search_key");
+		redirect('book/search/' . url_encode_utf8($search_key));
 	}
 
 	public function search($search_key = NULL, $page = 1)
@@ -45,8 +46,9 @@ class Book extends CI_Controller {
 		$this->load->library('table');
 		$this->load->library('pagination');
 
+		echo url_decode_utf8($search_key);
 		$this->Book_model->setISBN($search_key);
-		$this->Book_model->google_fetch(urldecode($search_key), $page);
+		$this->Book_model->google_fetch(url_decode_utf8($search_key), $page);
 		$this->Book_model->insert();
 		$books_table = $this->Book_model->books_to_table();
 
