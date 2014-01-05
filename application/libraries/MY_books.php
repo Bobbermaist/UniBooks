@@ -54,11 +54,12 @@ class MY_books {
       'maxResults'  => MAX_RESULTS,
     );
     $google_fetch = $this->service->volumes->listVolumes($str, $opt_params);
+    echo $google_fetch['totalItems'];
     $this->total_items = $google_fetch['totalItems'];
     $this->volumes = $this->array_format($google_fetch, FALSE);
   }
 
-  private function array_format($google_fetch, $only_isbn = TRUE)
+  private function array_format($google_fetch, $only_isbn = FALSE)
   {
     if ($google_fetch['totalItems'] == 0 OR ! isset($google_fetch['items']))
       return NULL;
