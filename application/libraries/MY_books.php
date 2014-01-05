@@ -7,7 +7,10 @@ class MY_books {
 
 	var $CI;
 	var $service;
-  var $volumes;
+  var $search_key;
+  var $search_id = 0;
+  var $index = 0;
+  var $volumes = NULL;
   var $total_items;
 
   public function __construct()
@@ -30,33 +33,110 @@ class MY_books {
 
   public function get($data, $index = 0)
   {
+    $this->index = $index;
   	if ( ! is_array($data))
     {
-      $this->list_volumes($data, $index);
+      $this->search_key = $data;
+      $this->list_volumes();
       return;
     }
   	$query = isset($data['title']) ? 'intitle:' . $data['title'] . ' ' : '';
   	$query .= isset($data['author']) ? 'inauthor:' . $data['author'] . ' ' : '';
   	$query .= isset($data['publisher']) ? 'inpublisher:' . $data['publisher'] . ' ' : '';
   	$query .= isset($data['subject']) ? 'subject:' . $data['subject'] . ' ' : '';
-  	$this->list_volumes($query, $index);
+    $this->search_key = $query;
+  	$this->list_volumes();
   }
 
   public function get_by_isbn($isbn)
   {
-  	$this->list_volumes("isbn:$isbn", 0);
+    $this->search_key = "isbn:$isbn";
+  	$this->list_volumes();
   }
 
-  private function list_volumes($str, $index)
+  private function list_volumes()
   {
+    $this->CI->load->database();
+
+    $this->get_search_id();
+    if ($this->get_results() === TRUE)
+      return;
+
     $opt_params = array(
-      'startIndex'  => $index,
+      'startIndex'  => $this->index,
       'maxResults'  => MAX_RESULTS,
     );
-    $google_fetch = $this->service->volumes->listVolumes($str, $opt_params);
-    echo $google_fetch['totalItems'];
-    $this->total_items = $google_fetch['totalItems'];
-    $this->volumes = $this->array_format($google_fetch, FALSE);
+    $google_fetch = $this->service->volumes->listVolumes($this->search_key, $opt_params);
+    $this->volumes = $this->array_format($google_fetch);
+    if ($this->search_id === 0)
+    {
+      $this->total_items = $google_fetch['totalItems'];
+      $this->fetch_total_items();
+      $this->insert_search_key();
+    }
+    $this->insert_results();
+  }
+
+  private function insert_search_key()
+  {
+    $data = array(
+      'search_key'  => $this->search_key,
+      'total_items' => $this->total_items,
+    );
+    $this->CI->db->insert('google_search_keys', $data);
+    $this->search_id = $this->CI->db->insert_id();
+  }
+
+  private function insert_results()
+  {
+    $data = array(
+      'search_id' => $this->search_id,
+      'index'     => $this->index,
+      'results'   => utf8_encode(serialize($this->volumes)),
+    );
+    $this->CI->db->insert('google_results', $data);
+  }
+
+  private function get_search_id()
+  {
+    $this->CI->db->from('google_search_keys')->where('search_key', $this->search_key)->limit(1);
+    $query = $this->CI->db->get();
+    if ($query->num_rows == 1)
+    {
+      $res = $query->row();
+      $this->search_id = $res->ID;
+      $this->total_items = $res->total_items;
+    }
+  }
+
+  private function get_results()
+  {
+    if ($this->search_id == 0)
+      return FALSE;
+    $where_clause = array(
+      'search_id' => $this->search_id,
+      'index'     => $this->index,
+    );
+    $this->CI->db->from('google_results')->where($where_clause)->limit(1);
+    $query = $this->CI->db->get();
+    if ($query->num_rows == 1)
+    {
+      $this->volumes = unserialize(utf8_decode($query->row()->results));
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  private function fetch_total_items()
+  {
+    if ($this->total_items == 0 OR $this->total_items == 1)
+      return;
+    if ($this->total_items > 1000)
+      $this->total_items = 900;
+    $query = 'https://www.googleapis.com/books/v1/volumes?q=' . urlencode($this->search_key) . '&startIndex=' . $this->total_items;
+    $regex = '/(?<=("totalItems":\s))(\d+)/';
+    preg_match($regex, file_get_contents($query, FALSE, NULL, -1, 50), $res);
+    $this->total_items = (int) $res[0];
   }
 
   private function array_format($google_fetch, $only_isbn = FALSE)

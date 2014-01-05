@@ -8,11 +8,11 @@ class Test extends CI_Controller {
 		//$this->load->helper('url');
 	}
 
-	public function index()
+	public function index($int = 1)
 	{
-		$str = '54x5435436x5x43x5X';
-		$correct_res = '5454354365435X';
-		echo preg_replace('/[^[0-9]([^[0-9][^X]$)/i', '', $str);
+		$this->load->model('Book_model');
+		$book = $this->Book_model->get($int);
+		print_r($book);
 	}
 }
 

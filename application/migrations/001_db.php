@@ -25,6 +25,8 @@ class Migration_Db extends CI_Migration {
 		$this->books_requested_up();
 		$this->language_groups_up();
 		$this->publisher_codes_up();
+		$this->google_search_keys_up();
+		$this->google_results_up();
 	}
 
 	public function down()
@@ -43,6 +45,8 @@ class Migration_Db extends CI_Migration {
 		$this->authors_down();
 		$this->language_groups_down();
 		$this->publisher_codes_down();
+		$this->google_search_keys_down();
+		$this->google_results_down();
 	}
 
 		/* Users database */
@@ -321,6 +325,38 @@ class Migration_Db extends CI_Migration {
 	private function publisher_codes_down()
 	{
 		$this->db->query('DROP TABLE IF EXISTS `publisher_codes`;');
+	}
+
+	private function google_search_keys_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `google_search_keys` (
+							`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+							`search_key` varchar(255) NOT NULL DEFAULT '',
+							`total_items` int(5) unsigned NOT NULL DEFAULT 0,
+							PRIMARY KEY (`ID`),
+							UNIQUE KEY `search_key` (`search_key`)
+						) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+		$this->db->query($query);
+	}
+
+	private function google_search_keys_down()
+	{
+		$this->db->query('DROP TABLE IF EXISTS `google_search_keys`;');
+	}
+
+	private function google_results_up()
+	{
+		$query = "CREATE TABLE IF NOT EXISTS `google_results` (
+							`search_id` int(9) unsigned NOT NULL DEFAULT 0,
+							`index` int(5) unsigned NOT NULL DEFAULT 0,
+							`results` text NOT NULL
+						) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+		$this->db->query($query);
+	}
+
+	private function google_results_down()
+	{
+		$this->db->query('DROP TABLE IF EXISTS `google_results`;');
 	}
 }
 

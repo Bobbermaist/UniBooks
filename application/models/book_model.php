@@ -154,6 +154,7 @@ class Book_model extends CI_Model {
 		$book = $query->row();
 		return array(
 			'ISBN'							=> $this->uncutISBN($book->ISBN),
+			'ID'								=> $book->ID,
 			'title'							=> $book->title,
 			'publisher'					=> $this->get_by_id('publishers', 'name', $book->publisher_id),
 			'authors'						=> $this->join_links('authors', 'author', $book->ID),
@@ -164,7 +165,7 @@ class Book_model extends CI_Model {
 		);
 	}
 
-	public function get_book($search = NULL)
+	public function search($search = NULL)
 	{
 		$this->load->database();
 		if ($this->ISBN())
