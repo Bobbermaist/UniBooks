@@ -1,6 +1,6 @@
  <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
-class Request extends CI_Controller {
+class Request extends MY_Controller {
 
 	public function __construct()
 	{

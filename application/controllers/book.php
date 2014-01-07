@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
 
-class Book extends CI_Controller {
+class Book extends MY_Controller {
 
 	public function __construct()
 	{
@@ -45,8 +45,7 @@ class Book extends CI_Controller {
 		$this->load->helper('form');
 		$this->load->library('table');
 		$this->load->library('pagination');
-
-		echo url_decode_utf8($search_key);
+		
 		$this->Book_model->setISBN($search_key);
 		$this->Book_model->google_fetch(url_decode_utf8($search_key), $page);
 		$this->Book_model->insert();

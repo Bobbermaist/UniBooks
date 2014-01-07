@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Migration extends CI_Controller {
+class Migration extends MY_Controller {
 
 	public function __construct()
 	{

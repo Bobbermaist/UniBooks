@@ -1,6 +1,8 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Test extends CI_Controller {
+require_once THIRD_PARTY . 'utf8/portable-utf8.php';
+
+class Test extends MY_Controller {
 
 	public function __construct()
 	{
@@ -15,13 +17,13 @@ class Test extends CI_Controller {
 
 	public function replace($str = 'intitle:l\'uccello del sole ★ inauthor:wilbur smith')
 	{
-    header('Content-type: text/html; charset=utf-8');
     $this->load->helper('security');
     $str = '★';
     $encode = url_encode_utf8($str);
     echo $encode;
     echo '<br><br>';
     echo url_decode_utf8($encode);
+    echo '<br><br>';
 	}
 }
 
