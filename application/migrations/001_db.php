@@ -173,6 +173,7 @@ class Migration_Db extends CI_Migration {
 		$query = "CREATE TABLE IF NOT EXISTS `links_book_author` (
 							`book_id` int(9) unsigned NOT NULL  DEFAULT 0,
 							`author_id` int(9) unsigned NOT NULL DEFAULT 0,
+							UNIQUE KEY `author` (`book_id`, `author_id`),
 							FOREIGN KEY (book_id) REFERENCES books(ID)
 								ON DELETE CASCADE
 								ON UPDATE CASCADE,
@@ -223,6 +224,7 @@ class Migration_Db extends CI_Migration {
 		$query = "CREATE TABLE IF NOT EXISTS `links_book_category` (
 							`book_id` int(9) unsigned NOT NULL  DEFAULT 0,
 							`category_id` int(9) unsigned NOT NULL DEFAULT 0,
+							UNIQUE KEY `category` (`book_id`, `category_id`),
 							FOREIGN KEY (book_id) REFERENCES books(ID)
 								ON DELETE CASCADE
 								ON UPDATE CASCADE,

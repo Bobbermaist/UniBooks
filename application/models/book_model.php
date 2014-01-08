@@ -3,7 +3,7 @@
 class Book_model extends CI_Model {
 	
 	private $ISBN;
-	private $info;
+	private $book;
 
 	var $results;
 	var $total_items;
@@ -32,9 +32,9 @@ class Book_model extends CI_Model {
 		return isset($this->ISBN) ? $this->ISBN : FALSE;
 	}
 
-	public function info()
+	public function book()
 	{
-		return isset($this->info) ? $this->info : FALSE;
+		return isset($this->book) ? $this->book : FALSE;
 	}
 
 	public function results()
@@ -42,11 +42,11 @@ class Book_model extends CI_Model {
 		return (isset($this->results) AND $this->results) ? $this->results : FALSE;
 	}
 
-	public function set_info($index)
+	public function set_book($index)
 	{
 		if ( ! isset($this->results[$index]))
 			return FALSE;
-		$this->info = $this->results[$index];
+		$this->book = $this->results[$index];
 	}
 
 	public function google_fetch($data = NULL, $page = 1)
@@ -85,37 +85,37 @@ class Book_model extends CI_Model {
 	public function insert()
 	{
 			/* Nothing to insert */
-		if ( ! $this->info() AND ! $this->results())
+		if ( ! $this->book() AND ! $this->results())
 			return FALSE;
 
 		$this->load->database();
 			/* insert all results */
-		if ( ! $this->info())
+		if ( ! $this->book())
 		{
 			foreach ($this->results as $index => $book)
 			{
-				$this->set_info($index);
+				$this->set_book($index);
 				$this->results[$index]['ID'] = $this->insert();
 			}
-			unset($this->info);
+			unset($this->book);
 			return TRUE;
 		}
 
 		if ($book_id = $this->exists())
 			return $book_id;
 
-		$language_id = $this->insert_info('languages', $this->info['language']);
-		$categories_id = $this->insert_info('categories', $this->info['categories']);
-		$publisher_id = $this->insert_info('publishers', $this->info['publisher']);
-		$authors_id = $this->insert_info('authors', $this->info['authors']);
+		$language_id = $this->insert_info('languages', $this->book['language']);
+		$categories_id = $this->insert_info('categories', $this->book['categories']);
+		$publisher_id = $this->insert_info('publishers', $this->book['publisher']);
+		$authors_id = $this->insert_info('authors', $this->book['authors']);
 
 		$data = array(
-			'ISBN'							=> $this->cutISBN($this->info['ISBN']),
-			'google_id'					=> $this->info['google_id'],
-			'title'							=> $this->info['title'],
+			'ISBN'							=> $this->cutISBN($this->book['ISBN']),
+			'google_id'					=> $this->book['google_id'],
+			'title'							=> $this->book['title'],
 			'publisher_id'			=> $publisher_id,
-			'publication_year'	=> $this->info['publication_year'],
-			'pages'							=> $this->info['pages'],
+			'publication_year'	=> $this->book['publication_year'],
+			'pages'							=> $this->book['pages'],
 			'language_id'				=> $language_id
 		);
 		$this->db->insert('books', $data);
@@ -127,13 +127,13 @@ class Book_model extends CI_Model {
 
 	private function exists()
 	{
-		if ( ! $this->info())
+		if ( ! $this->book())
 			return FALSE;
 
-		if ($this->info['google_id'] !== NULL)
-			return $this->get_id('books', 'google_id', $this->info['google_id']);
-		if ($this->info['ISBN'] !== NULL)
-			return $this->get_id('books', 'ISBN', $this->cutISBN($this->info['ISBN']));
+		if ($this->book['google_id'] !== NULL)
+			return $this->get_id('books', 'google_id', $this->book['google_id']);
+		if ($this->book['ISBN'] !== NULL)
+			return $this->get_id('books', 'ISBN', $this->cutISBN($this->book['ISBN']));
 		return FALSE;
 	}
 
@@ -142,6 +142,13 @@ class Book_model extends CI_Model {
 		$this->db->select('ID')->from($table)->where($field, $value)->limit(1);
 		$query = $this->db->get();
 		return $query->num_rows == 1 ? $query->row()->ID : FALSE;
+	}
+
+	public function search_id($table, $field, $value)
+	{
+		$this->db->select('ID')->from($table)->like($field, $value);
+		$query = $this->db->get();
+		return $query->num_rows == 0 ? NULL : $this->array_reduce($query->result_array());
 	}
 
 	public function get($id)
@@ -157,21 +164,36 @@ class Book_model extends CI_Model {
 			'ID'								=> $book->ID,
 			'title'							=> $book->title,
 			'publisher'					=> $this->get_by_id('publishers', 'name', $book->publisher_id),
-			'authors'						=> $this->join_links('authors', 'author', $book->ID),
+			'authors'						=> $this->join_book_id('authors', $book->ID),
 			'publication_year'	=> $book->publication_year,
 			'pages'							=> $book->pages,
-			'categories'				=> $this->join_links('categories', 'category', $book->ID),
+			'categories'				=> $this->join_book_id('categories', $book->ID),
 			'language'					=> $this->get_by_id('languages', 'name', $book->language_id)
 		);
 	}
 
-	public function search($search = NULL)
+	public function search($search_key = NULL)
 	{
 		$this->load->database();
-		if ($this->ISBN())
-			$book_id = $this->get_id('books', 'ISBN', $this->cutISBN($this->ISBN()));
-		//echo $this->cutISBN();
-		return $this->get($book_id);
+		if ($isbn = $this->ISBN())
+		{
+			$this->results = $this->search_info('books', 'ISBN', $this->cutISBN($isbn));
+			if ($this->results !== NULL)
+				$this->results = $this->results[0];
+			return;
+		}
+		if ($search_key === NULL)
+		{
+			$this->results = NULL;
+			return;
+		}
+		$books_id = $this->search_id('books', 'title', $search_key);
+		$authors_id = $this->search_id('authors', 'name', $search_key);
+		$categories_id = $this->search_id('categories', 'name', $search_key);
+		$publishers_id = $this->search_id('publishers', 'name', $search_key);
+		print_r($books_id);
+		//$this->search_info('authors', 'name', $search_key);
+		//$this->results = array_merge($this->results, (array) );
 	}
 
 	private function insert_info($table, $value)
@@ -209,15 +231,22 @@ class Book_model extends CI_Model {
 		return $query->row()->$field;
 	}
 
-	private function join_links($table, $key, $book_id)
+	private function join_book_id($table, $book_id)
 	{
+		switch ($table)
+		{
+			case 'authors':
+				$key = 'author';
+				break;
+			case 'categories':
+				$key = 'category';
+				break;
+			default:
+				return;
+		}
 		$this->db->select('name')->from($table)->where('book_id', $book_id)
 					->join("links_book_$key", "links_book_$key.".$key."_id = $table.ID");
-		$query = $this->db->get();
-		$data = array();
-		foreach ($query->result() as $row)
-			array_push($data, $row->name);
-		return $data;
+		return $this->array_reduce($this->db->get()->result_array());
 	}
 
 	public function get_country()
@@ -234,6 +263,16 @@ class Book_model extends CI_Model {
 				return $res->row()->name;
 		}
 		return NULL;
+	}
+
+	private function array_reduce($array)
+	{
+		foreach ($array as $index => $value)
+		{
+			if (is_array($value))
+				$array[$index] = array_values($value)[0];
+		}
+		return $array;
 	}
 
 	private function cutISBN($isbn)

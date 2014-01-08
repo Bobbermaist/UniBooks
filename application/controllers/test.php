@@ -10,18 +10,19 @@ class Test extends MY_Controller {
 
 	public function index()
 	{
-		redirect('test/replace');
-	}
+		$this->load->database();
+		$this->load->model('Book_model');
+		/*
+		$this->Book_model->setISBN('8840813608');
+		$this->Book_model->search();
+		print_r($this->Book_model->results);
+		*/
 
-	public function replace($str = 'intitle:l\'uccello del sole ★ inauthor:wilbur smith')
-	{
-    $this->load->helper('security');
-    $str = '★';
-    $encode = url_encode($str);
-    echo $encode;
-    echo '<br><br>';
-    echo url_decode($encode);
-    echo '<br><br>';
+		$data = $this->Book_model->search('Immanuel Kant');
+		print_r($this->Book_model->results);
+		/*
+		print_r( $this->Book_model->get(59) );
+		*/
 	}
 }
 
