@@ -176,10 +176,11 @@ class User_model extends CI_Model {
 
 	public function check_confirm_code($user_id, $confirm_code)
 	{
+		$this->load->helper('url');
 		if( ! $user_id OR ! $confirm_code
 				OR ! ($code_cfr = $this->get_tmp($user_id, 'confirm_code')))
 			return FALSE;
-		return url_encode_utf8($code_cfr) === $confirm_code;
+		return url_encode($code_cfr) === $confirm_code;
 	}
 
 	public function get_tmp($user_id, $field)
@@ -219,7 +220,7 @@ class User_model extends CI_Model {
 			$user_data['ID'] = $this->session->userdata('ID');
 		return array(
 			'user_name'	=> isset($user_data['user_name']) ? $user_data['user_name'] : NULL,
-			'link'			=> site_url("{$controller}/{$user_data['ID']}/" . url_encode_utf8($user_data['confirm_code']))
+			'link'			=> site_url("{$controller}/{$user_data['ID']}/" . url_encode($user_data['confirm_code']))
 		);
 	}
 

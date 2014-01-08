@@ -16,8 +16,6 @@ class MY_books {
   public function __construct()
   {
     $this->CI =& get_instance();
-    $client = new Google_Client();
-    $this->service = new Google_BooksService($client);
   }
 
   public function __destruct()
@@ -31,6 +29,12 @@ class MY_books {
       $this->empty_google_cache();
   }
 
+  public function get_service()
+  {
+    $client = new Google_Client();
+    $this->service = new Google_BooksService($client);
+  }
+
   public function set_search_key($str)
   {
     $this->search_key = trim($str);
@@ -38,6 +42,7 @@ class MY_books {
 
   public function get($data, $index = 0)
   {
+    $this->get_service();
     $this->index = $index;
     if ( ! is_array($data))
     {
@@ -55,6 +60,7 @@ class MY_books {
 
   public function get_by_isbn($isbn)
   {
+    $this->get_service();
     $this->set_search_key("isbn:$isbn");
     $this->list_volumes();
   }
@@ -97,7 +103,7 @@ class MY_books {
     $data = array(
       'search_id' => $this->search_id,
       'index'     => $this->index,
-      'results'   => utf8_encode(serialize($this->volumes)),
+      'results'   => serialize($this->volumes),
     );
     $this->CI->db->insert('google_results', $data);
   }
@@ -126,7 +132,7 @@ class MY_books {
     $query = $this->CI->db->get();
     if ($query->num_rows == 1)
     {
-      $this->volumes = unserialize(utf8_decode($query->row()->results));
+      $this->volumes = unserialize($query->row()->results);
       return TRUE;
     }
     return FALSE;
@@ -134,7 +140,7 @@ class MY_books {
 
   private function fetch_total_items()
   {
-    if ($this->total_items == 0 OR $this->total_items == 1)
+    if ($this->total_items >= 0 AND $this->total_items <= 10)
       return;
     if ($this->total_items > 1000)
       $this->total_items -= 300;
@@ -144,14 +150,10 @@ class MY_books {
     $fetch = file_get_contents($query, FALSE, NULL, -1, 50);
     preg_match($regex, $fetch, $res);
     $total_items = isset($res[0]) ? (int) $res[0] : 0;
-    if ($total_items === 0)
+    if ($this->total_items !== $total_items)
     {
-      $this->total_items -= 300;
+      $this->total_items = $total_items;
       $this->fetch_total_items();
-    }
-    else
-    {
-      $this->total_items = $total_items - 9;
     }
   }
 

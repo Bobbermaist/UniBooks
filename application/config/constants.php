@@ -38,7 +38,7 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
 define('THIRD_PARTY', APPPATH . 'third_party/');
 define('PHPASS_PATH', THIRD_PARTY . 'phpass/');
-define('UTF8_FUNC_PATH', THIRD_PARTY . 'utf8/');
+define('UTF8_PATH', THIRD_PARTY . 'utf8/');
 define('GOOGLE_API_PATH', THIRD_PARTY . 'google_api/');
 define('GOOGLE_CACHE', FCPATH . APPPATH . 'cache/Google_Client/');
 

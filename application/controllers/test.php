@@ -1,7 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-require_once THIRD_PARTY . 'utf8/portable-utf8.php';
-
 class Test extends MY_Controller {
 
 	public function __construct()
@@ -19,10 +17,10 @@ class Test extends MY_Controller {
 	{
     $this->load->helper('security');
     $str = '★';
-    $encode = url_encode_utf8($str);
+    $encode = url_encode($str);
     echo $encode;
     echo '<br><br>';
-    echo url_decode_utf8($encode);
+    echo url_decode($encode);
     echo '<br><br>';
 	}
 }

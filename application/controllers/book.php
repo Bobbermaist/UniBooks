@@ -37,7 +37,7 @@ class Book extends MY_Controller {
 	public function set_search_key()
 	{
 		$search_key = $this->input->post('book_search');
-		redirect('book/search/' . url_encode_utf8($search_key));
+		redirect('book/search/' . url_encode($search_key));
 	}
 
 	public function search($search_key = NULL, $page = 1)
@@ -47,7 +47,7 @@ class Book extends MY_Controller {
 		$this->load->library('pagination');
 		
 		$this->Book_model->setISBN($search_key);
-		$this->Book_model->google_fetch(url_decode_utf8($search_key), $page);
+		$this->Book_model->google_fetch(url_decode($search_key), $page);
 		$this->Book_model->insert();
 		$books_table = $this->Book_model->books_to_table();
 
