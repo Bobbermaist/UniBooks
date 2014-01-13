@@ -128,11 +128,11 @@ class MY_books {
       'search_id' => $this->search_id,
       'index'     => $this->index,
     );
-    $this->CI->db->from('google_results')->where($where_clause)->limit(1);
+    $this->CI->db->select('results')->from('google_results')->where($where_clause)->limit(1);
     $query = $this->CI->db->get();
     if ($query->num_rows == 1)
     {
-      $this->volumes = unserialize($query->row()->results);
+      $this->volumes = unserialize(utf8_decode($query->row()->results));
       return TRUE;
     }
     return FALSE;
@@ -225,7 +225,7 @@ class MY_books {
     }
     return isset($isbn13) ? $isbn13 : $isbn10;
   }
-}
 
+}
 /* End of file MY_books.php */
 /* Location: ./application/libraries/MY_books.php */ 
