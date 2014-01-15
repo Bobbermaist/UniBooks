@@ -13,7 +13,7 @@ function url_encode($str)
 				OR ($char >= 'a' AND $char <= 'z'))
 			$out .= $char;
 		else
-			$out .= '.' . utf8_ord($char);
+			$out .= '.' . base_convert(utf8_ord($char), 10, 36);
 	}
 	return $out;
 }
@@ -21,7 +21,7 @@ function url_encode($str)
 function url_decode($str)
 {
 	$chr_func = create_function('$matches',
-		'return utf8_chr((int) substr($matches[0], 1));'
+		'return utf8_chr((int) base_convert(substr($matches[0], 1), 36, 10));'
 	);
 	return preg_replace_callback(
 		'/\.[0-9]+/',
