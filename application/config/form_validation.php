@@ -1,14 +1,14 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $config = array(
-	'user/registration' => array(
+	'registration/index' => array(
     array(
       'field'   => 'user_name', 
       'label'   => 'Username', 
       'rules'   => 'required|min_length[3]|max_length[20]|xss_clean|is_unique[users.user_name]'
     ),
     array(
-      'field'   => 'pass', 
+      'field'   => 'password', 
       'label'   => 'Password', 
       'rules'   => 'required|min_length[4]|max_length[32]|matches[passconf]'
     ),
@@ -23,14 +23,14 @@ $config = array(
       'rules'   => 'required|valid_email|is_unique[users.email]'
     )
   ),
-  'user/login' => array(
+  'login/index' => array(
     array(
       'field'   => 'user_name',
       'label'   => 'Username',
       'rules'   => 'required|min_length[3]|max_length[20]|xss_clean'
     ),
     array(
-      'field'   => 'pass',
+      'field'   => 'password',
       'label'   => 'Password',
       'rules'   => 'required|min_length[4]|max_length[32]'
     )

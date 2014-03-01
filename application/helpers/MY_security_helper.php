@@ -14,19 +14,5 @@ function check_hash($hashedPassword, $str)
 	return $hasher->CheckPassword($str, $hashedPassword);
 }
 
-function get_random_char()
-{
-	return chr(rand(0, 255));
-}
-
-function get_random_string($length)
-{
-	$str = '';
-	for($c = 0; $c < $length; $c++)
-		$str .= get_random_char();
-
-	return utf8_encode($str);
-}
-
 /* End of file MY_security_helper.php */
 /* Location: ./application/helpers/MY_security_helper.php */

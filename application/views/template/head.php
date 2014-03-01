@@ -4,8 +4,9 @@
   <head>
       <!--
       <?php // echo meta('Content-type', 'text/html; charset='.config_item('charset'), 'equiv');?>
+      <meta http-equiv="content-type" content="text/html; charset=<?php // echo config_item('charset');?>" />
       -->
-      <meta http-equiv="content-type" content="text/html; charset=<?php echo config_item('charset');?>" />
+      <meta charset="utf-8">
 
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
       <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>

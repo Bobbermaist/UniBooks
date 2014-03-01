@@ -20,33 +20,39 @@ class Welcome extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->helper('url');
-		//$this->load->library('session');
 	}
 
 	public function index()
 	{
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-		
-		$view_data = array('p' => array(
-			'Benvenuto : )',
-			'Puoi registrarti qui: '.anchor('user/registration', 'Registrazione utente', 'title="registrazione"'),
-			'Puoi effettuare il reset della tua password qui: '.anchor('user/reset', 'Reset password', 'title="reset"'),
-			'Puoi fare il log in qui: '.anchor('user/login', 'Log in', 'title="login"'),
-			'Puoi cercare un libro tramite le API di google books qui: '.anchor('book', 'Ricerca libro', 'title="search"'),
-			'Una volta effettuato il log in metti in vendita un libro: '.anchor('sell', 'Vendi', 'title="sell"'),
-			'Inserisci una richiesta per un libro: '.anchor('request', 'Richiedi', 'title="request"'),
-			'Gestisci il tuo account, modificando nome utente, email, password <br>
-				e visualizza gli annunci inseriti: '.anchor('account', 'Account'),
-			'Gli amministratori possono accedere ad un\'area riservata: '.anchor('admin', 'Admin area', 'title="admin"'),
-			'Esegui current migration: '.anchor('migration', 'Current migration'),
-			'Drop database: '.anchor('migration/down', 'Drop all'),
-			'Test controller: '.anchor('test', 'Test')
+		$this->_set_view('generic', array(
+			'p'	=> 'Benvenuto : )',
 		));
-		$this->load->view('paragraphs', $view_data);
-		
-		$this->load->view('template/coda');
+		$this->_set_view('generic', array(
+			'p'	=> 'Puoi registrarti ' . anchor('registration', 'qui'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Puoi effettuare il reset della tua password ' . anchor('reset', 'qui'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Puoi fare il log in ' . anchor('login', 'qui'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Puoi cercare un libro tramite le API di google books ' . anchor('book', 'qui'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Metti in ' . anchor('sell', 'vendita un libro'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Inserisci una ' . anchor('request', 'richiesta'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Gestisci il tuo account ' . anchor('user/settings', 'qui'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Area riservata: ' . anchor('admin', 'Admin area'),
+		));
+
+		$this->_view();
 	}
 }
 

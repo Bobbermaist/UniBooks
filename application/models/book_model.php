@@ -270,7 +270,10 @@ class Book_model extends CI_Model {
 		foreach ($array as $index => $value)
 		{
 			if (is_array($value))
-				$array[$index] = array_values($value)[0];
+			{
+				$values = array_values($value);
+				$array[$index] = $values[0];
+			}
 		}
 		return $array;
 	}

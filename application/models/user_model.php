@@ -2,231 +2,325 @@
 
 class User_model extends CI_Model {
 	
-	var $user_data;
+	private $ID;
 
-	function __construct()
+	private $user_name;
+
+	private $password;
+
+	private $email;
+
+	private $registration_time;
+
+	private $rights;
+
+	private $confirm_code;
+
+	private $tmp_email;
+
+	public function __construct()
 	{
 		parent::__construct();
-		$this->load->helper('security');
 		$this->load->database();
 	}
 
-		/* Metodi di gestione database */
-
-	public function insert_user($data)
+		/* get / set methods */
+	public function id($value = NULL)
 	{
-		$confirm_code = $data['confirm_code'];
-		unset($data['confirm_code']);
-		$this->db->insert('users', $data);
-		$user_id = $this->db->insert_id();
-		$this->insert_tmp($user_id, $confirm_code);
-		return $user_id;
+		if ($value === NULL)
+		{
+			return $this->ID;
+		}
+		else
+		{
+			$this->ID = (int) $value;
+			return $this->select();
+		}
 	}
 
-	public function exists($field, $value)
+	public function user_name($value = NULL)
 	{
-		$this->db->from('users')->where($field, $value)->limit(1);
-		return (boolean) $this->db->get()->num_rows();
+		return ($value === NULL)
+			? $this->user_name
+			: $this->user_name = $value;
 	}
 
-	public function select_where($field, $value)
+	public function password($value = NULL)
 	{
-		if ( ! $value OR isset($this->user_data))
-			return;
-		$this->db->from('users')->where($field, $value)->limit(1);
+		$this->load->helper('security');
+		return ($value === NULL)
+			? $this->password
+			: $this->password = do_hash($value);
+	}
+
+	public function email($value = NULL)
+	{
+		return ($value === NULL)
+			? $this->email
+			: $this->email = $value;
+	}
+
+	public function registration_time()
+	{
+		return $this->registration_time;
+	}
+
+	public function rights()
+	{
+		return $this->rights;
+	}
+
+	public function confirm_code()
+	{
+		return $this->confirm_code;
+	}
+
+	public function tmp_email($value = NULL)
+	{
+		return ($value === NULL)
+			? $this->tmp_email
+			: $this->tmp_email = $value;
+	}
+
+	public function unset_all()
+	{
+		unset(
+			$this->ID,
+			$this->user_name,
+			$this->password,
+			$this->email,
+			$this->registration_time,
+			$this->rights,
+			$this->confirm_code,
+			$this->tmp_email
+		);
+	}
+
+		/* private set methods */
+	private function _set_confirm_code()
+	{
+		$this->load->helper('string');
+		$this->confirm_code = random_string('alnum', 15);
+	}
+
+	private function _set_time()
+	{
+		$this->registration_time = date(
+			$this->config->item('log_date_format'), 
+			$_SERVER['REQUEST_TIME']
+		);
+	}
+
+		/* base db methods */
+	private function _exists($field, $value)
+	{
+		$query = $this->db->from('users')->where($field, $value)->limit(1)->get();
+		return (boolean) $query->num_rows;
+	}
+
+	public function insert()
+	{
+		$this->_set_confirm_code();
+		$this->_set_time();
+		$this->rights = -1;
+
+		$this->db->insert('users', array(
+			'user_name'					=> $this->user_name,
+			'password'					=> $this->password,
+			'email'							=> $this->email,
+			'registration_time'	=> $this->registration_time,
+			'rights'						=> $this->rights,
+		));
+		$this->ID = (int) $this->db->insert_id();
+
+		$this->_insert_tmp();
+	}
+
+	public function select($field = 'ID')
+	{
+		$this->db->from('users');
+			
+		$this->db->where($field, $this->$field);
 		$res = $this->db->get();
+
 		if ($res->num_rows == 0)
+		{
+			$this->unset_all;
 			return FALSE;
-		$this->user_data = $res->row();
+		}
+
+		$user_data = $res->row();
+		$this->ID = (int) $user_data->ID;
+		$this->user_name = $user_data->user_name;
+		$this->password = $user_data->password;
+		$this->email = $user_data->email;
+		$this->registration_time = $user_data->registration_time;
+		$this->rights = (int) $user_data->rights;
 		return TRUE;
 	}
 
-	public function update_by_ID($ID, $data)
+	public function update()
 	{
-		foreach ($data as $key => $field)
-			if ($field === NULL)
-				unset($data[$key]);
-		$this->db->where('ID', $ID)->update('users', $data);
+		$this->db->where('ID', $this->ID)->update('users', array(
+			'user_name'					=> $this->user_name,
+			'password'					=> $this->password,
+			'email'							=> $this->email,
+			'registration_time'	=> $this->registration_time,
+			'rights'						=> $this->rights,
+		));
 	}
 
-		/* Metodi di gestione utente */
-
+		/* user methods */
 	public function activate($activation_key)
 	{
-		if ( ! $this->user_data OR $this->user_data->rights > -1
-				OR ! $this->check_confirm_code($this->user_data->ID, $activation_key))
+		if ( $this->rights > -1 OR $this->_check_confirm_code($activation_key) === FALSE)
 			return FALSE;
 
-		$this->user_data->rights = 0;
-		$this->update_by_ID($this->user_data->ID, (array) $this->user_data);
-		$this->empty_tmp($this->user_data->ID);
+		$this->rights = 0;
+		$this->update();
+		$this->_empty_tmp();
 		return TRUE;
 	}
 
-	public function reset_request()
+	public function ask_for_reset_password($user_or_email)
 	{
-		if ( ! isset($this->user_data))
-			return FALSE;
-		$confirm_code = get_random_string(15);
-		$request = $this->insert_tmp($this->user_data->ID, $confirm_code);
-		return ( ! $request) ?
-			FALSE :
-			array(
-				'ID'						=> $this->user_data->ID,
-				'user_name'			=> $this->user_data->user_name,
-				'email'					=> $this->user_data->email,
-				'confirm_code'	=> $confirm_code
-			);
+		$this->email = $user_or_email;
+		if ($this->select('email') === FALSE)
+		{
+			$this->user_name = $user_or_email;
+			$this->select('user_name');
+		}
+
+		$this->_set_confirm_code();
+		return $this->_insert_tmp();
 	}
 
-	public function check_reset($confirm_code)
+	public function reset_password($confirm_code)
 	{
-		if ( ! isset($this->user_data) OR $this->user_data->rights < 0)
+		if ($this->_check_confirm_code($confirm_code) === FALSE)
 			return FALSE;
-		return $this->check_confirm_code($this->user_data->ID, $confirm_code);
-	}
-
-	public function reset($confirm_code, $new_password)
-	{
-		if ( ! isset($this->user_data) OR $this->user_data->rights < 0
-				OR ! $this->check_confirm_code($this->user_data->ID, $confirm_code))
-			return FALSE;
-		$data = $this->create_user_data(array('pass' => $new_password), FALSE);
-		$this->update_by_ID($this->user_data->ID, $data);
-		$this->empty_tmp($this->user_data->ID);
+		$this->update();
+		$this->_empty_tmp();
 		return TRUE;
 	}
 
-	public function check_password($password)
+	private function _check_password($password)
 	{
-		if ( ! isset($this->user_data))
-			return FALSE;
-		return check_hash($this->user_data->pass, $password);
-	}
-
-	public function login($password)
-	{
-		if ( ! $this->check_password($password) OR $this->user_data->rights < 0)
-			return FALSE;
-		$this->session->set_userdata(array(
-			'ID'					=> $this->user_data->ID,
-			'rights'			=> $this->user_data->rights,
-			'user_name'		=> $this->user_data->user_name,
-			'email'				=> $this->user_data->email
-		));
-		return TRUE;
+		$this->load->helper('security');
+		return check_hash($this->password, $password);
 	}
 
 	public function update_user_name($user_name)
 	{
-		if ($this->select_where('user_name', $user_name))
+		if ($this->_exists('user_name', $user_name))
 			return FALSE;
-		$this->User_model->update_by_ID($this->session->userdata('ID'), array('user_name' => $user_name));
-		$this->session->set_userdata(array('user_name' => $user_name));
+
+		$this->user_name = $user_name;
+		$this->update();
 		return TRUE;
 	}
 
-	public function update_email_request($email)
+	public function ask_for_update_email($email)
 	{
-		if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)
-				OR $this->select_where('email', $email))
+		if ($this->_exists('email', $email))
 			return FALSE;
-		$user_data = array(
-			'confirm_code'	=> get_random_string(15),
-			'tmp_email'			=> $email,
-		);
-		if( ! $this->insert_tmp($this->session->userdata('ID'), $user_data))
-			return FALSE;
-		return $user_data;
+		
+		$this->tmp_email = $email;
+		$this->_set_confirm_code();
+		return $this->_insert_tmp();
 	}
 
-	public function update_email($user_id, $confirm_code)
+	public function update_email($confirm_code)
 	{
-		if ( ! $this->check_confirm_code($user_id, $confirm_code))
+		if ($this->_check_confirm_code($confirm_code) === FALSE)
 			return FALSE;
-		$email = $this->get_tmp($user_id, 'tmp_email');
-		$this->update_by_ID($user_id, array('email' => $email));
-		$this->empty_tmp($user_id);
-		$this->session->set_userdata(array('email' => $email));
+
+		$this->_get_tmp();
+		$this->email = $this->tmp_email;
+		$this->update();
+		$this->_empty_tmp($user_id);
 		return TRUE;
 	}
 
 	public function update_password($old_pass, $new_pass)
 	{
-		$user_id = $this->session->userdata('ID');
-		if( ! $this->select_where('ID', $user_id)
-				OR ! $this->check_password($old_pass))
+		if($this->check_password($old_pass) === FALSE)
 			return FALSE;
-		$user_data = $this->create_user_data(array('pass' => $new_pass), FALSE);
-		$this->User_model->update_by_ID($user_id, $user_data);
+		$this->password($new_pass);
+		$this->update();
 		return TRUE;
 	}
 
-		/* Metodi di gestione database temporaneo */
-
-	public function insert_tmp($user_id, $data)
+		/* sessions methods */
+	public function login($password)
 	{
-		if ($this->get_tmp($user_id, 'confirm_code'))
+		$this->select('user_name');
+		if ($this->_check_password($password) === FALSE OR $this->user_data->rights < 0)
 			return FALSE;
-		if( ! is_array($data))
-			$data = array('confirm_code' => $data);
-		$data['user_id'] = $user_id;
-		return (boolean) $this->db->insert('tmp_users', $data);
+		$this->session->set_userdata(array(
+			'user_id'			=> $this->ID,
+		));
+		return TRUE;
 	}
 
-	public function check_confirm_code($user_id, $confirm_code)
+	public function read_session()
 	{
-		$this->load->helper('url');
-		if( ! $user_id OR ! $confirm_code
-				OR ! ($code_cfr = $this->get_tmp($user_id, 'confirm_code')))
-			return FALSE;
-		return url_encode($code_cfr) === $confirm_code;
+		$this->load->library('session');
+		$user_id = $this->session->userdata('user_id');
+
+		return ($user_id === FALSE)
+			? FALSE
+			: $this->id($user_id);
 	}
 
-	public function get_tmp($user_id, $field)
+		/* tmp_users methods */
+	private function _insert_tmp()
 	{
-		if ( ! $user_id)
+		if ( ! isset($this->ID) OR $this->_get_tmp() !== FALSE)
 			return FALSE;
-		$this->db->from('tmp_users')->where('user_id', $user_id)->limit(1);
-		if ($tmp = $this->db->get()->row())
-			return $tmp->$field === NULL ? FALSE : $tmp->$field;
+		$data = array(
+			'user_id'				=> $this->ID,
+			'confirm_code'	=> $this->confirm_code,
+		);
+		if (isset($this->tmp_email))
+			$data['tmp_email'] = $this->tmp_email;
+		
+		$this->db->insert('tmp_users', $data);
+		return TRUE;
+	}
+
+	private function _get_tmp()
+	{
+		$this->db->from('tmp_users')->where('user_id', $this->ID)->limit(1);
+		$query = $this->db->get();
+		if ($query->num_rows == 0)
+			return FALSE;
+
+		$tmp = $query->row();
+		$this->confirm_code = $tmp->confirm_code;
+		$this->tmp_email($tmp->tmp_email);
+		return TRUE;
+	}
+
+	private function _check_confirm_code($confirm_code)
+	{
+		if ($this->_get_tmp() === TRUE)
+		{
+			return $this->confirm_code === $confirm_code;
+		}
+		
 		return FALSE;
 	}
 
-	public function empty_tmp($user_id)
+	private function _empty_tmp()
 	{
-		if ( ! $user_id)
-			return FALSE;
-		$this->db->delete('tmp_users', array('user_id' => $user_id));
+		$this->db->where('user_id', $this->ID)->delete('tmp_users');
 	}
 
-		/* Metodi di appoggio */
-
-	public function create_user_data($data, $registration = TRUE)
+		/* get confirm link */
+	public function get_confirm_link($controller)
 	{
-		return array(
-			'user_name'					=> isset($data['user_name']) ? $data['user_name'] : NULL,
-			'pass'							=> isset($data['pass']) ? do_hash($data['pass']) : NULL,
-			'email'							=> isset($data['email']) ? $data['email'] : NULL,
-			'registration_time'	=> $registration ? date("Y-m-d H:i:s") : NULL,
-			'confirm_code'			=> $registration ? get_random_string(15) : NULL
-		);
-	}
-
-	public function create_email_data($user_data, $controller)
-	{
-		$this->load->helper('url');
-		if ( ! isset($user_data['ID']))
-			$user_data['ID'] = $this->session->userdata('ID');
-		return array(
-			'user_name'	=> isset($user_data['user_name']) ? $user_data['user_name'] : NULL,
-			'link'			=> site_url("{$controller}/{$user_data['ID']}/" . url_encode($user_data['confirm_code']))
-		);
-	}
-
-	public function is_logged()
-	{
-		return (boolean) $this->session->userdata('ID');
+		return site_url("$controller/{$this->ID}/" . $this->confirm_code);
 	}
 }
 

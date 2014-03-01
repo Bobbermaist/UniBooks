@@ -2,37 +2,6 @@
 
 class Account extends MY_Controller {
 
-	public function __construct()
-	{
-		parent::__construct();
-		$this->load->library('session');
-		$this->load->helper('form');
-		$this->load->helper('url');
-		$this->load->model('User_model');
-		if ( ! $this->User_model->is_logged())
-		{
-			$this->session->set_userdata(array('redirect' => 'account'));
-			redirect('user/login');
-		}
-	}
-
-	public function index()
-	{
-		$user = $this->session->all_userdata();
-		$view_data['p'] = array(
-			'User name: ' . $user['user_name'] . ' ' . anchor('account/user_name', 'Modifica'),
-			'Email: ' . $user['email'] . ' ' . anchor('account/email', 'Modifica'),
-			anchor('account/password', 'Modifica password'),
-			'Visualizza ' . anchor('account/sells', 'annunci'),
-			'Visualizza ' . anchor('account/requests', 'richieste'),
-		);
-
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-		$this->load->view('paragraphs', $view_data);
-		$this->load->view('template/coda');
-	}
-
 	public function user_name()
 	{
 		$this->load->config('form_data');

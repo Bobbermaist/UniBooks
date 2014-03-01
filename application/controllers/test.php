@@ -10,19 +10,12 @@ class Test extends MY_Controller {
 
 	public function index()
 	{
-		$this->load->database();
-		$this->load->model('Book_model');
-		/*
-		$this->Book_model->setISBN('8840813608');
-		$this->Book_model->search();
-		print_r($this->Book_model->results);
-		*/
+		$this->benchmark->mark('start');
+		for ($i=0; $i < 10000; $i++)
+			$this->load->clean_cached_vars();
+		$this->benchmark->mark('end');
 
-		$data = $this->Book_model->search('Immanuel Kant');
-		print_r($this->Book_model->results);
-		/*
-		print_r( $this->Book_model->get(59) );
-		*/
+		echo $this->benchmark->elapsed_time('start', 'end');
 	}
 }
 
