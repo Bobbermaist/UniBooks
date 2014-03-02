@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class User_model extends CI_Model {
+class User_model extends MY_Model {
 	
 	private $ID;
 
@@ -29,19 +29,17 @@ class User_model extends CI_Model {
 	{
 		if ($value === NULL)
 		{
-			return $this->ID;
+			return $this->_get('ID');;
 		}
-		else
-		{
-			$this->ID = (int) $value;
-			return $this->select();
-		}
+		
+		$this->ID = (int) $value;
+		return $this->select();
 	}
 
 	public function user_name($value = NULL)
 	{
 		return ($value === NULL)
-			? $this->user_name
+			? $this->_get('user_name')
 			: $this->user_name = $value;
 	}
 
@@ -49,36 +47,36 @@ class User_model extends CI_Model {
 	{
 		$this->load->helper('security');
 		return ($value === NULL)
-			? $this->password
+			? $this->_get('password')
 			: $this->password = do_hash($value);
 	}
 
 	public function email($value = NULL)
 	{
 		return ($value === NULL)
-			? $this->email
+			? $this->_get('email')
 			: $this->email = $value;
 	}
 
 	public function registration_time()
 	{
-		return $this->registration_time;
+		return $this->_get('registration_time');
 	}
 
 	public function rights()
 	{
-		return $this->rights;
+		return $this->_get('rights');
 	}
 
 	public function confirm_code()
 	{
-		return $this->confirm_code;
+		return $this->_get('confirm_code');
 	}
 
 	public function tmp_email($value = NULL)
 	{
 		return ($value === NULL)
-			? $this->tmp_email
+			? $this->_get('tmp_email')
 			: $this->tmp_email = $value;
 	}
 
