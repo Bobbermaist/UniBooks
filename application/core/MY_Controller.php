@@ -13,6 +13,7 @@ class MY_Controller extends CI_Controller  {
 	public function __construct()
 	{
 		parent::__construct();
+		//$this->benchmark->mark('start');
 		$this->load->helper('url');
 		$this->load->model('User_model');
 		$this->output->set_header('Content-Type: text/html; charset=' . config_item('charset'));
@@ -30,13 +31,14 @@ class MY_Controller extends CI_Controller  {
 	protected function _view()
 	{
 		$this->load->view('template/head');
-		$this->load->view('template/body');
-		
+
 		for ($i=0; $i < $this->total_views; ++$i)
 		{
 			$this->load->view( $this->view_names[$i], $this->view_data[$i] );
 			$this->load->clean_cached_vars();
 		}
 		$this->load->view('template/coda');
+		//$this->benchmark->mark('end');
+		//echo $this->benchmark->elapsed_time('start', 'end');
 	}
 }

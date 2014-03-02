@@ -210,6 +210,7 @@ class User_model extends CI_Model {
 		return check_hash($this->password, $password);
 	}
 
+		/* update settings */
 	public function update_user_name($user_name)
 	{
 		if ($this->_exists('user_name', $user_name))
@@ -238,13 +239,13 @@ class User_model extends CI_Model {
 		$this->_get_tmp();
 		$this->email = $this->tmp_email;
 		$this->update();
-		$this->_empty_tmp($user_id);
+		$this->_empty_tmp();
 		return TRUE;
 	}
 
 	public function update_password($old_pass, $new_pass)
 	{
-		if($this->check_password($old_pass) === FALSE)
+		if($this->_check_password($old_pass) === FALSE)
 			return FALSE;
 		$this->password($new_pass);
 		$this->update();
@@ -318,9 +319,11 @@ class User_model extends CI_Model {
 	}
 
 		/* get confirm link */
-	public function get_confirm_link($controller)
+	public function get_confirm_link($controller, $id = TRUE)
 	{
-		return site_url("$controller/{$this->ID}/" . $this->confirm_code);
+		return ($id === TRUE)
+			? site_url("$controller/{$this->ID}/" . $this->confirm_code)
+			: site_url("$controller/" . $this->confirm_code);
 	}
 }
 

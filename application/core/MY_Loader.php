@@ -9,8 +9,8 @@ class MY_Loader extends CI_Loader {
 
 	public function clean_cached_vars()
 	{
-		//$this->_ci_cached_vars = array();
-		$this->_ci_cached_vars = (new CI_Loader)->_ci_cached_vars;
+		$this->_ci_cached_vars = array();
+		//$this->_ci_cached_vars = (new CI_Loader)->_ci_cached_vars;
 	}
 
 	// --------------------------------------------------------------------

@@ -20,3 +20,6 @@
       <link rel="stylesheet" type="text/css" href="/css/base.css">
   </head>
   
+  <body>
+    <div class='centered'>
+    
