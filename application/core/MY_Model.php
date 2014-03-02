@@ -255,6 +255,23 @@ class Book_base extends MY_Model {
 		return FALSE;
 	}
 
+	public function get_publisher($isbn)
+	{
+		$this->load->database();
+		$isbn = (strlen($this->ISBN) === 13)
+				? substr($this->ISBN, 3)
+				: $this->ISBN;
+
+		for($digits = 7; $digits > 3; $digits--)
+		{
+			$this->_CI->db->from('publisher_codes')->where('code', substr($isbn, 0, $digits));
+      $res = $this->_CI->db->get();
+      if ($res->num_rows > 0)
+        return $res->row()->name;
+    }
+    return FALSE;
+  }
+
 }
 
 /* End of file MY_Model.php */
