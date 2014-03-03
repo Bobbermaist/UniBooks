@@ -7,6 +7,23 @@ class Book_model extends Book_base {
 		parent::__construct();
 	}
 
+	public function get_array()
+	{
+		return array(
+			'ID'								=> $this->ID,
+			'ISBN_13'						=> $this->ISBN_13,
+			'ISBN_10'						=> $this->ISBN_10,
+			'google_id'					=> $this->google_id,
+			'title'							=> $this->title,
+			'authors'						=> $this->authors,
+			'publisher'					=> $this->publisher,
+			'publication_year'	=> $this->publication_year,
+			'pages'							=> $this->pages,
+			'language'					=> $this->language,
+			'categories'				=> $this->categories,
+		);
+	}
+
 	public function search($key)
 	{
 		if ($this->ISBN($key) === TRUE)

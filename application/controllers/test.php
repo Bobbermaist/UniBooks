@@ -7,11 +7,12 @@ class Test extends MY_Controller {
 		parent::__construct();
 	}
 
-	public function index()
+	public function index($code = NULL)
 	{
 		$this->load->model('Book_model');
-		$isbn = str_replace('-', '', '85-359-0277-5');
+		$isbn = str_replace(array('-', ' '), '', $code);
 		$this->Book_model->search($isbn);
+		print_r($this->Book_model->get_array());
 	}
 }
 

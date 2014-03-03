@@ -52,22 +52,21 @@ function cut_isbn( $isbn )
 
 function uncut_isbn_13( $code )
 {
-	$isbn = '978' . $code;
-	$check = 0;
-	for($i = 0; $i < 13; $i+=2) $check += substr($isbn, $i, 1);
-	for($i = 1; $i < 12; $i+=2) $check += 3 * substr($isbn, $i, 1);
-	if ($check % 10 == 0)
-		return $isbn . 0;
-	return $isbn . (10 - $check % 10);
+	$check_digit = (38 + ($code[0] * 3) + ($code[1] * 1) + ($code[2] * 3) +
+					($code[3] * 1) + ($code[4] * 3) + ($code[5] * 1) + ($code[6] * 3) +
+						($code[7] * 1) + ($code[8] * 3)) % 10;
+	switch ($check_digit)
+	{
+		case 0: return '978' . $code . '0';
+		default: return '978' . $code . (10 - $check_digit);
+	}
 }
 
 function uncut_isbn_10( $code )
 {
-	for($i = 0, $weight = 10, $sum = 0; $i < 9; $i++, $weight--)
-	{
-		$sum += $code[$i] * $weight;
-	}
-	$check_digit = 11 - ($sum % 11);
+	$check_digit = 11 - (($code[0] * 10) + ($code[1] * 9) + ($code[2] * 8) +
+				($code[3] * 7) + ($code[4] * 6) + ($code[5] * 5) +
+					($code[6] * 4) + ($code[7] * 3) + ($code[8] * 2)) % 11;
 	switch ($check_digit)
 	{
 		case 11: return $code . '0';
