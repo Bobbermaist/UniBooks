@@ -10,8 +10,8 @@ class Test extends MY_Controller {
 	public function index()
 	{
 		$this->load->model('Book_model');
-		$this->Book_model->ISBN('9788854119567');
-		$this->Book_model->search();
+		$isbn = str_replace('-', '', '85-359-0277-5');
+		$this->Book_model->search($isbn);
 	}
 }
 

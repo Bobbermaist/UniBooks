@@ -138,6 +138,8 @@ class Migration_Db extends CI_Migration {
 							`pages` int(5) unsigned DEFAULT NULL,
 							`language_id` int(5) unsigned NOT NULL DEFAULT 0,
 							PRIMARY KEY (`ID`),
+							UNIQUE KEY `ISBN` (`ISBN`),
+							UNIQUE KEY `google_id` (`google_id`),
 							FOREIGN KEY (publisher_id) REFERENCES publishers(ID)
 								ON DELETE NO ACTION
 								ON UPDATE NO ACTION,

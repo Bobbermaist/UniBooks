@@ -17,7 +17,9 @@ class Book_base extends MY_Model {
 	
 	protected $ID;
 
-	protected $ISBN;
+	protected $ISBN_13;
+
+	protected $ISBN_10;
 
 	protected $google_id;
 
@@ -53,7 +55,8 @@ class Book_base extends MY_Model {
 	{
 		unset(
 			$this->ID,
-			$this->ISBN,
+			$this->ISBN_13,
+			$this->ISBN_10,
 			$this->google_id,
 			$this->title,
 			$this->authors,
@@ -69,31 +72,36 @@ class Book_base extends MY_Model {
 		);
 	}
 
+	private function _get_ISBN()
+	{
+		if ($this->_get('ISBN_13') !== FALSE)
+		{
+			return $this->_get('ISBN_13');
+		}
+		return $this->_get('ISBN_10');
+	}
+
 	public function ISBN($value = NULL)
 	{
 		if ($value === NULL)
 		{
-			return $this->_get('ISBN');
+			return $this->_get_ISBN();
 		}
 
-		$this->ISBN = strtoupper(trim($value));
-		return $this->validate();
-	}
-
-	public function validate()
-	{
-		if (validate13($this->ISBN) OR validate10($this->ISBN))
+		$isbn = strtoupper(trim($value));
+		$valid = validate($isbn);
+		if ($valid === 13)
 		{
-			return TRUE;
+			return (boolean) $this->ISBN_13 = $isbn;
 		}
-
-		if (strlen($this->ISBN) === 10)
+		if ($valid === 10)
 		{
-			$this->ISBN = "978{$this->ISBN}";
-			return $this->validate();
+			return (boolean) $this->ISBN_10 = $isbn;
 		}
-
-		$this->unset_all();
+		if (strlen($isbn) === 10)
+		{
+			return $this->ISBN("978$isbn");
+		}
 		return FALSE;
 	}
 
@@ -107,7 +115,7 @@ class Book_base extends MY_Model {
 		$this->_categories_id = $this->_insert_info('categories', $this->categories);
 
 		$this->db->insert('books', array(
-			'ISBN'							=> cutISBN($this->ISBN),
+			'ISBN'							=> cut_isbn( $this->ISBN() ),
 			'google_id'					=> $this->google_id,
 			'title'							=> $this->title,
 			'publisher_id'			=> $this->_publisher_id,
@@ -173,20 +181,6 @@ class Book_base extends MY_Model {
 		$this->db->insert_batch('links_book_category', $data);
 	}
 
-	/*
-	private function _exists()
-	{
-		if ( ! $this->book())
-			return FALSE;
-
-		if ($this->book['google_id'] !== NULL)
-			return $this->get_id('books', 'google_id', $this->book['google_id']);
-		if ($this->book['ISBN'] !== NULL)
-			return $this->get_id('books', 'ISBN', $this->cutISBN($this->book['ISBN']));
-		return FALSE;
-	}
-	*/
-
 	private function _select($table, $field, $value)
 	{
 		$this->db->from($table)->where($field, $value)->limit(1);
@@ -200,7 +194,7 @@ class Book_base extends MY_Model {
 		$this->db->from('books');
 		if ($field === 'ISBN')
 		{
-			$this->db->where('ISBN', cutISBN($this->ISBN));
+			$this->db->where('ISBN', cut_isbn( $this->ISBN() ));
 		}
 		else
 		{
@@ -221,7 +215,8 @@ class Book_base extends MY_Model {
 		$book = $query->row();
 
 		$this->ID = $book->ID;
-		$this->ISBN = uncutISBN($book->ISBN);
+		$this->ISBN_13 = uncut_isbn_13($book->ISBN);
+		$this->ISBN_10 = uncut_isbn_10($book->ISBN);
 		$this->google_id = $book->google_id;
 		$this->title = $book->title;
 		$this->_publisher_id = $book->publisher_id;
@@ -260,7 +255,7 @@ class Book_base extends MY_Model {
 
 	protected function _get_publisher()
 	{
-		$code = cutISBN($this->ISBN);
+		$code = cut_isbn( $this->ISBN() );
 
 		for($digits = 7; $digits > 3; $digits--)
 		{
@@ -274,7 +269,7 @@ class Book_base extends MY_Model {
 
 	protected function _get_country()
 	{
-		$code = cutISBN($this->ISBN);
+		$code = cut_isbn( $this->ISBN() );
 		for($digits = 1; $digits < 6; $digits++)
 		{
 			$this->db->from('language_groups')->where('code', substr($code, 0, $digits));

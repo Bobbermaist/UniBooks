@@ -7,20 +7,20 @@ class Book_model extends Book_base {
 		parent::__construct();
 	}
 
-	public function search()
+	public function search($key)
 	{
-		if (isset($this->ISBN))
+		if ($this->ISBN($key) === TRUE)
 		{
-			return $this->_search_by_ISBN();
+			return $this->_search_by_isbn();
 		}
 	}
 
-	private function _search_by_ISBN()
+	private function _search_by_isbn()
 	{
 		if ($this->select_by('ISBN') === FALSE)
 		{
 			$this->load->library('google_books');
-			$this->google_books->get_by_isbn($this->ISBN);
+			$this->google_books->get_by_isbn( $this->ISBN() );
 			if ($this->google_books->total_items === 0)
 			{
 				return FALSE;
@@ -35,9 +35,13 @@ class Book_model extends Book_base {
 	{
 		$book_data = $this->google_books->volumes[0];
 
-		if ( ! isset($this->ISBN))
+		if ( ! isset($this->ISBN_13) AND $book_data['ISBN_13'] !== NULL)
 		{
-			$this->ISBN = $book_data['ISBN'];
+			$this->ISBN_13 = $book_data['ISBN_13'];
+		}
+		if ( ! isset($this->ISBN_10) AND $book_data['ISBN_10'] !== NULL)
+		{
+			$this->ISBN_10 = $book_data['ISBN_10'];
 		}
 		$this->google_id = $book_data['google_id'];
 		$this->title = $book_data['title'];

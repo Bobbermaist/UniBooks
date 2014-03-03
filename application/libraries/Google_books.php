@@ -66,8 +66,7 @@ class Google_books {
   public function get_by_isbn($isbn)
   {
     $this->_get_service();
-    $this->search_key = "isbn:$isbn";
-    //$this->set_search_key();
+    $this->set_search_key("isbn:$isbn");
     $this->_list_volumes(FALSE);
   }
 
@@ -100,9 +99,9 @@ class Google_books {
       if ($this->_search_id === 0)
       {
         $this->fetch_total_items();
-        $this->insert_search_key();
+        $this->_insert_search_key();
       }
-      $this->insert_results();
+      $this->_insert_results();
     }
   }
 
@@ -157,6 +156,47 @@ class Google_books {
     return FALSE;
   }
 
+  private function _array_format($google_fetch)
+  {
+    if ($google_fetch['totalItems'] == 0 OR ! isset($google_fetch['items']))
+      return NULL;
+
+    $books = array();
+    foreach($google_fetch['items'] as $item)
+    {
+      $google_id = $item['id'];
+      $item = $item['volumeInfo'];
+
+      $books[] = array(
+        'ISBN_13'           => $this->_get_isbn($item, '13'),
+        'ISBN_10'           => $this->_get_isbn($item, '10'),
+        'google_id'         => $google_id,
+        'title'             => $item['title'],
+        'authors'           => isset($item['authors']) ? $item['authors'] : NULL,
+        'publisher'         => isset($item['publisher']) ? $item['publisher'] : NULL,
+        'publication_year'  => isset($item['publishedDate']) ? substr($item['publishedDate'], 0, 4) : NULL,
+        'pages'             => isset($item['pageCount']) ? $item['pageCount'] : NULL,
+        'categories'        => isset($item['categories']) ? $item['categories'] : NULL,
+        'language'          => isset($item['language']) ? $item['language'] : NULL,
+      );
+    }
+    return $books;
+  }
+
+  private function _get_isbn($item, $type = '13')
+  {
+    if (isset($item['industryIdentifiers']))
+    {
+      $type = "ISBN_$type";
+      foreach ($item['industryIdentifiers'] as $industry_id)
+      {
+        if ($industry_id['type'] === $type)
+          return $industry_id['identifier'];
+      }
+    }
+    return NULL;
+  }
+
     /* recoursive method to retrieve real total items */
   private function _fetch_total_items()
   {
@@ -186,60 +226,6 @@ class Google_books {
       $this->total_items -= JUMP;
     }
     $this->_fetch_total_items();
-  }
-
-  private function _array_format($google_fetch, $only_isbn = FALSE)
-  {
-    if ($google_fetch['totalItems'] == 0 OR ! isset($google_fetch['items']))
-      return NULL;
-
-    $books = array();
-    foreach($google_fetch['items'] as $item)
-    {
-      $google_id = $item['id'];
-      $item = $item['volumeInfo'];
-      if (isset($item['industryIdentifiers']))
-      {
-        $isbn = $this->_industryID_to_ISBN($item['industryIdentifiers']);
-      }
-      else
-      {
-        $isbn = NULL;
-      }
-      
-          /* Escludo i risultati senza ISBN */
-      if ($isbn === NULL AND $only_isbn === TRUE)
-        continue;
-
-      $books[] = array(
-        'ISBN'              => $isbn,
-        'google_id'         => $google_id,
-        'title'             => $item['title'],
-        'authors'           => isset($item['authors']) ? $item['authors'] : NULL,
-        'publisher'         => isset($item['publisher']) ? $item['publisher'] : NULL,
-        'publication_year'  => isset($item['publishedDate']) ? substr($item['publishedDate'], 0, 4) : NULL,
-        'pages'             => isset($item['pageCount']) ? $item['pageCount'] : NULL,
-        'categories'        => isset($item['categories']) ? $item['categories'] : NULL,
-        'language'          => isset($item['language']) ? $item['language'] : NULL,
-      );
-    }
-    return $books;
-  }
-
-  private function _industryID_to_ISBN($industryIdentifiers)
-  {
-    $isbn10 = NULL;
-    foreach($industryIdentifiers as $iid)
-    {
-      if ($iid['type'] === 'ISBN_13')
-      {
-        $isbn13 = $iid['identifier'];
-        break;
-      }
-      elseif ($iid['type'] === 'ISBN_10')
-        $isbn10 = $iid['identifier'];
-    }
-    return isset($isbn13) ? $isbn13 : $isbn10;
   }
 
 }
