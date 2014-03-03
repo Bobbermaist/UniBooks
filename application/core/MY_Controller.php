@@ -21,7 +21,7 @@ class MY_Controller extends CI_Controller  {
 		$this->logged = $this->User_model->read_session();
 	}
 
-	protected function _set_view($name, $content)
+	protected function _set_view($name, $content = NULL)
 	{
 		$this->view_names[] = $name;
 		$this->view_data[] = $content;

@@ -92,7 +92,8 @@ class Book_base extends MY_Model {
 			$this->ISBN = "978{$this->ISBN}";
 			return $this->validate();
 		}
-		
+
+		$this->unset_all();
 		return FALSE;
 	}
 
@@ -122,10 +123,11 @@ class Book_base extends MY_Model {
 
 	private function _insert_info($table, $value)
 	{
-		/*
 		if ($value === NULL)
-			return $this->insert_info($table, 'Unknown');
-		*/
+		{
+			return $this->_insert_info($table, 'Unknown');
+		}
+
 		if (is_array($value) === FALSE)
 		{
 			$result = $this->_select($table, 'name', $value);
@@ -155,7 +157,7 @@ class Book_base extends MY_Model {
 				'author_id'	=> $author_id,
 			);
 		}
-		$this->db->insert('links_book_author', $data);
+		$this->db->insert_batch('links_book_author', $data);
 	}
 
 	private function _insert_categories()
@@ -164,11 +166,11 @@ class Book_base extends MY_Model {
 		foreach ($this->_categories_id as $category_id)
 		{
 			$data[] = array(
-				'book_id'		=> $this->ID,
-				'author_id'	=> $category_id,
+				'book_id'			=> $this->ID,
+				'category_id'	=> $category_id,
 			);
 		}
-		$this->db->insert('links_book_category', $data);
+		$this->db->insert_batch('links_book_category', $data);
 	}
 
 	/*
@@ -192,14 +194,28 @@ class Book_base extends MY_Model {
 		return $query->num_rows == 1 ? $query->row() : FALSE;
 	}
 
-	public function select()
+	public function select_by($field)
 	{
 		$this->load->database();
-		$this->db->from('books')->where('ID', $this->ID)->limit(1);
+		$this->db->from('books');
+		if ($field === 'ISBN')
+		{
+			$this->db->where('ISBN', cutISBN($this->ISBN));
+		}
+		else
+		{
+			$this->db->where($field, $this->$field);
+		}
+		$this->db->limit(1);
+		return $this->_set();
+	}
+
+	private function _set()
+	{
 		$query = $this->db->get();
 		if ($query->num_rows == 0)
 		{
-			$this->unset_all();
+			//$this->unset_all();
 			return FALSE;
 		}
 		$book = $query->row();
@@ -217,6 +233,7 @@ class Book_base extends MY_Model {
 		$this->language = $this->_select('languages', 'ID', $this->_language_id)->name;
 		$this->_join_authors();
 		$this->_join_categories();
+		return TRUE;
 	}
 
 	private function _join_authors()
@@ -241,9 +258,22 @@ class Book_base extends MY_Model {
 		}
 	}
 
-	public function get_country()
+	protected function _get_publisher()
 	{
-		$this->load->database();
+		$code = cutISBN($this->ISBN);
+
+		for($digits = 7; $digits > 3; $digits--)
+		{
+			$this->db->from('publisher_codes')->where('code', substr($code, 0, $digits));
+			$res = $this->db->get();
+			if ($res->num_rows > 0)
+				return $res->row()->name;
+		}
+		return NULL;
+	}
+
+	protected function _get_country()
+	{
 		$code = cutISBN($this->ISBN);
 		for($digits = 1; $digits < 6; $digits++)
 		{
@@ -252,25 +282,8 @@ class Book_base extends MY_Model {
 			if ($res->num_rows > 0)
 				return $res->row()->name;
 		}
-		return FALSE;
+		return NULL;
 	}
-
-	public function get_publisher($isbn)
-	{
-		$this->load->database();
-		$isbn = (strlen($this->ISBN) === 13)
-				? substr($this->ISBN, 3)
-				: $this->ISBN;
-
-		for($digits = 7; $digits > 3; $digits--)
-		{
-			$this->_CI->db->from('publisher_codes')->where('code', substr($isbn, 0, $digits));
-      $res = $this->_CI->db->get();
-      if ($res->num_rows > 0)
-        return $res->row()->name;
-    }
-    return FALSE;
-  }
 
 }
 
