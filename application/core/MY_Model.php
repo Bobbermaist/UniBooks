@@ -29,10 +29,11 @@ class MY_Model extends CI_Model {
 	/**
 	 * _get
 	 * 
-	 * Allows models to retrieve their properties.
+	 * Try to get a model property, return the property's value
+	 * if setted, FALSE otherwise.
 	 * 
-	 * @param string  $property the property to get
-	 * @return mixed  FALSE if not setted, the object property on succes
+	 * @param string the property to get
+	 * @return mixed object property on success or FALSE
 	 */
 	protected function _get($property)
 	{
@@ -40,12 +41,10 @@ class MY_Model extends CI_Model {
 	}
 
 	/**
-	 * _select_one
-	 * 
 	 * Select one result from a table.
 	 * Accepts three parameters, the table name,
 	 * a string with the field value or an associative array
-	 * ('field'	=> 'value').
+	 * ('field' => 'value').
 	 * If the second parameter is a string, the third accepts
 	 * the value.
 	 * 
@@ -114,7 +113,7 @@ class User_base extends MY_Model {
 	protected $rights;
 
 	/**
-	 * Random string to activate /reset account settings
+	 * Random string to activate / reset account settings
 	 *
 	 * @var string
 	 * @access protected
@@ -138,13 +137,13 @@ class User_base extends MY_Model {
 	}
 
 	/**
-	 * get / set id
+	 * get / set ID
 	 * 
 	 * If the method is called with NULL,
-	 * he return the ID value (FALSE if not setted).
+	 * return the ID value (FALSE if not setted).
 	 *
-	 * Otherwise he set the ID property with the $value parameter
-	 * and then he retrieve other properties from `users` database.
+	 * Otherwise sets the ID property with the $value parameter
+	 * and then he retrieve other properties from `users` table.
 	 * In this case return boolean indicates whether the ID exists.
 	 * If not exists the select_by method will unset all properties. 
 	 * 
@@ -290,7 +289,6 @@ class User_base extends MY_Model {
 	}
 
 	/**
-	 * Set registration time.
 	 * Sets registration_time with $_SERVER['REQUEST_TIME']
 	 *
 	 * @return void
@@ -306,7 +304,7 @@ class User_base extends MY_Model {
 
 	/**
 	 * Select all user fields from a property indicated 
-	 * in $field (default - ID)
+	 * in $field (default 'ID')
 	 *
 	 * The field indicated must be a unique value
 	 * (ID, user_name, email) and corresponding object 
@@ -529,36 +527,36 @@ class Book_base extends MY_Model {
 	 * if it is a valid 10-digit ISBN sets ISBN_10.
 	 * 
 	 * @param mixed  string or NULL
-	 * @return mixed  string or boolean
+	 * @return mixed  string or FALSE
 	 */
 	public function ISBN($value = NULL)
 	{
-		if ($value === NULL)
+		if ($value !== NULL)
 		{
-			return $this->_get_isbn();
+			$isbn = strtoupper(trim($value));
+
+			if (validate_isbn_10($value) === TRUE)
+			{
+				$this->ISBN_10 = $isbn;
+			}
+			elseif (validate_isbn_13($value) === TRUE)
+			{
+				$this->ISBN_13 = $isbn;
+			}
+			elseif (validate_isbn_13('978' . $value) === TRUE)
+			{
+				// did you forget the '978' prefix?
+				$this->ISBN_13 = '978' . $value;
+			}
 		}
 
-		$isbn = strtoupper(trim($value));
-		$valid = validate($isbn);
-		if ($valid === 13)
-		{
-			return (boolean) $this->ISBN_13 = $isbn;
-		}
-		if ($valid === 10)
-		{
-			return (boolean) $this->ISBN_10 = $isbn;
-		}
-		if (strlen($isbn) === 10)
-		{
-			return $this->ISBN("978$isbn");
-		}
-		return FALSE;
+		return $this->_get_isbn();
 	}
 
 	/**
 	 * Insert a book
 	 * 
-	 * Insert all properties (that must be setted) in the db.
+	 * Insert all properties (that should be setted) in the db.
 	 * 
 	 * @return void
 	 */
@@ -809,7 +807,7 @@ class Book_base extends MY_Model {
 /**
  * UniBooks Exchange_base Class
  *
- * needed by Sell_model and Request_model
+ * extended by Sell_model and Request_model
  *
  * @package UniBooks
  * @category Models

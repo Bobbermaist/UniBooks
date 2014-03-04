@@ -20,31 +20,6 @@
 // ------------------------------------------------------------------------
 
 /**
- * The validate() function lets you to know if a given $str is a valid
- * 13 or 10 digit ISBN.
- * 
- * Return (int) 13 if $str is a valid 13-digit ISBN,
- * (int) 10 if 10-digit ISBN,
- * (boolean) FALSE if not valid
- *
- * @param	string
- * @return mixed  int or FALSE
- * @access public 
- */
-function validate( $str )
-{
-	if (validate_isbn_13($str) === TRUE)
-	{
-		return 13;
-	}
-	if (validate_isbn_10($str) === TRUE)
-	{
-		return 10;
-	}
-	return FALSE;
-}
-
-/**
  * Validate a 13-digit ISBN.
  *
  * @param	string
@@ -53,7 +28,7 @@ function validate( $str )
  */
 function validate_isbn_13( $str )
 {
-	if (strlen($str) != 13)
+	if (strlen($str) !== 13)
 		return FALSE;
 
 	$check = 0;
@@ -71,7 +46,7 @@ function validate_isbn_13( $str )
  */
 function validate_isbn_10( $str )
 {
-	if (strlen($str) != 10)
+	if (strlen($str) !== 10)
 		return FALSE;
 
 	$a = 0;
@@ -90,7 +65,7 @@ function validate_isbn_10( $str )
  * return a 9-digit code.
  *
  * Cuts the '978' EAN prefix in the 13-digit ISBN
- * and cuts the last digit (wich is the check digits).
+ * and cuts the last digit (witch is the check digits).
  *
  * @param	string
  * @return string
