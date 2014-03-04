@@ -1,5 +1,36 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks ISBN helper
+ *
+ * @package UniBooks
+ * @category Helpers
+ * @author Emiliano Bovetti
+ */
+
+// ------------------------------------------------------------------------
+
+/**
+ * The validate() function lets you to know if a given $str is a valid
+ * 13 or 10 digit ISBN.
+ * 
+ * Return (int) 13 if $str is a valid 13-digit ISBN,
+ * (int) 10 if 10-digit ISBN,
+ * (boolean) FALSE if not valid
+ *
+ * @param	string
+ * @return mixed  int or FALSE
+ * @access public 
+ */
 function validate( $str )
 {
 	if (validate_isbn_13($str) === TRUE)
@@ -13,6 +44,13 @@ function validate( $str )
 	return FALSE;
 }
 
+/**
+ * Validate a 13-digit ISBN.
+ *
+ * @param	string
+ * @return boolean
+ * @access public 
+ */
 function validate_isbn_13( $str )
 {
 	if (strlen($str) != 13)
@@ -24,6 +62,13 @@ function validate_isbn_13( $str )
 	return (boolean) ($check % 10 == 0);
 }
 
+/**
+ * Validate a 10-digit ISBN.
+ *
+ * @param	string
+ * @return boolean
+ * @access public 
+ */
 function validate_isbn_10( $str )
 {
 	if (strlen($str) != 10)
@@ -40,6 +85,17 @@ function validate_isbn_10( $str )
 	return (boolean) ($a % 11 == 0);
 }
 
+/**
+ * cut_isbn() function take an ISBN in input and
+ * return a 9-digit code.
+ *
+ * Cuts the '978' EAN prefix in the 13-digit ISBN
+ * and cuts the last digit (wich is the check digits).
+ *
+ * @param	string
+ * @return string
+ * @access public 
+ */
 function cut_isbn( $isbn )
 {
 	switch (strlen($isbn))
@@ -50,6 +106,14 @@ function cut_isbn( $isbn )
 	}
 }
 
+/**
+ * This function take a 9-digit code (output of cut_isbn() function)
+ * and return a valid 13-digit ISBN.
+ *
+ * @param	string
+ * @return string
+ * @access public 
+ */
 function uncut_isbn_13( $code )
 {
 	$check_digit = (38 + ($code[0] * 3) + ($code[1] * 1) + ($code[2] * 3) +
@@ -62,6 +126,14 @@ function uncut_isbn_13( $code )
 	}
 }
 
+/**
+ * This function take a 9-digit code (output of cut_isbn() function)
+ * and return a valid 10-digit ISBN.
+ *
+ * @param	string
+ * @return string
+ * @access public 
+ */
 function uncut_isbn_10( $code )
 {
 	$check_digit = 11 - (($code[0] * 10) + ($code[1] * 9) + ($code[2] * 8) +
