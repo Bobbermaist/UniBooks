@@ -1,13 +1,41 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks User_model Class
+ *
+ * @package UniBooks
+ * @category Models
+ * @author Emiliano Bovetti
+ */
 class User_model extends User_base {
 
+	/**
+	 * Constructor load the db
+	 */
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->database();
 	}
 
+	/**
+	 * Insert a user in the db.
+	 * Object properties user_name, password and email must be setted.
+	 *
+	 * Set user rights to -1, the email must be confirmed before
+	 * log in.
+	 *
+	 * @return void
+	 */
 	public function insert()
 	{
 		$this->_set_confirm_code();
@@ -26,6 +54,11 @@ class User_model extends User_base {
 		$this->_insert_tmp();
 	}
 
+	/**
+	 * Update method updates user settings by ID.
+	 *
+	 * @return void
+	 */
 	public function update()
 	{
 		$this->db->where('ID', $this->ID)->update('users', array(
@@ -37,7 +70,13 @@ class User_model extends User_base {
 		));
 	}
 	
-		/* user methods */
+	/**
+	 * Activate an account. Sets user rights to 0.
+	 * The user can now log in.
+	 *
+	 * @param string
+	 * @return boolean
+	 */
 	public function activate($activation_key)
 	{
 		if ( $this->rights > -1 OR $this->_check_confirm_code($activation_key) === FALSE)
@@ -49,6 +88,17 @@ class User_model extends User_base {
 		return TRUE;
 	}
 
+	/**
+	 * Set a reset password request.
+	 * The request can be done by user name or email
+	 * (because both are unique fields)
+	 *
+	 * If user ID is already present in the `tmp_users`
+	 * return FALSE
+	 *
+	 * @param string
+	 * @return boolean
+	 */
 	public function ask_for_reset_password($user_or_email)
 	{
 		$this->email = $user_or_email;
@@ -62,6 +112,13 @@ class User_model extends User_base {
 		return $this->_insert_tmp();
 	}
 
+	/**
+	 * Reset the password if $confirm_code is correct.
+	 * The password property must be setted with the new password.
+	 *
+	 * @param string
+	 * @return boolean
+	 */
 	public function reset_password($confirm_code)
 	{
 		if ($this->_check_confirm_code($confirm_code) === FALSE)
@@ -71,7 +128,12 @@ class User_model extends User_base {
 		return TRUE;
 	}
 
-		/* update settings */
+	/**
+	 * Updates the user's name if this does not exists.
+	 *
+	 * @param string
+	 * @return boolean
+	 */
 	public function update_user_name($user_name)
 	{
 		if ($this->_select_one('users', 'user_name', $user_name) !== FALSE)
@@ -82,6 +144,14 @@ class User_model extends User_base {
 		return TRUE;
 	}
 
+	/**
+	 * Set a request for update email.
+	 * The $email must be unique (return FALSE otherwise)
+	 * and the `tmp_users` must not contain the user's ID.
+	 *
+	 * @param string
+	 * @return boolean
+	 */
 	public function ask_for_update_email($email)
 	{
 		if ($this->_select_one('users', 'email', $email) !== FALSE)
@@ -92,6 +162,12 @@ class User_model extends User_base {
 		return $this->_insert_tmp();
 	}
 
+	/**
+	 * Updates the email if the $confirm_code is correct.
+	 *
+	 * @param string
+	 * @return boolean
+	 */
 	public function update_email($confirm_code)
 	{
 		if ($this->_check_confirm_code($confirm_code) === FALSE)
@@ -104,6 +180,13 @@ class User_model extends User_base {
 		return TRUE;
 	}
 
+	/**
+	 * Updates the password if $old_pass is correct
+	 *
+	 * @param string
+	 * @param string
+	 * @return boolean
+	 */
 	public function update_password($old_pass, $new_pass)
 	{
 		if($this->_check_password($old_pass) === FALSE)
@@ -113,7 +196,15 @@ class User_model extends User_base {
 		return TRUE;
 	}
 
-		/* sessions methods */
+	/**
+	 * Log in.
+	 * The user_name property must be setted.
+	 *
+	 * Sets the userdata. 
+	 *
+	 * @param string
+	 * @return boolean
+	 */
 	public function login($password)
 	{
 		$this->select_by('user_name');
@@ -125,13 +216,28 @@ class User_model extends User_base {
 		return TRUE;
 	}
 
+	/**
+	 * Check the password through the security helper.
+	 *
+	 * @param string
+	 * @return boolean
+	 * @access private
+	 */
 	private function _check_password($password)
 	{
 		$this->load->helper('security');
 		return check_hash($this->password, $password);
 	}
 
-		/* tmp_users methods */
+	/**
+	 * Insert data in `tmp_users` table.
+	 * $this->ID and $this->confirm_code must be setted.
+	 *
+	 * return FALSE if already exists a row with user's ID.
+	 *
+	 * @return boolean
+	 * @access private
+	 */
 	private function _insert_tmp()
 	{
 		if ( ! isset($this->ID) OR $this->_get_tmp() !== FALSE)
@@ -147,6 +253,13 @@ class User_model extends User_base {
 		return TRUE;
 	}
 
+	/**
+	 * Get data from `tmp_users` table.
+	 * $this->ID must be setted.
+	 *
+	 * @return boolean
+	 * @access private
+	 */
 	private function _get_tmp()
 	{
 		$this->db->from('tmp_users')->where('user_id', $this->ID)->limit(1);
@@ -160,6 +273,14 @@ class User_model extends User_base {
 		return TRUE;
 	}
 
+	/**
+	 * Check if $confirm code corresponds with one stored in
+	 * `tmp_users` table
+	 *
+	 * @param string
+	 * @return boolean
+	 * @access private
+	 */
 	private function _check_confirm_code($confirm_code)
 	{
 		if ($this->_get_tmp() === TRUE)
@@ -170,12 +291,30 @@ class User_model extends User_base {
 		return FALSE;
 	}
 
+	/**
+	 * Delete from `users_tmp` the row with $this->ID
+	 *
+	 * @return void
+	 * @access private
+	 */
 	private function _empty_tmp()
 	{
 		$this->db->where('user_id', $this->ID)->delete('tmp_users');
 	}
 
-		/* get confirm link */
+	/**
+	 * Creates the confirm link with the confirm code
+	 * ($this->confirm code must be setted).
+	 * 
+	 * $controller point to the controller wich confirm link
+	 * redirect to.
+	 *
+	 * $id indicates if the confirm link needs the users id.
+	 *
+	 * @param string
+	 * @param boolean
+	 * @return string
+	 */
 	public function get_confirm_link($controller, $id = TRUE)
 	{
 		return ($id === TRUE)

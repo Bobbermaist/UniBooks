@@ -1,12 +1,36 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks Book_model Class
+ *
+ * @package UniBooks
+ * @category Models
+ * @author Emiliano Bovetti
+ */
 class Book_model extends Book_base {
 
+	/**
+	 * Constructor
+	 */
 	public function __construct()
 	{
 		parent::__construct();
 	}
 
+	/**
+	 * Return the object properties as an associative array.
+	 *
+	 * @return array
+	 */
 	public function get_array()
 	{
 		return array(
@@ -24,6 +48,12 @@ class Book_model extends Book_base {
 		);
 	}
 
+	/**
+	 * Search for a book.
+	 *
+	 * @param string
+	 * @return boolean
+	 */
 	public function search($key)
 	{
 		if ($this->ISBN($key) === TRUE)
@@ -32,6 +62,15 @@ class Book_model extends Book_base {
 		}
 	}
 
+	/**
+	 * Search by ISBN code.
+	 * 
+	 * Search first in local db, if ISBN code is not found
+	 * calls the google_books library to retrieve book data.
+	 *
+	 * @return boolean
+	 * @access private
+	 */
 	private function _search_by_isbn()
 	{
 		if ($this->select_by('ISBN') === FALSE)
@@ -48,6 +87,13 @@ class Book_model extends Book_base {
 		return TRUE;
 	}
 
+	/**
+	 * Set the object properties from google data.
+	 * The query to google_books library must be done before
+	 *
+	 * @return void
+	 * @access private
+	 */
 	private function _set_from_google()
 	{
 		$book_data = $this->google_books->volumes[0];
