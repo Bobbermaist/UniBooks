@@ -4,17 +4,17 @@
  *
  * An application for books trade off
  *
- * @package	UniBooks
- * @author	Emiliano Bovetti
- * @since		Version 1.0
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
  */
 
 /**
- * UniBooks Model Class
+ * UniBooks MY_Model Class
  *
- * @package			UniBooks
- * @category		Models
- * @author			Emiliano Bovetti
+ * @package UniBooks
+ * @category Models
+ * @author Emiliano Bovetti
  */
 class MY_Model extends CI_Model {
 
@@ -31,8 +31,8 @@ class MY_Model extends CI_Model {
 	 * 
 	 * Allows models to retrieve their properties.
 	 * 
-	 * @param string 	$property the property to get
-	 * @return mixed 	FALSE if not setted, the object property on succes
+	 * @param string  $property the property to get
+	 * @return mixed  FALSE if not setted, the object property on succes
 	 */
 	protected function _get($property)
 	{
@@ -49,10 +49,10 @@ class MY_Model extends CI_Model {
 	 * If the second parameter is a string, the third accepts
 	 * the value.
 	 * 
-	 * @param string 	table name
-	 * @param	mixed 	string or array
-	 * @param mixed 	a string or NULL
-	 * @return mixed 	a row object on success or FALSE
+	 * @param string  table name
+	 * @param mixed  string or array
+	 * @param mixed  a string or NULL
+	 * @return mixed  a row object on success or FALSE
 	 */
 	protected function _select_one($table, $where, $value = NULL)
 	{
@@ -65,9 +65,9 @@ class MY_Model extends CI_Model {
 /**
  * UniBooks User_base Class
  *
- * @package			UniBooks
- * @category		Base Models
- * @author			Emiliano Bovetti
+ * @package UniBooks
+ * @category Base Models
+ * @author Emiliano Bovetti
  */
 class User_base extends MY_Model {
 
@@ -148,7 +148,7 @@ class User_base extends MY_Model {
 	 * In this case return boolean indicates whether the ID exists.
 	 * If not exists the select_by method will unset all properties. 
 	 * 
-	 * @param mixed 	int or NULL
+	 * @param mixed  int or NULL
 	 * @return mixed
 	 */
 	public function id($value = NULL)
@@ -172,8 +172,8 @@ class User_base extends MY_Model {
 	 * Retrieve user_name with $value === NULL,
 	 * set user_name otherwise.
 	 *
-	 * @param mixed 	string or NULL
-	 * @return mixed 	string or FALSE
+	 * @param mixed  string or NULL
+	 * @return mixed  string or FALSE
 	 */
 	public function user_name($value = NULL)
 	{
@@ -188,8 +188,8 @@ class User_base extends MY_Model {
 	 * Retrieve password with $value === NULL,
 	 * hash the $value and set password otherwise.
 	 *
-	 * @param mixed 	string or NULL
-	 * @return mixed 	string or FALSE
+	 * @param mixed  string or NULL
+	 * @return mixed  string or FALSE
 	 */
 	public function password($value = NULL)
 	{
@@ -205,8 +205,8 @@ class User_base extends MY_Model {
 	 * Retrieve email with $value === NULL,
 	 * set email otherwise.
 	 *
-	 * @param mixed 	string or NULL
-	 * @return mixed 	string or FALSE
+	 * @param mixed  string or NULL
+	 * @return mixed  string or FALSE
 	 */
 	public function email($value = NULL)
 	{
@@ -360,9 +360,9 @@ class User_base extends MY_Model {
 /**
  * UniBooks Book_base Class
  *
- * @package			UniBooks
- * @category		Base Models
- * @author			Emiliano Bovetti
+ * @package UniBooks
+ * @category Base Models
+ * @author Emiliano Bovetti
  */
 class Book_base extends MY_Model {
 
@@ -507,7 +507,7 @@ class Book_base extends MY_Model {
 	 * Return a 13-digit ISBN if setted, 10-digit if not,
 	 * FALSE if neither are setted.
 	 * 
-	 * @return mixed string or boolean
+	 * @return mixed  string or boolean
 	 * @access private
 	 */
 	private function _get_isbn()
@@ -528,8 +528,8 @@ class Book_base extends MY_Model {
 	 * If $value is a valid 13-digit ISBN it sets ISBN_13 property,
 	 * if it is a valid 10-digit ISBN sets ISBN_10.
 	 * 
-	 * @param mixed string or NULL
-	 * @return mixed string or boolean
+	 * @param mixed  string or NULL
+	 * @return mixed  string or boolean
 	 */
 	public function ISBN($value = NULL)
 	{
@@ -811,9 +811,9 @@ class Book_base extends MY_Model {
  *
  * needed by Sell_model and Request_model
  *
- * @package			UniBooks
- * @category		Models
- * @author			Emiliano Bovetti
+ * @package UniBooks
+ * @category Models
+ * @author Emiliano Bovetti
  */
 class Exchange_base extends MY_Model {
 
@@ -858,7 +858,7 @@ class Exchange_base extends MY_Model {
 	 * otherwive set this property.
 	 * 
 	 * @param int
-	 * @return mixed int or FALSE
+	 * @return mixed  int or FALSE
 	 */
 	public function book_id($value = NULL)
 	{
@@ -900,13 +900,14 @@ class Exchange_base extends MY_Model {
 	}
 
 	/**
-	 * Deletes a row.
+	 * Deletes a row from $table.
 	 * user_id and book_id properties must be setted
 	 * 
 	 * @param string
 	 * @return void
+	 * @access protected
 	 */
-	public function delete($table)
+	protected function _delete($table)
 	{
 		if (isset($this->book_id))
 		{
