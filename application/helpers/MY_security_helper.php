@@ -1,17 +1,51 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
+
+/**
+ * UniBooks MY_security_helper
+ *
+ * @package UniBooks
+ * @category Helpers
+ * @author Emiliano Bovetti
+ */
+
+// ------------------------------------------------------------------------
 
 require_once PHPASS_PATH . 'PasswordHash.php';
 
-function do_hash($str)
+/**
+ * Uses the PHPass library to make secure hash.
+ *
+ * @param	string
+ * @return string  (hash)
+ * @access public 
+ */
+function do_hash( $str )
 {
 	$hasher = new PasswordHash(8, FALSE);
 	return $hasher->HashPassword($str);
 }
 
-function check_hash($hashedPassword, $str)
+/**
+ * Uses the PHPass library to check the validity of an hash.
+ *
+ * @param	string  hashed password
+ * @param string  password
+ * @return boolean
+ * @access public 
+ */
+function check_hash( $hashed_password, $str )
 {
 	$hasher = new PasswordHash(8, FALSE);
-	return $hasher->CheckPassword($str, $hashedPassword);
+	return $hasher->CheckPassword($str, $hashed_password);
 }
 
 /* End of file MY_security_helper.php */
