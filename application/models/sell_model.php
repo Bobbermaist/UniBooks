@@ -1,61 +1,43 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Sell_model extends MY_Model {
+class Sell_model extends Exchange_base {
 
-	function __construct()
+	protected $price;
+
+	protected $sells = array();
+
+	public function __construct()
 	{
 		parent::__construct();
 		$this->load->database();
+		$this->_set_user_id();
 	}
 
-	public function insert($user_id, $book_id, $price)
+	public function price($value = NULL)
 	{
-		$user_id = intval($user_id);
-		$book_id = intval($book_id);
-		$price = str_replace(',', '.', $price);
-		if( $this->get($user_id, $book_id) )
-			return FALSE;
-		$this->db->insert('books_for_sale', array('user_id' => $user_id, 'book_id' => $book_id, 'price' => $price));
-		return TRUE;
+		return ($value === NULL)
+			? $this->_get('price')
+			: $this->price = (float) str_replace(',', '.', $value);
 	}
 
-	public function get($user_id, $book_id = NULL)
+	public function insert()
 	{
-		if( $book_id )
+		return $this->_insert('books_for_sale', array('price'));
+	}
+
+	public function get()
+	{
+		$this->db->from('books_for_sale')->where('user_id', $this->user_id);
+		if (($query = $this->db->get()) !== 0)
 		{
-			$this->db->from('books_for_sale')->where(array('user_id' => $user_id, 'book_id' => $book_id));
-			$query = $this->db->get();
-			if( $query->num_rows == 0 )
-				return FALSE;
-			else
-				return $query->row();
-		}
-		else
-		{
-			$this->load->model('Book_model');
-			//$this->db->from('books')->where('user_id', $user_id)->join('books_for_sale', 'books_for_sale.book_id = books.ID');
-			$this->db->from('books_for_sale')->where('user_id', $user_id);
-			$sells = $this->db->get();
-			$books = array();
-			foreach($sells->result() as $sell)
+			foreach ($query->result() as $row)
 			{
-				$book = $this->Book_model->get($sell->book_id);
-				$book['price'] = $sell->price;
-				$book['ID'] = $sell->book_id;
-				array_push($books, $book);
+				$this->sells[] = array(
+					'book_id'	=> $row->book_id,
+					'price'		=> $row->price,
+				);
 			}
-			return $books;
 		}
-	}
-
-	public function get_price($user_id, $book_id)
-	{
-		return $this->get($user_id, $book_id)->price;
-	}
-
-	public function delete($user_id, $book_id)
-	{
-		$this->db->delete('books_for_sale', array('user_id' => $user_id, 'book_id' => $book_id));
 	}
 }
 

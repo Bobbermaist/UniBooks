@@ -9,10 +9,10 @@ class Test extends MY_Controller {
 
 	public function index($code = NULL)
 	{
-		$this->load->model('Book_model');
-		$isbn = str_replace(array('-', ' '), '', $code);
-		$this->Book_model->search($isbn);
-		print_r($this->Book_model->get_array());
+		foreach ($this as $p_name => $p_value)
+		{
+			echo '$p_name = ', $p_name, '<br>';
+		}
 	}
 }
 

@@ -1,53 +1,33 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Request_model extends MY_Model {
+class Request_model extends Exchange_base {
 
-	function __construct()
+	protected $requests = array();
+
+	public function __construct()
 	{
 		parent::__construct();
 		$this->load->database();
+		$this->_set_user_id();
 	}
 
-	public function insert($user_id, $book_id)
+	public function insert()
 	{
-		$user_id = intval($user_id);
-		$book_id = intval($book_id);
-		if( $this->get($user_id, $book_id) )
-			return FALSE;
-		$this->db->insert('books_requested', array('user_id' => $user_id, 'book_id' => $book_id));
-		return TRUE;
+		return $this->_insert('books_for_sale');
 	}
 
-	public function get($user_id, $book_id = NULL)
+	public function get()
 	{
-		if( $book_id )
+		$this->db->from('books_requested')->where('user_id', $this->ID);
+		if (($query = $this->db->get()) !== 0)
 		{
-			$this->db->from('books_requested')->where(array('user_id' => $user_id, 'book_id' => $book_id));
-			$query = $this->db->get();
-			if( $query->num_rows == 0 )
-				return FALSE;
-			else
-				return $query->row();
-		}
-		else
-		{
-			$this->load->model('Book_model');
-			$this->db->from('books_requested')->where('user_id', $user_id);
-			$requests = $this->db->get();
-			$books = array();
-			foreach($requests->result() as $request)
+			foreach ($query->result() as $row)
 			{
-				$book = $this->Book_model->get($request->book_id);
-				$book['ID'] = $request->book_id;
-				array_push($books, $book);
+				$this->sells[] = array(
+					'book_id'	=> $row->book_id,
+				);
 			}
-			return $books;
 		}
-	}
-
-	public function delete($user_id, $book_id)
-	{
-		$this->db->delete('books_requested', array('user_id' => $user_id, 'book_id' => $book_id));
 	}
 }
 

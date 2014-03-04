@@ -6,14 +6,13 @@ class Book extends MY_Controller {
 	{
 		parent::__construct();
 		$this->load->model('Book_model');
-		$this->load->library('session');
-		$this->load->helper('security');
-		$this->load->helper('url');
 	}
 
 	public function index()
 	{
 		$this->load->helper('form');
+		$this->_set_view('form/single_field', array(
+			))
 		$this->load->config('form_data');
 		$view_data = $this->config->item('book_search_data');
 		$view_data = array(
@@ -26,12 +25,6 @@ class Book extends MY_Controller {
     	'submit_name'		=> 'search',
     	'submit_value'	=> 'Cerca'
 		);
-		$this->session->set_userdata(array('action' => 'book/search_result'));
-
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-		$this->load->view('form/single', $view_data);
-		$this->load->view('template/coda');
 	}
 
 	public function set_search_key()

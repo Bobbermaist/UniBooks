@@ -5,20 +5,16 @@ class Admin extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->library('session');
-		$this->load->helper('url');
-		if( $this->session->userdata('rights') < 1 )
-			redirect('user');
+		$this->_restrict_area('admin', 'admin/index');
 	}
 
 	public function index()
 	{
-		$user = $this->session->all_userdata();
-		
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-		$this->load->view('paragraphs', array('p' => 'Benvenuto, amministratore <b>'.$user['user_name'].'!</b>'));
-		$this->load->view('template/coda');
+		$this->_set_view('generic', array(
+			'p'	=> 'Benvenuto, amministratore <b>' . $this->User_model->user_name() . '</b>!'
+		));
+
+		$this->_view();
 	}
 }
 

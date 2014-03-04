@@ -1,119 +1,11 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class User_model extends MY_Model {
-	
-	private $ID;
-
-	private $user_name;
-
-	private $password;
-
-	private $email;
-
-	private $registration_time;
-
-	private $rights;
-
-	private $confirm_code;
-
-	private $tmp_email;
+class User_model extends User_base {
 
 	public function __construct()
 	{
 		parent::__construct();
 		$this->load->database();
-	}
-
-		/* get / set methods */
-	public function id($value = NULL)
-	{
-		if ($value === NULL)
-		{
-			return $this->_get('ID');;
-		}
-		
-		$this->ID = (int) $value;
-		return $this->select();
-	}
-
-	public function user_name($value = NULL)
-	{
-		return ($value === NULL)
-			? $this->_get('user_name')
-			: $this->user_name = $value;
-	}
-
-	public function password($value = NULL)
-	{
-		$this->load->helper('security');
-		return ($value === NULL)
-			? $this->_get('password')
-			: $this->password = do_hash($value);
-	}
-
-	public function email($value = NULL)
-	{
-		return ($value === NULL)
-			? $this->_get('email')
-			: $this->email = $value;
-	}
-
-	public function registration_time()
-	{
-		return $this->_get('registration_time');
-	}
-
-	public function rights()
-	{
-		return $this->_get('rights');
-	}
-
-	public function confirm_code()
-	{
-		return $this->_get('confirm_code');
-	}
-
-	public function tmp_email($value = NULL)
-	{
-		return ($value === NULL)
-			? $this->_get('tmp_email')
-			: $this->tmp_email = $value;
-	}
-
-	public function unset_all()
-	{
-		unset(
-			$this->ID,
-			$this->user_name,
-			$this->password,
-			$this->email,
-			$this->registration_time,
-			$this->rights,
-			$this->confirm_code,
-			$this->tmp_email
-		);
-	}
-
-		/* private set methods */
-	private function _set_confirm_code()
-	{
-		$this->load->helper('string');
-		$this->confirm_code = random_string('alnum', 15);
-	}
-
-	private function _set_time()
-	{
-		$this->registration_time = date(
-			$this->config->item('log_date_format'), 
-			$_SERVER['REQUEST_TIME']
-		);
-	}
-
-		/* base db methods */
-	private function _exists($field, $value)
-	{
-		$query = $this->db->from('users')->where($field, $value)->limit(1)->get();
-		return (boolean) $query->num_rows;
 	}
 
 	public function insert()
@@ -134,29 +26,6 @@ class User_model extends MY_Model {
 		$this->_insert_tmp();
 	}
 
-	public function select($field = 'ID')
-	{
-		$this->db->from('users');
-			
-		$this->db->where($field, $this->$field);
-		$res = $this->db->get();
-
-		if ($res->num_rows == 0)
-		{
-			$this->unset_all;
-			return FALSE;
-		}
-
-		$user_data = $res->row();
-		$this->ID = (int) $user_data->ID;
-		$this->user_name = $user_data->user_name;
-		$this->password = $user_data->password;
-		$this->email = $user_data->email;
-		$this->registration_time = $user_data->registration_time;
-		$this->rights = (int) $user_data->rights;
-		return TRUE;
-	}
-
 	public function update()
 	{
 		$this->db->where('ID', $this->ID)->update('users', array(
@@ -167,7 +36,7 @@ class User_model extends MY_Model {
 			'rights'						=> $this->rights,
 		));
 	}
-
+	
 		/* user methods */
 	public function activate($activation_key)
 	{
@@ -183,10 +52,10 @@ class User_model extends MY_Model {
 	public function ask_for_reset_password($user_or_email)
 	{
 		$this->email = $user_or_email;
-		if ($this->select('email') === FALSE)
+		if ($this->select_by('email') === FALSE)
 		{
 			$this->user_name = $user_or_email;
-			$this->select('user_name');
+			$this->select_by('user_name');
 		}
 
 		$this->_set_confirm_code();
@@ -202,16 +71,10 @@ class User_model extends MY_Model {
 		return TRUE;
 	}
 
-	private function _check_password($password)
-	{
-		$this->load->helper('security');
-		return check_hash($this->password, $password);
-	}
-
 		/* update settings */
 	public function update_user_name($user_name)
 	{
-		if ($this->_exists('user_name', $user_name))
+		if ($this->_select_one('users', 'user_name', $user_name) !== FALSE)
 			return FALSE;
 
 		$this->user_name = $user_name;
@@ -221,7 +84,7 @@ class User_model extends MY_Model {
 
 	public function ask_for_update_email($email)
 	{
-		if ($this->_exists('email', $email))
+		if ($this->_select_one('users', 'email', $email) !== FALSE)
 			return FALSE;
 		
 		$this->tmp_email = $email;
@@ -253,7 +116,7 @@ class User_model extends MY_Model {
 		/* sessions methods */
 	public function login($password)
 	{
-		$this->select('user_name');
+		$this->select_by('user_name');
 		if ($this->_check_password($password) === FALSE OR $this->user_data->rights < 0)
 			return FALSE;
 		$this->session->set_userdata(array(
@@ -262,14 +125,10 @@ class User_model extends MY_Model {
 		return TRUE;
 	}
 
-	public function read_session()
+	private function _check_password($password)
 	{
-		$this->load->library('session');
-		$user_id = $this->session->userdata('user_id');
-
-		return ($user_id === FALSE)
-			? FALSE
-			: $this->id($user_id);
+		$this->load->helper('security');
+		return check_hash($this->password, $password);
 	}
 
 		/* tmp_users methods */

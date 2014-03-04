@@ -5,34 +5,25 @@ class Sell extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->library('session');
-		$this->load->helper('url');
-		if( ! $this->session->userdata('ID') )
-		{
-			$this->session->set_userdata(array('redirect' => 'sell'));
-			redirect('user/login');
-		}
+		$this->_restrict_area('user', 'sell');
 	}
 
 	public function index()
 	{
 		$this->load->helper('form');
-		$view_data = array(
-			'input_type' => array(
-     		'name'      => 'book_search',
-     		'maxlength' => '255'
-    	),
-    	'redirect'			=> 'book/set_search_key',
-    	'title' 				=> 'Cerca un libro da vendere',
-    	'submit_name'		=> 'search',
-    	'submit_value'	=> 'Cerca'
-		);
-		$this->session->set_userdata(array('action' => 'sell/choose_price'));
+		$this->_set_view('form/single_field', array(
+			'action'				=> 'book/search',
+			'label'					=> 'Cerca un libro da vendere',
+			'submit_name'		=> 'search_for_sell',
+			'submit_value'	=> 'Cerca',
+			'input'					=> array(
+					'name'			=> 'search_key',
+					'maxlength'	=> '255',
+					'id'				=> 'search_for_sell',
+			),
+		));
 
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-		$this->load->view('form/single', $view_data);
-		$this->load->view('template/coda');
+		$this->_view();
 	}
 
 	public function choose_price()

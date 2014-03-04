@@ -5,11 +5,7 @@ class User extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		if ($this->logged !== TRUE)
-		{
-			$this->session->set_userdata(array('redirect' => 'user'));
-			redirect('login');
-		}
+		$this->_restrict_area('user');
 	}
 
 	public function index()

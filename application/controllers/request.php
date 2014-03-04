@@ -5,13 +5,7 @@ class Request extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->library('session');
-		$this->load->helper('url');
-		if( ! $this->session->userdata('ID') )
-		{
-			$this->session->set_userdata(array('redirect' => 'request'));
-			redirect('user/login');
-		}
+		$this->_restrict_area('user', 'request');
 	}
 
 	public function index()
