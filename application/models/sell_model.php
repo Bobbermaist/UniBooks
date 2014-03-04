@@ -31,7 +31,7 @@ class Sell_model extends Exchange_base {
 	protected $sells = array();
 
 	/**
-	 * Constructor, loads db and sets user_id by the session.
+	 * Constructor, loads db and sets user_id from session.
 	 *
 	 * @return void
 	 */

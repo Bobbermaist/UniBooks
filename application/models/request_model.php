@@ -25,7 +25,7 @@ class Request_model extends Exchange_base {
 	protected $requests = array();
 
 	/**
-	 * Constructor, loads db and sets user_id by the session.
+	 * Constructor, loads db and sets user_id from session.
 	 *
 	 * @return void
 	 */
