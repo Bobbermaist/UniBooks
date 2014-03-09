@@ -5,7 +5,7 @@ class Admin extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->_restrict_area('admin', 'admin/index');
+		$this->_restrict_area(ADMIN_RIGHTS, 'admin/index');
 	}
 
 	public function index()

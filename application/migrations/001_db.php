@@ -79,8 +79,11 @@ class Migration_Db extends CI_Migration {
 						) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
 		$this->db->query($query);
 
+		// insert first admin user
+		$admin_rights = ADMIN_RIGHTS;
 		$query = "INSERT INTO `users` (`ID`, `user_name`, `password`, `email`, `registration_time`, `rights`)
-							VALUES (1, 'bob', '\$2a\$08\$HIRyxB7T8zohpHt25DPKSu.AOuUKkjl2ImYTj9NEanT/IYRR.JP3G', 'emilianobovetti@hotmail.it', NULL, 1);";
+							VALUES (1, 'bob', '\$2a\$08\$HIRyxB7T8zohpHt25DPKSu.AOuUKkjl2ImYTj9NEanT/IYRR.JP3G',
+											'emilianobovetti@hotmail.it', NULL, $admin_rights);";
 		$this->db->query($query);
 	}
 

@@ -9,7 +9,7 @@ class Activation extends MY_Controller {
 
 	public function index($id = NULL, $activation_key = NULL)
 	{
-		$this->User_model->id($id);
+		$this->User_model->set_id($id);
 		if ($this->User_model->activate($activation_key) === TRUE)
 		{
 			$this->_set_view('generic', array(

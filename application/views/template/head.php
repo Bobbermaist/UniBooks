@@ -17,7 +17,7 @@
       <meta name="author" content="Emiliano Bovetti &amp; Ivan Prignano" />
       
       <base target="_self">
-      <link rel="stylesheet" type="text/css" href="/css/base.css">
+      <link rel="stylesheet" type="text/css" href="<?php echo base_url(CSS_PATH . 'base.css'); ?>">
   </head>
   
   <body>

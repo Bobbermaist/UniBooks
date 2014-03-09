@@ -31,7 +31,7 @@ class User_model extends User_base {
 	 * Insert a user in the db.
 	 * Object properties user_name, password and email must be setted.
 	 *
-	 * Set user rights to -1, the email must be confirmed before
+	 * Set user rights to UNCONFIRMED_ACCOUNT, the email must be confirmed before
 	 * log in.
 	 *
 	 * @return void
@@ -40,7 +40,7 @@ class User_model extends User_base {
 	{
 		$this->_set_confirm_code();
 		$this->_set_time();
-		$this->rights = -1;
+		$this->rights = UNCONFIRMED_ACCOUNT;
 
 		$this->db->insert('users', array(
 			'user_name'					=> $this->user_name,
@@ -51,7 +51,7 @@ class User_model extends User_base {
 		));
 		$this->ID = (int) $this->db->insert_id();
 
-		$this->_insert_tmp();
+		$this->_insert_tmp(TRUE);
 	}
 
 	/**
@@ -71,7 +71,7 @@ class User_model extends User_base {
 	}
 	
 	/**
-	 * Activate an account. Sets user rights to 0.
+	 * Activate an account. Sets user rights to standard USER_RIGHTS.
 	 * The user can now log in.
 	 *
 	 * @param string
@@ -79,10 +79,14 @@ class User_model extends User_base {
 	 */
 	public function activate($activation_key)
 	{
-		if ( $this->rights > -1 OR $this->_check_confirm_code($activation_key) === FALSE)
+		if ($this->rights > UNCONFIRMED_ACCOUNT OR
+					$this->_check_confirm_code($activation_key) === FALSE)
+		{
 			return FALSE;
+		}
 
-		$this->rights = 0;
+		// updating rights
+		$this->rights = USER_RIGHTS;
 		$this->update();
 		$this->_empty_tmp();
 		return TRUE;
@@ -93,23 +97,25 @@ class User_model extends User_base {
 	 * The request can be done by user name or email
 	 * (because both are unique fields)
 	 *
-	 * If user ID is already present in the `tmp_users`
-	 * return FALSE
 	 *
 	 * @param string
 	 * @return boolean
 	 */
 	public function ask_for_reset_password($user_or_email)
 	{
-		$this->email = $user_or_email;
+		$this->set_email($user_or_email);
 		if ($this->select_by('email') === FALSE)
 		{
-			$this->user_name = $user_or_email;
+			$this->set_user_name($user_or_email);
 			$this->select_by('user_name');
 		}
 
-		$this->_set_confirm_code();
-		return $this->_insert_tmp();
+		if ($this->get_id() !== FALSE)
+		{
+			$this->_set_confirm_code();
+			return $this->_insert_tmp();
+		}
+		return FALSE;
 	}
 
 	/**
@@ -122,7 +128,10 @@ class User_model extends User_base {
 	public function reset_password($confirm_code)
 	{
 		if ($this->_check_confirm_code($confirm_code) === FALSE)
+		{
 			return FALSE;
+		}
+
 		$this->update();
 		$this->_empty_tmp();
 		return TRUE;
@@ -137,9 +146,11 @@ class User_model extends User_base {
 	public function update_user_name($user_name)
 	{
 		if ($this->_select_one('users', 'user_name', $user_name) !== FALSE)
+		{
 			return FALSE;
+		}
 
-		$this->user_name = $user_name;
+		$this->set_user_name($user_name);
 		$this->update();
 		return TRUE;
 	}
@@ -155,7 +166,9 @@ class User_model extends User_base {
 	public function ask_for_update_email($email)
 	{
 		if ($this->_select_one('users', 'email', $email) !== FALSE)
+		{
 			return FALSE;
+		}
 		
 		$this->tmp_email = $email;
 		$this->_set_confirm_code();
@@ -171,10 +184,12 @@ class User_model extends User_base {
 	public function update_email($confirm_code)
 	{
 		if ($this->_check_confirm_code($confirm_code) === FALSE)
+		{
 			return FALSE;
+		}
 
 		$this->_get_tmp();
-		$this->email = $this->tmp_email;
+		$this->set_email($this->tmp_email);
 		$this->update();
 		$this->_empty_tmp();
 		return TRUE;
@@ -190,32 +205,44 @@ class User_model extends User_base {
 	public function update_password($old_pass, $new_pass)
 	{
 		if($this->_check_password($old_pass) === FALSE)
+		{
 			return FALSE;
-		$this->password($new_pass);
+		}
+
+		$this->set_password($new_pass);
 		$this->update();
 		return TRUE;
 	}
 
 	/**
-	 * Log in.
-	 * The user_name property must be setted.
-	 *
+	 * Log trough user name and password.
 	 * Sets the userdata. 
 	 *
 	 * @param string
+	 * @param string
 	 * @return boolean
 	 */
-	public function login($password)
+	public function login($user_name, $password)
 	{
+		$this->set_user_name($user_name);
 		$this->select_by('user_name');
-		if ($this->_check_password($password) === FALSE OR $this->user_data->rights < 0)
+		if ($this->_check_password($password) === FALSE OR $this->rights < USER_RIGHTS)
+		{
 			return FALSE;
+		}
+
 		$this->session->set_userdata(array(
 			'user_id'			=> $this->ID,
 		));
 		return TRUE;
 	}
 
+	public function logout()
+	{
+		$this->session->sess_destroy();
+		$this->unset_all();
+		redirect('/');
+	}
 	/**
 	 * Check the password through the security helper.
 	 *
@@ -231,25 +258,30 @@ class User_model extends User_base {
 
 	/**
 	 * Insert data in `tmp_users` table.
-	 * $this->ID and $this->confirm_code must be setted.
-	 *
-	 * return FALSE if already exists a row with user's ID.
+	 * The parameter $registration shuld be TRUE
+	 * only for registration.
 	 *
 	 * @return boolean
 	 * @access private
 	 */
-	private function _insert_tmp()
+	private function _insert_tmp($registration = FALSE)
 	{
-		if ( ! isset($this->ID) OR $this->_get_tmp() !== FALSE)
+		// Account not confirmed. Won't overwrite user tmp
+		if ($this->rights === UNCONFIRMED_ACCOUNT AND $registration === FALSE)
+		{
 			return FALSE;
+		}
+
 		$data = array(
 			'user_id'				=> $this->ID,
 			'confirm_code'	=> $this->confirm_code,
 		);
 		if (isset($this->tmp_email))
+		{
 			$data['tmp_email'] = $this->tmp_email;
-		
-		$this->db->insert('tmp_users', $data);
+		}
+
+		$this->_insert_on_duplicate('tmp_users', $data);
 		return TRUE;
 	}
 
@@ -264,12 +296,14 @@ class User_model extends User_base {
 	{
 		$this->db->from('tmp_users')->where('user_id', $this->ID)->limit(1);
 		$query = $this->db->get();
-		if ($query->num_rows == 0)
+		if ($query->num_rows === 0)
+		{
 			return FALSE;
+		}
 
 		$tmp = $query->row();
 		$this->confirm_code = $tmp->confirm_code;
-		$this->tmp_email($tmp->tmp_email);
+		$this->tmp_email = $tmp->tmp_email;
 		return TRUE;
 	}
 

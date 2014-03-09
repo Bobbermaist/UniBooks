@@ -56,7 +56,7 @@ class Book_model extends Book_base {
 	 */
 	public function search($key)
 	{
-		if ($this->ISBN($key) === TRUE)
+		if ($this->set_isbn($key) === TRUE)
 		{
 			return $this->_search_by_isbn();
 		}
@@ -76,7 +76,7 @@ class Book_model extends Book_base {
 		if ($this->select_by('ISBN') === FALSE)
 		{
 			$this->load->library('google_books');
-			$this->google_books->get_by_isbn( $this->ISBN() );
+			$this->google_books->get_by_isbn( $this->get_isbn() );
 			if ($this->google_books->total_items === 0)
 			{
 				return FALSE;

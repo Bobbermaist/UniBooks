@@ -45,22 +45,31 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 |
 */
 
-define('THIRD_PARTY', APPPATH . 'third_party/');
+define('THIRD_PARTY', FCPATH . 'application/third_party/');
 define('PHPASS_PATH', THIRD_PARTY . 'phpass/');
 define('UTF8_PATH', THIRD_PARTY . 'utf8/');
 define('GOOGLE_API_PATH', THIRD_PARTY . 'google_api/');
 define('GOOGLE_CACHE', FCPATH . APPPATH . 'cache/Google_Client/');
 
+define('VIEWS_PATH', APPPATH . 'views/');
+define('ASSETS_PATH', VIEWS_PATH . 'assets/');
+define('IMG_PATH', ASSETS_PATH . 'img/');
+define('CSS_PATH', ASSETS_PATH . 'css/');
+
 /*
 |--------------------------------------------------------------------------
-| Misc
+| User
 |--------------------------------------------------------------------------
 |
-| Other constants
+| Users constants
+| Books max results and user rights are defined here
 |
 */
 
 define('MAX_RESULTS', 10);
+define('UNCONFIRMED_ACCOUNT', 0);
+define('USER_RIGHTS', 1);
+define('ADMIN_RIGHTS', 2);
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

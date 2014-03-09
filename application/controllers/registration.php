@@ -16,9 +16,9 @@ class Registration extends MY_Controller {
 
 		if ($this->form_validation->run() === TRUE)
 		{
-			$this->User_model->user_name($this->input->post('user_name'));
-			$this->User_model->password($this->input->post('password'));
-			$this->User_model->email($this->input->post('email'));
+			$this->User_model->set_user_name($this->input->post('user_name'));
+			$this->User_model->set_password($this->input->post('password'));
+			$this->User_model->set_email($this->input->post('email'));
 			$this->User_model->insert();
 			$this->_send_activation();
 			$this->_set_view('generic', array(
@@ -57,11 +57,11 @@ class Registration extends MY_Controller {
 		$this->load->library('email');
 
 		$this->email->from('registration@unibooks.it');
-		$this->email->to($this->User_model->email());
+		$this->email->to($this->User_model->get_email());
 		$this->email->subject('Attivazione account');
 
 		$email_data = array(
-			'user_name'	=> $this->User_model->user_name(),
+			'user_name'	=> $this->User_model->get_user_name(),
 			'link'			=> $this->User_model->get_confirm_link('activation/index')
 		);
 		$this->email->message( $this->load->view('email/signup', $email_data, TRUE) );

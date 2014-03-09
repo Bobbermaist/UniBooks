@@ -5,20 +5,28 @@ class User extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->_restrict_area('user');
+		$this->_restrict_area(USER_RIGHTS);
 	}
 
 	public function index()
 	{
 				/* Test variabili sessione */
-		$this->_set_view('generic', array('p'	=> 'Hey, <b>' . $this->User_model->user_name() . '</b>!'));
-		$this->_set_view('generic', array('p'	=> 'Il tuo ID utente &egrave; <b>' . $this->User_model->id() . '</b>'));
-		$this->_set_view('generic', array('p'	=> 'Il tuo indirizzo email &egrave; <b>' . $this->User_model->email() . '</b>'));
-		$this->_set_view('generic', array(
-			'p'	=> ($this->User_model->rights() === 1)
-						? 'Il tuo &egrave; un account amministratore'
-						: 'Il tuo account ha normali permessi utente'
-		));
+		$this->_set_view('generic', array('p'	=> 'Hey, <b>' . $this->User_model->get_user_name() . '</b>!'));
+		$this->_set_view('generic', array('p'	=> 'Il tuo ID utente &egrave; <b>' . $this->User_model->get_id() . '</b>'));
+		$this->_set_view('generic', array('p'	=> 'Il tuo indirizzo email &egrave; <b>' . $this->User_model->get_email() . '</b>'));
+		
+		if ($this->User_model->get_rights() === USER_RIGHTS)
+		{
+			$this->_set_view('generic', array(
+				'p'	=> 'Il tuo account ha normali permessi utente',
+			));
+		}
+		elseif ($this->User_model->get_rights() === ADMIN_RIGHTS)
+		{
+			$this->_set_view('generic', array(
+				'p'	=> 'Il tuo &egrave; un account amministratore',
+			));
+		}
 		
 		$this->_set_view('generic', array(
 			'div'		=> anchor('user/settings', 'Modifica') . ' le informazioni',
@@ -26,6 +34,8 @@ class User extends MY_Controller {
 		));
 		$this->_set_view('generic', array('p'	=> 'Visualizza i tuoi ' . anchor('user/sells', 'annunci')));
 		$this->_set_view('generic', array('p'	=> 'Visualizza le ' . anchor('user/requests', 'richieste')));
+
+		$this->_set_view('generic', array('p'	=> anchor('user/logout', 'logout')));
 
 		$this->_view();
 	}
@@ -65,6 +75,10 @@ class User extends MY_Controller {
 			$this->_update_password();
 		}
 
+		$this->_set_view('generic', array(
+			'p'	=> anchor('user/logout', 'logout'),
+		));
+
 		$this->_view();
 	}
 
@@ -79,7 +93,7 @@ class User extends MY_Controller {
 					'name'				=> 'user_name',
 					'maxlength'		=> '20',
 					'id'					=> 'modify_user_name',
-					'value'				=> $this->User_model->user_name(),
+					'value'				=> $this->User_model->get_user_name(),
 			),
 		));
 	}
@@ -89,7 +103,7 @@ class User extends MY_Controller {
 		if ($this->User_model->update_user_name($this->input->post('user_name')))
 		{
 			$this->_set_view('generic', array(
-				'p' => 'User name modificato in: ' . $this->User_model->user_name(),
+				'p' => 'User name modificato in: ' . $this->User_model->get_user_name(),
 			));
 		}
 		else
@@ -112,7 +126,7 @@ class User extends MY_Controller {
 						'name'			=> 'email',
 						'maxlength'	=> '64',
 						'id'				=> 'modify_email',
-						'value'			=> $this->User_model->email(),
+						'value'			=> $this->User_model->get_email(),
 			),
 		));
 	}
@@ -129,7 +143,7 @@ class User extends MY_Controller {
 		else
 		{
 			$this->_set_view('generic', array(
-				'p'		=> 'Indirizzo gi&agrave; in uso o richiesta pendente',
+				'p'		=> 'Indirizzo email gi&agrave; in uso',
 				'id'	=> 'error',
 			));
 		}
@@ -140,11 +154,11 @@ class User extends MY_Controller {
 		$this->load->library('email');
 
 		$this->email->from('reset@unibooks.it');
-		$this->email->to($this->User_model->tmp_email());
+		$this->email->to($this->User_model->get_tmp_email());
 		$this->email->subject('Conferma email');
 
 		$email_data = array(
-			'user_name'	=> $this->User_model->user_name(),
+			'user_name'	=> $this->User_model->get_user_name(),
 			'link'			=> $this->User_model->get_confirm_link('user/settings', FALSE),
 		);
 		$this->email->message( $this->load->view('email/confirm', $email_data, TRUE) );
@@ -205,6 +219,11 @@ class User extends MY_Controller {
 				'class'	=> 'error',
 			));
 		}
+	}
+
+	public function logout()
+	{
+		$this->User_model->logout();
 	}
 
 }

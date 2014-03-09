@@ -30,27 +30,27 @@ class MY_Model extends CI_Model {
 	 * _get
 	 * 
 	 * Try to get a model property, return the property's value
-	 * if setted, FALSE otherwise.
+	 * if not empty, FALSE otherwise.
 	 * 
-	 * @param string the property to get
+	 * @param string the property's name
 	 * @return mixed object property on success or FALSE
 	 */
 	protected function _get($property)
 	{
-		return isset($this->$property) ? $this->$property : FALSE;
+		return empty( $this->{$property} ) ? FALSE : $this->{$property};
 	}
 
 	/**
 	 * Select one result from a table.
 	 * Accepts three parameters, the table name,
-	 * a string with the field value or an associative array
+	 * a string with the field name or an associative array
 	 * ('field' => 'value').
 	 * If the second parameter is a string, the third accepts
 	 * the value.
 	 * 
 	 * @param string  table name
 	 * @param mixed  string or array
-	 * @param mixed  a string or NULL
+	 * @param mixed  string or NULL
 	 * @return mixed  a row object on success or FALSE
 	 */
 	protected function _select_one($table, $where, $value = NULL)
@@ -58,6 +58,22 @@ class MY_Model extends CI_Model {
 		$this->db->from($table)->where($where, $value)->limit(1);
 		$query = $this->db->get();
 		return $query->num_rows == 1 ? $query->row() : FALSE;
+	}
+
+	protected function _insert_on_duplicate($table, $data)
+	{
+		$sql = $this->db->insert_string($table, $data) . ' ON DUPLICATE KEY UPDATE ';
+
+		while (current($data) !== FALSE)
+		{
+			$sql .= key($data) . "='" . current($data) . "'";
+
+			if (next($data) !== FALSE)
+			{
+				$sql .= ', ';
+			}
+		}
+		$this->db->query($sql);
 	}
 }
 
@@ -136,82 +152,75 @@ class User_base extends MY_Model {
 		parent::__construct();
 	}
 
+	public function get_id()
+	{
+		return $this->_get('ID');
+	}
+
 	/**
-	 * get / set ID
-	 * 
-	 * If the method is called with NULL,
-	 * return the ID value (FALSE if not setted).
+	 * set_ID
 	 *
-	 * Otherwise sets the ID property with the $value parameter
-	 * and then he retrieve other properties from `users` table.
-	 * In this case return boolean indicates whether the ID exists.
+	 * Sets the ID property with the $value parameter
+	 * and then retrieve other properties from `users` table.
+	 * Return boolean indicates whether the ID exists.
 	 * If not exists the select_by method will unset all properties. 
 	 * 
-	 * @param mixed  int or NULL
-	 * @return mixed
+	 * @param int
+	 * @return boolean
 	 */
-	public function id($value = NULL)
+	public function set_id($value)
 	{
-		if ($value === FALSE)
-		{
-			return FALSE;
-		}
-		if ($value === NULL)
-		{
-			return $this->_get('ID');
-		}
-		
 		$this->ID = (int) $value;
 		return $this->select_by('ID');
 	}
 
-	/**
-	 * get / set user_name
-	 * 
-	 * Retrieve user_name with $value === NULL,
-	 * set user_name otherwise.
-	 *
-	 * @param mixed  string or NULL
-	 * @return mixed  string or FALSE
-	 */
-	public function user_name($value = NULL)
+	public function get_user_name()
 	{
-		return ($value === NULL)
-			? $this->_get('user_name')
-			: $this->user_name = $value;
+		return $this->_get('user_name');
 	}
 
 	/**
-	 * get / set password
-	 * 
-	 * Retrieve password with $value === NULL,
-	 * hash the $value and set password otherwise.
+	 * trim and sets user_name.
 	 *
-	 * @param mixed  string or NULL
-	 * @return mixed  string or FALSE
+	 * @param string
+	 * @return void
 	 */
-	public function password($value = NULL)
+	public function set_user_name($value)
+	{
+		$this->user_name = trim($value);
+	}
+
+	public function get_password()
+	{
+		$this->_get('password');
+	}
+
+	/**
+	 * hash and sets password.
+	 *
+	 * @param string
+	 * @return void
+	 */
+	public function set_password($value)
 	{
 		$this->load->helper('security');
-		return ($value === NULL)
-			? $this->_get('password')
-			: $this->password = do_hash($value);
+		$this->password = do_hash($value);
+	}
+
+	public function get_email()
+	{
+		return $this->_get('email');
 	}
 
 	/**
-	 * get / set email
-	 * 
-	 * Retrieve email with $value === NULL,
-	 * set email otherwise.
+	 * Sets email with $value to lower case and trim.
 	 *
-	 * @param mixed  string or NULL
-	 * @return mixed  string or FALSE
+	 * @param string
+	 * @return void
 	 */
-	public function email($value = NULL)
+	public function set_email($value)
 	{
-		return ($value === NULL)
-			? $this->_get('email')
-			: $this->email = $value;
+		$this->email = utf8_strtolower(trim($value));
 	}
 
 	/**
@@ -219,7 +228,7 @@ class User_base extends MY_Model {
 	 *
 	 * @return mixed string or FALSE
 	 */
-	public function registration_time()
+	public function get_registration_time()
 	{
 		return $this->_get('registration_time');
 	}
@@ -229,7 +238,7 @@ class User_base extends MY_Model {
 	 *
 	 * @return mixed int or FALSE
 	 */
-	public function rights()
+	public function get_rights()
 	{
 		return $this->_get('rights');
 	}
@@ -239,21 +248,19 @@ class User_base extends MY_Model {
 	 *
 	 * @return mixed string or FALSE
 	 */
-	public function confirm_code()
+	public function get_confirm_code()
 	{
 		return $this->_get('confirm_code');
 	}
 
-	/**
-	 * get registration_time
-	 *
-	 * @return mixed string or FALSE
-	 */
-	public function tmp_email($value = NULL)
+	public function get_tmp_email()
 	{
-		return ($value === NULL)
-			? $this->_get('tmp_email')
-			: $this->tmp_email = $value;
+		return $this->_get('tmp_email');
+	}
+
+	public function set_tmp_email($value)
+	{
+		$this->email = utf8_strtolower(trim($value));
 	}
 
 	/**
@@ -316,14 +323,12 @@ class User_base extends MY_Model {
 	 */
 	public function select_by($field = 'ID')
 	{
-		$this->db->from('users');
-			
-		$this->db->where($field, $this->$field);
+		$this->db->from('users')->where($field, $this->{$field});
 		$res = $this->db->get();
 
 		if ($res->num_rows == 0)
 		{
-			$this->unset_all;
+			$this->unset_all();
 			return FALSE;
 		}
 
@@ -344,12 +349,13 @@ class User_base extends MY_Model {
 	 */
 	public function read_session()
 	{
-		if ($this->id() === FALSE)
+		if ($this->get_id() === FALSE)
 		{
 			$this->load->library('session');
 
-			return $this->id( $this->session->userdata('user_id') );
+			return $this->set_id( $this->session->userdata('user_id') );
 		}
+		// ID property seems setted, return TRUE
 		return TRUE;
 	}
 }
@@ -506,9 +512,8 @@ class Book_base extends MY_Model {
 	 * FALSE if neither are setted.
 	 * 
 	 * @return mixed  string or boolean
-	 * @access private
 	 */
-	private function _get_isbn()
+	public function get_isbn()
 	{
 		if ($this->_get('ISBN_13') !== FALSE)
 		{
@@ -518,39 +523,34 @@ class Book_base extends MY_Model {
 	}
 
 	/**
-	 * Get / Set ISBN
-	 * 
-	 * Calls $this->_get_isbn() if $value === NULL, otherwise tries
-	 * to validate and set the ISBN.
+	 * Tries to validate and set the ISBN.
 	 *
 	 * If $value is a valid 13-digit ISBN it sets ISBN_13 property,
 	 * if it is a valid 10-digit ISBN sets ISBN_10.
+	 *
+	 * Return boolean indicating whether the code is valid
 	 * 
-	 * @param mixed  string or NULL
-	 * @return mixed  string or FALSE
+	 * @param string
+	 * @return boolean
 	 */
-	public function ISBN($value = NULL)
+	public function set_isbn($value)
 	{
-		if ($value !== NULL)
+		$isbn = strtoupper(trim($value));
+
+		if (validate_isbn_10($value) === TRUE)
 		{
-			$isbn = strtoupper(trim($value));
-
-			if (validate_isbn_10($value) === TRUE)
-			{
-				$this->ISBN_10 = $isbn;
-			}
-			elseif (validate_isbn_13($value) === TRUE)
-			{
-				$this->ISBN_13 = $isbn;
-			}
-			elseif (validate_isbn_13('978' . $value) === TRUE)
-			{
-				// did you forget the '978' prefix?
-				$this->ISBN_13 = '978' . $value;
-			}
+			$this->ISBN_10 = $isbn;
 		}
-
-		return $this->_get_isbn();
+		elseif (validate_isbn_13($value) === TRUE)
+		{
+			$this->ISBN_13 = $isbn;
+		}
+		elseif (validate_isbn_13('978' . $value) === TRUE)
+		{
+			// did you forget the '978' prefix?
+			$this->ISBN_13 = '978' . $value;
+		}
+		return isset($this->ISBN_13) OR isset($this->ISBN_10);
 	}
 
 	/**
@@ -570,7 +570,7 @@ class Book_base extends MY_Model {
 		$this->_categories_id = $this->_insert_info('categories', $this->categories);
 
 		$this->db->insert('books', array(
-			'ISBN'							=> cut_isbn( $this->ISBN() ),
+			'ISBN'							=> cut_isbn( $this->get_isbn() ),
 			'google_id'					=> $this->google_id,
 			'title'							=> $this->title,
 			'publisher_id'			=> $this->_publisher_id,
@@ -600,7 +600,7 @@ class Book_base extends MY_Model {
 	 */
 	private function _insert_info($table, $value)
 	{
-		if ($value === NULL)
+		if (empty($value))
 		{
 			return $this->_insert_info($table, 'Unknown');
 		}
@@ -679,7 +679,7 @@ class Book_base extends MY_Model {
 		$this->db->from('books');
 		if ($field === 'ISBN')
 		{
-			$this->db->where('ISBN', cut_isbn( $this->ISBN() ));
+			$this->db->where('ISBN', cut_isbn( $this->get_isbn() ));
 		}
 		else
 		{
@@ -769,7 +769,7 @@ class Book_base extends MY_Model {
 	 */
 	protected function _get_publisher()
 	{
-		$code = cut_isbn( $this->ISBN() );
+		$code = cut_isbn( $this->get_isbn() );
 
 		for($digits = 7; $digits > 3; $digits--)
 		{
@@ -791,7 +791,7 @@ class Book_base extends MY_Model {
 	 */
 	protected function _get_country()
 	{
-		$code = cut_isbn( $this->ISBN() );
+		$code = cut_isbn( $this->get_isbn() );
 		for($digits = 1; $digits < 6; $digits++)
 		{
 			$this->db->from('language_groups')->where('code', substr($code, 0, $digits));
@@ -846,23 +846,23 @@ class Exchange_base extends MY_Model {
 	{
 		$user = new User_base;
 		$user->read_session();
-		$this->user_id = $user->ID;
+		$this->user_id = $user->get_id();
+	}
+
+	public function get_book_id()
+	{
+		return $this->_get('book_id');
 	}
 
 	/**
-	 * Get / Set book_id
-	 *
-	 * Retrieve $this->book_id if $value === NULL
-	 * otherwive set this property.
+	 * Sets book_id
 	 * 
 	 * @param int
-	 * @return mixed  int or FALSE
+	 * @return void
 	 */
-	public function book_id($value = NULL)
+	public function set_book_id($value)
 	{
-		return ($value === NULL)
-			? $this->_get('book_id')
-			: $this->book_id = (int) $value;
+		$this->book_id = (int) $value;
 	}
 
 	/**
@@ -889,9 +889,10 @@ class Exchange_base extends MY_Model {
 		{
 			return FALSE;
 		}
+
 		foreach ($properties as $property)
 		{
-			$clause[$property] = $this->property;
+			$clause[$property] = $this->{$property};
 		}
 		$this->db->insert($table, $clause);
 		return TRUE;

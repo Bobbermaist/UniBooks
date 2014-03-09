@@ -49,13 +49,16 @@ class Sell_model extends Exchange_base {
 	 * @param mixed  float or NULL
 	 * @return mixed  FALSE or float
 	 */
-	public function price($value = NULL)
+	public function get_price()
 	{
-		return ($value === NULL)
-			? $this->_get('price')
-			: $this->price = (float) str_replace(',', '.', $value);
+		return $this->_get('price');
 	}
 
+	public function set_price($value)
+	{
+		$this->price = (float) str_replace(',', '.', $value);
+	}
+	
 	/**
 	 * Insert method.
 	 * See the Exchange_base class in ./application/core/MY_Model.php

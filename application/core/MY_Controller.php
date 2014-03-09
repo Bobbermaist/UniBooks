@@ -105,25 +105,15 @@ class MY_Controller extends CI_Controller  {
 	 * 
 	 * By default restricts to users (logged in)
 	 *
-	 * @param string  'user' or 'admin'
+	 * @param int  USER_RIGHTS or ADMIN_RIGHTS contants
 	 * @param string  optional - redirect here after log in
 	 * @return void
 	 * @access protected
 	 */
-	protected function _restrict_area($required = 'user', $redirect = NULL)
+	protected function _restrict_area($required_rights = USER_RIGHTS, $redirect = NULL)
 	{
-		if ($this->logged === FALSE OR $this->User_model->rights < $required_rights)
+		if ($this->logged === FALSE OR $this->User_model->get_rights() < $required_rights)
 		{
-			switch ($required)
-			{
-				case 'admin':
-					$required_rights = 1;
-					break;
-				case 'user': default:
-					$required_rights = 0;
-					break;
-			}
-			
 			if ($redirect !== NULL)
 			{
 				$this->session->set_userdata('redirect', $redirect);

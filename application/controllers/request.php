@@ -5,7 +5,7 @@ class Request extends MY_Controller {
 	public function __construct()
 	{
 		parent::__construct();
-		$this->_restrict_area('user', 'request');
+		$this->_restrict_area(USER_RIGHTS, 'request');
 	}
 
 	public function index()

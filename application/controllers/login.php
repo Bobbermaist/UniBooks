@@ -25,8 +25,12 @@ class Login extends MY_Controller {
 
 		if ($this->form_validation->run() === TRUE)
 		{
-			$this->User_model->user_name($this->input->post('user_name'));
-			if ($this->User_model->login($this->input->post('password')) === TRUE)
+			$login = $this->User_model->login(
+				$this->input->post('user_name'),
+				$this->input->post('password')
+			);
+			
+			if ($login === TRUE)
 			{
 				$redirect = $this->session->userdata('redirect');
 				if ($redirect === FALSE)
