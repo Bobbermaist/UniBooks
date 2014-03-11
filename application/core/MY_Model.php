@@ -27,13 +27,22 @@ class MY_Model extends CI_Model {
 	}
 
 	/**
-	 * _get
-	 * 
 	 * Try to get a model property, return the property's value
 	 * if not empty, FALSE otherwise.
+	 *
+	 * Be careful!
+	 * Return FALSE if the property has one of the
+	 * following values:
+	 *
+	 * FALSE, integer 0, float 0.0, an empty string
+	 * and the string '0', empty array, empty object,
+	 * NULL.
 	 * 
-	 * @param string the property's name
-	 * @return mixed object property on success or FALSE
+	 * If the property contains one of those values,
+	 * or it isn't setted this method will return boolean FALSE
+	 * 
+	 * @param string the property name
+	 * @return mixed object property or FALSE
 	 */
 	protected function _get($property)
 	{
@@ -60,6 +69,21 @@ class MY_Model extends CI_Model {
 		return $query->num_rows == 1 ? $query->row() : FALSE;
 	}
 
+	/**
+	 * Perform an insert query with 'on duplicate key update'
+	 * clause.
+	 * The first parameter contains a tring with the table name,
+	 * the second one an associative array with th values.
+	 *
+	 * Ex. $table = 'users' $data = array('id' => 1, 'name' => 'test')
+	 * produces the following query:
+	 * INSERT INTO `users` (id, name) VALUES ('1', 'test')
+	 * ON DUPLICATE KEY UPDATE id='1', name='test'
+	 *
+	 * @param string
+	 * @param array
+	 * @return void
+	 */
 	protected function _insert_on_duplicate($table, $data)
 	{
 		$sql = $this->db->insert_string($table, $data) . ' ON DUPLICATE KEY UPDATE ';

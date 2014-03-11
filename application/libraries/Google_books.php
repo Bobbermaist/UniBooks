@@ -5,161 +5,136 @@ require_once GOOGLE_API_PATH . 'contrib/Google_BooksService.php';
 
 class Google_books {
 
+  /**
+   * CodeIgniter istance
+   * @var object
+   * @access private
+   */
   private $_CI;
 
+  /**
+   * Google service
+   * @var object
+   * @access private
+   */
   private $_service;
 
-  private $_search_id = 0;
+  /**
+   * Array with all volumes retrieved
+   * @var array
+   */
+  public $volumes = array();
 
-  private $_index = 0;
-
-  public $volumes;
-
+  /**
+   * Total books retrieved
+   * @var int
+   */
   public $total_items = 0;
 
+  /**
+   * Search key
+   * @var string
+   */
   public $search_key;
 
+  /**
+   * Constructor
+   * Get the CI instance
+   * @return void
+   */
   public function __construct()
   {
     $this->_CI =& get_instance();
   }
 
+  /**
+   * There is a chance out of 50 
+   * destructor remove all google cache
+   */
   public function __destruct()
   {
-      /*
-       * C'è una possibilità su 50 che il
-       * distruttore cancelli tutta la
-       * cache di Google
-       */
     if (rand(1, 50) == 1)
       $this->empty_google_cache();
   }
 
+  /**
+   * Set search key
+   *
+   * @param string
+   * @return void
+   */
   public function set_search_key($str)
   {
     $this->search_key = trim($str);
   }
 
-  public function empty_google_cache()
-  {
-    $this->_CI->load->helper('file');
-    delete_files(GOOGLE_CACHE, TRUE);
-  }
-
-  public function get($data, $index = 0)
-  {
-    $this->_get_service();
-    $this->_index = $index;
-    $query = $data;
-
-    if (is_array($data))
-    {
-      $query = isset($data['title']) ? 'intitle:' . $data['title'] . ' ' : '';
-      $query .= isset($data['author']) ? 'inauthor:' . $data['author'] . ' ' : '';
-      $query .= isset($data['publisher']) ? 'inpublisher:' . $data['publisher'] . ' ' : '';
-      $query .= isset($data['subject']) ? 'subject:' . $data['subject'] . ' ' : '';
-    }
-    $this->set_search_key($query);
-    $this->_list_volumes();
-  }
-
-  public function get_by_isbn($isbn)
-  {
-    $this->_get_service();
-    $this->set_search_key("isbn:$isbn");
-    $this->_list_volumes(FALSE);
-  }
-
+  /**
+   * Creates a new google clien and set
+   * _service.
+   *
+   * @return void
+   */
   private function _get_service()
   {
     $client = new Google_Client();
     $this->_service = new Google_BooksService($client);
   }
 
-  private function _list_volumes($caching = TRUE)
+  /**
+   * Deletes all files in GOOGLE_CACHE
+   * directory
+   *
+   * @return void
+   */
+  public function empty_google_cache()
   {
-    if ($caching === TRUE)
-    {
-      $this->_CI->load->database();
-      $this->_get_search_id();
-      if ($this->_get_results() === TRUE)
-        return;
-    }
+    $this->_CI->load->helper('file');
+    delete_files(GOOGLE_CACHE, TRUE);
+  }
 
+  /**
+   * Get a book by its ISBN.
+   * 
+   * @param string
+   * @return void
+   */
+  public function get_by_isbn($isbn)
+  {
+    $this->_get_service();
+    $this->set_search_key("isbn:$isbn");
+    $this->_list_volumes();
+  }
+
+  /**
+   * Makes the query to google books.
+   * Sets properties volumes and total_items
+   * with fetched data.
+   *
+   * @return void
+   */
+  private function _list_volumes()
+  {
     $opt_params = array(
-      'startIndex'  => $this->_index,
       'maxResults'  => MAX_RESULTS,
     );
     $google_fetch = $this->_service->volumes->listVolumes($this->search_key, $opt_params);
     $this->volumes = $this->_array_format($google_fetch);
     $this->total_items = $google_fetch['totalItems'];
-
-    if ($caching === TRUE)
-    {
-      if ($this->_search_id === 0)
-      {
-        $this->fetch_total_items();
-        $this->_insert_search_key();
-      }
-      $this->_insert_results();
-    }
   }
 
-    /* caching methods */
-  private function _insert_search_key()
-  {
-    $data = array(
-      'search_key'  => $this->search_key,
-      'total_items' => $this->total_items,
-    );
-    $this->_CI->db->insert('google_search_keys', $data);
-    $this->_search_id = $this->_CI->db->insert_id();
-  }
-
-  private function _insert_results()
-  {
-    $data = array(
-      'search_id' => $this->_search_id,
-      'index'     => $this->_index,
-      'results'   => serialize($this->volumes),
-    );
-    $this->_CI->db->insert('google_results', $data);
-  }
-
-  private function _get_search_id()
-  {
-    $this->_CI->db->from('google_search_keys')->where('search_key', $this->search_key)->limit(1);
-    $query = $this->_CI->db->get();
-    if ($query->num_rows == 1)
-    {
-      $res = $query->row();
-      $this->_search_id = $res->ID;
-      $this->total_items = $res->total_items;
-    }
-  }
-
-  private function _get_results()
-  {
-    if ($this->_search_id == 0)
-      return FALSE;
-    $where_clause = array(
-      'search_id' => $this->_search_id,
-      'index'     => $this->_index,
-    );
-    $this->_CI->db->select('results')->from('google_results')->where($where_clause)->limit(1);
-    $query = $this->_CI->db->get();
-    if ($query->num_rows == 1)
-    {
-      $this->volumes = unserialize(utf8_decode($query->row()->results));
-      return TRUE;
-    }
-    return FALSE;
-  }
-
+  /**
+   * Reformats google data to a simpler associative array.
+   * Indexes can be setted with fetched data or NULL otherwise.
+   * 
+   * @param array
+   * @return mixed array or NULL
+   */
   private function _array_format($google_fetch)
   {
-    if ($google_fetch['totalItems'] == 0 OR ! isset($google_fetch['items']))
+    if (empty($google_fetch['totalItems']) OR empty($google_fetch['items']))
+    {
       return NULL;
+    }
 
     $books = array();
     foreach($google_fetch['items'] as $item)
@@ -183,6 +158,12 @@ class Google_books {
     return $books;
   }
 
+  /**
+   * Finds ISBN codes in 'volumeInfo' array.
+   * @param array
+   * @param string  ISBN type ('13' or '10')
+   * @return mixed  string or NULL
+   */
   private function _get_isbn($item, $type = '13')
   {
     if (isset($item['industryIdentifiers']))
@@ -196,38 +177,6 @@ class Google_books {
     }
     return NULL;
   }
-
-    /* recoursive method to retrieve real total items */
-  private function _fetch_total_items()
-  {
-    define('JUMP', 300);
-
-      /* return, total_items must be ok! */
-    if ($this->total_items <= MAX_RESULTS)
-      return;
-
-    if ($this->total_items > 1000)
-      $this->total_items -= JUMP;
-
-    $query = 'https://www.googleapis.com/books/v1/volumes?q='
-      . urlencode($this->search_key) . "&startIndex={$this->total_items}";
-    $fetch = file_get_contents($query, FALSE, NULL, -1, 50);
-    preg_match('/(?<=("totalItems":\s))(\d+)/', $fetch, $res);
-
-    if (isset($res[0]))
-    {
-      $fetched_total_items = (int) $res[0];
-      if ($this->total_items === $fetched_total_items)
-        return
-      $this->total_items = $fetched_total_items;
-    }
-    else
-    {
-      $this->total_items -= JUMP;
-    }
-    $this->_fetch_total_items();
-  }
-
 }
-/* End of file MY_Google_books.php */
-/* Location: ./application/libraries/MY_Google_books.php */ 
+/* End of file Google_books.php */
+/* Location: ./application/libraries/Google_books.php */ 
