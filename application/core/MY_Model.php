@@ -529,6 +529,17 @@ class Book_base extends MY_Model {
 		);
 	}
 
+	public function get_id()
+	{
+		return $this->_get('ID');
+	}
+
+	public function set_id($value)
+	{
+		$this->ID = (int) $value;
+		return $this->select_by('ID');
+	}
+	
 	/**
 	 * Get ISBN
 	 * 
@@ -730,15 +741,15 @@ class Book_base extends MY_Model {
 		}
 		$book = $query->row();
 
-		$this->ID = $book->ID;
+		$this->ID = (int) $book->ID;
 		$this->ISBN_13 = uncut_isbn_13($book->ISBN);
 		$this->ISBN_10 = uncut_isbn_10($book->ISBN);
 		$this->google_id = $book->google_id;
 		$this->title = $book->title;
-		$this->_publisher_id = $book->publisher_id;
-		$this->publication_year = $book->publication_year;
-		$this->pages = $book->pages;
-		$this->_language_id = $book->language_id;
+		$this->_publisher_id = (int) $book->publisher_id;
+		$this->publication_year = (int) $book->publication_year;
+		$this->pages = (int) $book->pages;
+		$this->_language_id = (int) $book->language_id;
 
 		$this->publisher = $this->_select_one('publishers', 'ID', $this->_publisher_id)->name;
 		$this->language = $this->_select_one('languages', 'ID', $this->_language_id)->name;

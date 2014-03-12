@@ -60,6 +60,8 @@ class Book_model extends Book_base {
 		{
 			return $this->_search_by_isbn();
 		}
+		
+		return FALSE;
 	}
 
 	/**

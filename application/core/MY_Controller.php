@@ -50,8 +50,8 @@ class MY_Controller extends CI_Controller  {
 
 	/**
 	 * Constructor
-	 * Loads: URL helper, User Model, sets UTF-8 header
-	 * and sets $this->logged property.
+	 * Loads: URL helper, User Model, error messages,
+	 * sets UTF-8 header and sets $this->logged property.
 	 *
 	 * @return void
 	 */
@@ -60,6 +60,7 @@ class MY_Controller extends CI_Controller  {
 		parent::__construct();
 		$this->load->helper('url');
 		$this->load->model('User_model');
+		$this->lang->load('error', 'italian');
 		$this->output->set_header('Content-Type: text/html; charset=' . config_item('charset'));
 
 		$this->logged = $this->User_model->read_session();
@@ -116,9 +117,36 @@ class MY_Controller extends CI_Controller  {
 		{
 			if ($redirect !== NULL)
 			{
-				$this->session->set_userdata('redirect', $redirect);
+				$this->User_model->add_userdata('redirect', $redirect);
 			}
 			redirect('login');
+		}
+	}
+
+	/**
+	 * Can be called in a controller to verify if some input POST
+	 * data are setted.
+	 * 
+	 * $fields can be a string indicating wich field POST is required
+	 * or a string array with all fields POST
+	 *
+	 * @param mixed  string or array
+	 * @return void
+	 * @access protected
+	 */
+	protected function _post_required($fields)
+	{
+		if ( ! is_array($fields))
+		{
+			$fields = array($fields);
+		}
+
+		foreach ($fields as $field)
+		{
+			if ( ! $this->input->post($field))
+			{
+				show_error($this->lang->line("error_post_{$field}"));
+			}
 		}
 	}
 }

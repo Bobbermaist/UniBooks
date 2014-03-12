@@ -40,7 +40,6 @@ class MY_Form_validation extends CI_Form_validation {
 
 	/**
 	 * Validate an email address.
-	 * to be redone
 	 *
 	 * @param string
 	 * @return boolean

@@ -10,6 +10,8 @@ class Sell extends MY_Controller {
 
 	public function index()
 	{
+		$this->User_model->add_userdata('search_action', 'sell/choose_price');
+
 		$this->load->helper('form');
 		$this->_set_view('form/single_field', array(
 			'action'				=> 'book/search',
@@ -30,46 +32,57 @@ class Sell extends MY_Controller {
 	{
 		$this->load->library('form_validation');
 		$this->load->helper('form');
-		if( $this->form_validation->run() )
+		if ($this->form_validation->run() === TRUE)
 		{
-			$this->session->set_userdata(array('price' => $this->input->post('price')));
+			$this->User_model->add_userdata('price', $this->input->post('price'));
 			redirect('sell/complete');
 		}
-		$view_data = array(
-			'input_type' => array(
-     		'name'      => 'price',
-     		'maxlength' => '7'
-    	),
-    	'redirect'			=> 'sell/choose_price',
-    	'title' 				=> 'Indica il prezzo di vendita',
-    	'submit_name'		=> 'submit_price',
-    	'submit_value'	=> 'Inserisci'
-		);
-
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-		$this->load->view('form/single', $view_data);
-		$this->load->view('template/coda');
+		$this->_set_view('form/single_field', array(
+			'action'				=> 'sell/choose_price',
+			'label'					=> 'Indica il prezzo di vendita',
+			'submit_name'		=> 'submit_price',
+			'submit_value'	=> 'Inserisci',
+			'input'					=> array(
+					'name'			=> 'price',
+					'maxlength'	=> '7',
+					'id'				=> 'submit_price',
+			),
+		));
+		$this->_view();
 	}
 
 	public function complete()
 	{
 		$this->load->model('Book_model');
 		$this->load->model('Sell_model');
-		$book_info = $this->Book_model->get($this->session->userdata('book_id'));
-		$user_id = $this->session->userdata('ID');
-		$book_id = $this->session->userdata('book_id');
-		$book_price = $this->session->userdata('price');
-		if( $this->Sell_model->insert($user_id, $book_id, $book_price) )
-			$view_data = array('p' => 'Vendita creata con successo');
+
+		$book_id = $this->User_model->userdata('book_found');
+		$price = $this->User_model->userdata('price');
+		if ($book_id !== FALSE AND $price !== FALSE)
+		{
+			$this->Sell_model->set_book_id($book_id);
+			$this->Sell_model->set_price($price);
+		}
 		else
-			$view_data = array('p' => 'Hai gi&agrave; messo in vendita questo libro');
-		
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-		$this->load->view('paragraphs', $view_data);
-		$this->load->view('book', $book_info);
-		$this->load->view('template/coda');
+		{
+			show_error('Errore nella creazione della vendita');
+		}
+
+		$this->User_model->del_userdata('price');
+		$this->User_model->del_userdata('book_found');
+
+		if($this->Sell_model->insert() === TRUE)
+		{
+			$this->_set_view('generic', array('p'	=> 'Vendita creata con successo'));
+		}
+		else
+		{
+			$this->_set_view('generic', array('p'	=> 'Hai gi&agrave; messo in vendita questo libro'));
+		}
+		$this->Book_model->set_id($book_id);
+		$this->_set_view('book', $this->Book_model->get_array());
+
+		$this->_view();
 	}
 
 	public function delete()

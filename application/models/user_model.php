@@ -231,18 +231,95 @@ class User_model extends User_base {
 			return FALSE;
 		}
 
-		$this->session->set_userdata(array(
-			'user_id'			=> $this->ID,
-		));
+		$this->add_userdata('user_id', $this->ID);
 		return TRUE;
 	}
 
+	/**
+	 * Log out.
+	 *
+	 * @return void
+	 */
 	public function logout()
 	{
-		$this->session->sess_destroy();
+		$this->del_userdata();
 		$this->unset_all();
 		redirect('/');
 	}
+
+	/**
+	 * Add an item to userdata.
+	 *
+	 * $data can be an associative array or a string.
+	 * In this case $value should contain the value 
+	 * to add.
+	 *
+	 * @param mixed  array or string
+	 * @param mixed  (optional) string or NULL
+	 * @return void
+	 */
+	public function add_userdata($data, $value = NULL)
+	{
+		if ( ! is_array($data))
+		{
+			$data = array($data => $value);
+		}
+
+		$this->session->set_userdata($data);
+	}
+
+	/**
+	 * Retrieve userdata.
+	 *
+	 * If invoked without parameters returns an associative
+	 * array with all userdata. FALSE if not setted.
+	 * Otherwise if called with a string as parameter
+	 * return the userdata relative to this string.
+	 *
+	 * @param mixed  string or NULL
+	 * @return mixed 
+	 */
+	public function userdata($item = NULL)
+	{
+		if ($item === NULL)
+		{
+			return $this->session->all_userdata();
+		}
+		return $this->session->userdata($item);
+	}
+
+	/**
+	 * Delete userdata.
+	 *
+	 * If the parametere is NULL, this method will destroy all
+	 * userdata.
+	 * If is a string will delete the element required.
+	 * If is an array will delete all elements.
+	 *
+	 * @param mixed
+	 * @return void
+	 */
+	public function del_userdata($items = NULL)
+	{
+		if ($items === NULL)
+		{
+			$this->session->sess_destroy();
+		}
+		elseif(is_string($items))
+		{
+			$this->session->unset_userdata($items);
+		}
+		else
+		{
+			$array_items = array();
+			foreach ($items as $item)
+			{
+				$array_items[$item] = '';
+			}
+			$this->session->unset_userdata($array_items);
+		}
+	}
+
 	/**
 	 * Check the password through the security helper.
 	 *

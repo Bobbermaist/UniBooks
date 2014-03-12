@@ -32,14 +32,14 @@ class Login extends MY_Controller {
 			
 			if ($login === TRUE)
 			{
-				$redirect = $this->session->userdata('redirect');
+				$redirect = $this->User_model->userdata('redirect');
 				if ($redirect === FALSE)
 				{
 					redirect('user');
 				}
 				else
 				{
-					$this->session->unset_userdata('redirect');
+					$this->User_model->del_userdata('redirect');
 					redirect($redirect);
 				}
 			}

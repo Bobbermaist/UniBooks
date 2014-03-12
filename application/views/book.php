@@ -1,42 +1,56 @@
   <ul>
-<?php
+    <li>Titolo: <?php echo $title; ?> </li>
 
-if( $title !== 'Unknown' )
-	echo "\t<li>Titolo: $title</li>\n";
+<?php if (count($authors) === 1 AND $authors[0] !== 'Unknown'): ?>
 
-if( $authors[0] !== 'Unknown' )
-{
-	if( count($authors) == 1 )
-		echo "\t<li>Autore: " . $authors[0] . "</li>\n";
-	else
-		echo "\t<li>Autori: " . implode(', ', $authors) . "</li>\n";
-}
+    <li>Autore: <?php echo $authors[0]; ?> </li>
 
-if( $publisher !== 'Unknown' )
-	echo "\t<li>Editore: $publisher</li>\n";
+<?php elseif (count($authors) > 1): ?>
 
-if( $publication_year )
-	echo "\t<li>Anno: $publication_year</li>\n";
+    <li>Autori: <?php echo implode(', ', $authors); ?> </li>
 
-if( $pages )
-	echo "\t<li>Pagine: $pages</li>\n";
+<?php endif;
 
-if( $categories[0] !== 'Unknown' )
-{
-	if( count($categories) == 1 )
-		echo "\t<li>Categoria: " . $categories[0] . "</li>\n";
-	else
-		echo "\t<li>Categoria: " . implode(', ', $categories) . "</li>\n";
-}
+			if ($publisher !== 'Unknown'): ?>
 
-if( $language !== 'Unknown' )
-	echo "\t<li>Lingua: $language</li>\n";
+    <li>Editore: <?php echo $publisher; ?> </li>
 
-if( $ISBN )
-	echo "\t<li>ISBN: $ISBN</li>\n";
+<?php endif;
 
-if( isset($price) )
-	echo "\t<li>Prezzo di vendita: € $price</li>\n";
+			if ($publication_year): ?>
 
-?>
+    <li>Anno: <?php echo $publication_year; ?> </li>
+
+<?php endif;
+
+			if ($pages): ?>
+
+			<li>Pagine: <?php echo $pages; ?> </li>
+
+<?php endif;
+
+			if (count($categories) === 1 AND $categories[0] !== 'Unknown'): ?>
+
+    <li>Categoria: <?php echo $categories[0] ?> </li>
+
+<?php elseif (count($categories) > 1): ?>
+
+    <li>Categorie: <?php echo implode(', ', $categories); ?> </li>
+
+<?php endif;
+
+			if ($language !== 'Unknown'): ?>
+
+    <li>Lingua: <?php echo $language; ?> </li>
+
+<?php endif; ?>
+
+    <li>ISBN 13: <?php echo $ISBN_13; ?> </li>
+    <li>ISBN 10: <?php echo $ISBN_10; ?> </li>
+
+<?php if (isset($price)): ?>
+
+    <li>Prezzo di vendita: € <?php echo $price; ?> </li>
+
+<?php endif; ?>
   </ul>
