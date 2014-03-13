@@ -45,11 +45,21 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 |
 */
 
+define('CORE_PATH', FCPATH . 'application/core/');
 define('THIRD_PARTY', FCPATH . 'application/third_party/');
 define('PHPASS_PATH', THIRD_PARTY . 'phpass/');
 define('UTF8_PATH', THIRD_PARTY . 'utf8/');
 define('GOOGLE_API_PATH', THIRD_PARTY . 'google_api/');
 define('GOOGLE_CACHE', FCPATH . APPPATH . 'cache/Google_Client/');
+
+/*
+|--------------------------------------------------------------------------
+| Assets path
+|--------------------------------------------------------------------------
+|
+| Graphic resources, css, js etc...
+|
+*/
 
 define('VIEWS_PATH', APPPATH . 'views/');
 define('ASSETS_PATH', VIEWS_PATH . 'assets/');
@@ -58,18 +68,41 @@ define('CSS_PATH', ASSETS_PATH . 'css/');
 
 /*
 |--------------------------------------------------------------------------
-| User
+| User rights
 |--------------------------------------------------------------------------
 |
-| Users constants
-| Books max results and user rights are defined here
+| Specify the user rights.
 |
 */
 
-define('MAX_RESULTS', 10);
-define('UNCONFIRMED_ACCOUNT', 0);
-define('USER_RIGHTS', 1);
-define('ADMIN_RIGHTS', 2);
+define('UNCONFIRMED_ACCOUNT', 1);
+define('USER_RIGHTS', 2);
+define('ADMIN_RIGHTS', 3);
+
+/*
+|--------------------------------------------------------------------------
+| Exceptions code values
+|--------------------------------------------------------------------------
+|
+| The Custom exception library can be called with those values to suggest
+| to the exception Class wich message should be setted. 
+|
+*/
+
+define('INVALID_EXCEPTION_CODE', 0);
+define('INVALID_PARAMETER', 10001);
+
+define('ID_NON_EXISTENT', 10002);
+define('USER_NAME_NON_EXISTENT', 10003);
+define('EMAIL_NON_EXISTENT', 10004);
+define('ISBN_NON_EXISTENT', 10005);	// refers to the database
+define('GOOGLE_ID_NON_EXISTENT', 10006);
+
+define('EXISTING_SALE', 10007);
+define('EXISTING_REQUEST', 10008);
+
+define('ISBN_NOT_FOUND', 10009); // refers to google books api
+define('BOOK_NOT_FOUND', 10010);
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

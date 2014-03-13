@@ -186,16 +186,16 @@ class User_base extends MY_Model {
 	 *
 	 * Sets the ID property with the $value parameter
 	 * and then retrieve other properties from `users` table.
-	 * Return boolean indicates whether the ID exists.
-	 * If not exists the select_by method will unset all properties. 
+	 *
+	 * If not exists the select_by method will throw an exception
 	 * 
 	 * @param int
-	 * @return boolean
+	 * @return void
 	 */
 	public function set_id($value)
 	{
 		$this->ID = (int) $value;
-		return $this->select_by('ID');
+		$this->select_by('ID');
 	}
 
 	public function get_user_name()
@@ -341,7 +341,7 @@ class User_base extends MY_Model {
 	 * (ID, user_name, email) and corresponding object 
 	 * property must be setted.
 	 *
-	 * Unsets all properties on failure
+	 * Throws an exeption on failure
 	 *
 	 * @return boolean
 	 */
@@ -352,8 +352,21 @@ class User_base extends MY_Model {
 
 		if ($res->num_rows == 0)
 		{
-			$this->unset_all();
-			return FALSE;
+			switch ($field)
+			{
+				case 'ID':
+					throw new Custom_exception(ID_NON_EXISTENT);
+					break;
+				case 'user_name':
+					throw new Custom_exception(USER_NAME_NON_EXISTENT);
+					break;
+				case 'email':
+					throw new Custom_exception(EMAIL_NON_EXISTENT);
+					break;
+				default:
+					throw new Custom_exception(INVALID_PARAMETER);
+					break;
+			}
 		}
 
 		$user_data = $res->row();
@@ -363,7 +376,6 @@ class User_base extends MY_Model {
 		$this->email = $user_data->email;
 		$this->registration_time = $user_data->registration_time;
 		$this->rights = (int) $user_data->rights;
-		return TRUE;
 	}
 
 	/**
@@ -376,10 +388,15 @@ class User_base extends MY_Model {
 		if ($this->get_id() === FALSE)
 		{
 			$this->load->library('session');
+			$userdata_id = $this->session->userdata('user_id');
 
-			return $this->set_id( $this->session->userdata('user_id') );
+			if ($userdata_id === FALSE)
+			{
+				return FALSE;
+			}
+			$this->set_id($userdata_id);
 		}
-		// ID property seems setted, return TRUE
+		// ID property is setted, return TRUE
 		return TRUE;
 	}
 }
@@ -534,10 +551,17 @@ class Book_base extends MY_Model {
 		return $this->_get('ID');
 	}
 
+	/**
+	 * Sets the ID property and try to set all properties
+	 * from `books` db.
+	 * Throws an exception on failure.
+	 *
+	 * @return void
+	 */
 	public function set_id($value)
 	{
 		$this->ID = (int) $value;
-		return $this->select_by('ID');
+		$this->select_by('ID');
 	}
 	
 	/**
@@ -626,7 +650,7 @@ class Book_base extends MY_Model {
 	 * The value can be an array, in that case an array of
 	 * ID is returned.
 	 *
-	 * If $value === NULL, 'Unknown' is inserted.
+	 * If $value is empty (0, NULL, FALSE etc...), return NULL
 	 * 
 	 * @param string table name
 	 * @param mixed string or strings array
@@ -637,7 +661,8 @@ class Book_base extends MY_Model {
 	{
 		if (empty($value))
 		{
-			return $this->_insert_info($table, 'Unknown');
+			return NULL;
+			//return $this->_insert_info($table, 'Unknown');
 		}
 
 		if ( ! is_array($value))
@@ -703,10 +728,11 @@ class Book_base extends MY_Model {
 	 * (ID, 13 or 10 digit ISBN, google_id)
 	 * and corresponding property must be setted.
 	 *
-	 * On success sets all properties
+	 * On success sets all properties, throws an exception
+	 * on failure.
 	 * 
 	 * @param string
-	 * @return boolean
+	 * @return void
 	 */
 	public function select_by($field)
 	{
@@ -721,7 +747,7 @@ class Book_base extends MY_Model {
 			$this->db->where($field, $this->$field);
 		}
 		$this->db->limit(1);
-		return $this->_set();
+		$this->_set();
 	}
 
 	/**
@@ -734,11 +760,25 @@ class Book_base extends MY_Model {
 	private function _set()
 	{
 		$query = $this->db->get();
-		if ($query->num_rows == 0)
+		if ($res->num_rows == 0)
 		{
-			//$this->unset_all();
-			return FALSE;
+			switch ($field)
+			{
+				case 'ID':
+					throw new Custom_exception(ID_NON_EXISTENT);
+					break;
+				case 'ISBN':
+					throw new Custom_exception(ISBN_NON_EXISTENT);
+					break;
+				case 'google_id':
+					throw new Custom_exception(GOOGLE_ID_NON_EXISTENT);
+					break;
+				default:
+					throw new Custom_exception(INVALID_PARAMETER);
+					break;
+			}
 		}
+
 		$book = $query->row();
 
 		$this->ID = (int) $book->ID;
@@ -755,7 +795,6 @@ class Book_base extends MY_Model {
 		$this->language = $this->_select_one('languages', 'ID', $this->_language_id)->name;
 		$this->_join_authors();
 		$this->_join_categories();
-		return TRUE;
 	}
 
 	/**
@@ -903,7 +942,7 @@ class Exchange_base extends MY_Model {
 	/**
 	 * _insert method, it inserts in $table the user_id and book_id
 	 * properties.
-	 * Return FALSE if exists a row with these values.
+	 * Throws an exception if exists a row with these values.
 	 *
 	 * The second parameter can be used to insert other 
 	 * property
@@ -911,7 +950,7 @@ class Exchange_base extends MY_Model {
 	 * 
 	 * @param string
 	 * @param array (string)
-	 * @return boolean
+	 * @return void
 	 * @access protected
 	 */
 	protected function _insert($table, $properties = array())
@@ -922,7 +961,18 @@ class Exchange_base extends MY_Model {
 		);
 		if ($this->_select_one($table, $clause) !== FALSE)
 		{
-			return FALSE;
+			if ($table === 'books_for_sale')
+			{
+				throw new Custom_exception(EXISTING_SALE);
+			}
+			elseif ($table === 'books_requested')
+			{
+				throw new Custom_exception(EXISTING_REQUEST);
+			}
+			else
+			{
+				throw new Custom_exception(INVALID_PARAMETER);
+			}
 		}
 
 		foreach ($properties as $property)
@@ -930,7 +980,6 @@ class Exchange_base extends MY_Model {
 			$clause[$property] = $this->{$property};
 		}
 		$this->db->insert($table, $clause);
-		return TRUE;
 	}
 
 	/**

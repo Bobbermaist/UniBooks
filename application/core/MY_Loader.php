@@ -10,6 +10,12 @@
  */
 
 /**
+ * Load the Custom_exception class.
+ */
+
+require_once CORE_PATH . 'Custom_exception.php';
+
+/**
  * UniBooks MY_Loader Class
  *
  * Extends the default loader class.

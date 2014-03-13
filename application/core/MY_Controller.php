@@ -50,17 +50,13 @@ class MY_Controller extends CI_Controller  {
 
 	/**
 	 * Constructor
-	 * Loads: URL helper, User Model, error messages,
-	 * sets UTF-8 header and sets $this->logged property.
+	 * Sets UTF-8 header and sets $this->logged property.
 	 *
 	 * @return void
 	 */
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->helper('url');
-		$this->load->model('User_model');
-		$this->lang->load('error', 'italian');
 		$this->output->set_header('Content-Type: text/html; charset=' . config_item('charset'));
 
 		$this->logged = $this->User_model->read_session();

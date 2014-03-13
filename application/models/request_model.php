@@ -41,11 +41,11 @@ class Request_model extends Exchange_base {
 	 * See the Exchange_base class in ./application/core/MY_Model.php
 	 * for _insert method.
 	 *
-	 * @return boolean
+	 * @return void
 	 */
 	public function insert()
 	{
-		return $this->_insert('books_for_sale');
+		$this->_insert('books_requested');
 	}
 
 	/**

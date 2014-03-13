@@ -43,11 +43,9 @@ class Sell_model extends Exchange_base {
 	}
 
 	/**
-	 * Get / Set price
-	 * If $value === NULL retrieve price, otherwiese it sets
+	 * Get price
 	 *
-	 * @param mixed  float or NULL
-	 * @return mixed  FALSE or float
+	 * @return mixed  float or FALSE
 	 */
 	public function get_price()
 	{
@@ -68,7 +66,7 @@ class Sell_model extends Exchange_base {
 	 */
 	public function insert()
 	{
-		return $this->_insert('books_for_sale', array('price'));
+		$this->_insert('books_for_sale', array('price'));
 	}
 
 	/**

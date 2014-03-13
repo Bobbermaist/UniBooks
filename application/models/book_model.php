@@ -50,9 +50,10 @@ class Book_model extends Book_base {
 
 	/**
 	 * Search for a book.
+	 * Throws an exception if can't found
 	 *
 	 * @param string
-	 * @return boolean
+	 * @return void
 	 */
 	public function search($key)
 	{
@@ -61,7 +62,7 @@ class Book_model extends Book_base {
 			return $this->_search_by_isbn();
 		}
 		
-		return FALSE;
+		throw new Custom_exception(BOOK_NOT_FOUND);
 	}
 
 	/**
@@ -70,7 +71,9 @@ class Book_model extends Book_base {
 	 * Search first in local db, if ISBN code is not found
 	 * calls the google_books library to retrieve book data.
 	 *
-	 * @return boolean
+	 * If google books api fail throws an exception
+	 *
+	 * @return void
 	 * @access private
 	 */
 	private function _search_by_isbn()
@@ -81,12 +84,11 @@ class Book_model extends Book_base {
 			$this->google_books->get_by_isbn( $this->get_isbn() );
 			if ($this->google_books->total_items === 0)
 			{
-				return FALSE;
+				throw new Custom_exception(ISBN_NOT_FOUND);
 			}
 			$this->_set_from_google();
 			$this->insert();
 		}
-		return TRUE;
 	}
 
 	/**

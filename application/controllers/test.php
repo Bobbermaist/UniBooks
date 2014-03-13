@@ -7,12 +7,10 @@ class Test extends MY_Controller {
 		parent::__construct();
 	}
 
-	public function index($code = NULL)
+	public function index()
 	{
-		foreach ($this as $p_name => $p_value)
-		{
-			echo '$p_name = ', $p_name, '<br>';
-		}
+		$code = 1;
+		var_dump($this->lang->line('exception_' . $code));
 	}
 }
 
