@@ -1,0 +1,60 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+class Welcome extends MY_Controller {
+
+	/**
+	 * Index Page for this controller.
+	 *
+	 * Maps to the following URL
+	 * 		http://example.com/index.php/welcome
+	 *	- or -  
+	 * 		http://example.com/index.php/welcome/index
+	 *	- or -
+	 * Since this controller is set as the default controller in 
+	 * config/routes.php, it's displayed at http://example.com/
+	 *
+	 * So any other public methods not prefixed with an underscore will
+	 * map to /index.php/welcome/<method_name>
+	 * @see http://codeigniter.com/user_guide/general/urls.html
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
+	public function index()
+	{
+		$this->_set_view('generic', array(
+			'p'	=> 'Benvenuto : )',
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Puoi registrarti ' . anchor('registration', 'qui'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Puoi effettuare il reset della tua password ' . anchor('reset', 'qui'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Puoi fare il log in ' . anchor('login', 'qui'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Puoi cercare un libro tramite le API di google books ' . anchor('book', 'qui'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Metti in ' . anchor('sell', 'vendita un libro'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Inserisci una ' . anchor('request', 'richiesta'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Gestisci il tuo account ' . anchor('user/settings', 'qui'),
+		));
+		$this->_set_view('generic', array(
+			'p'	=> 'Area riservata: ' . anchor('admin', 'Admin area'),
+		));
+
+		$this->_view();
+	}
+}
+
+/* End of file welcome.php */
+/* Location: ./application/controllers/welcome.php */
