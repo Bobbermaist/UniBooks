@@ -1,7 +1,13 @@
+# ignore local resources #
 phpmyadmin/
 postfixadmin/
+info.php
+
+# ignore config files #
 config/db.php
-application/cache/*
 application/config/database.php
 application/config/config.php
-info.php
+
+# ignore cache folders #
+application/cache/*
+doc/phpdoc-cache-*
