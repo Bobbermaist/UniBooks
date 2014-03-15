@@ -12,6 +12,8 @@
 /**
  * UniBooks MY_url_helper
  *
+ * Adds funtctions to the CI url helper
+ *
  * @package UniBooks
  * @category Helpers
  * @author Emiliano Bovetti

@@ -10,7 +10,10 @@
  */
 
 /**
- * UniBooks Rquest_model Class
+ * UniBooks Request_model class.
+ * 
+ * Extends Exchange_base class and provides
+ * all methods to manage requests
  *
  * @package UniBooks
  * @category Models
@@ -19,6 +22,8 @@
 class Request_model extends Exchange_base {
 
 	/**
+	 * All user requests
+	 * 
 	 * @var array
 	 * @access protected
 	 */
@@ -81,6 +86,8 @@ class Request_model extends Exchange_base {
 		$this->_delete('books_requested');
 	}
 }
+
+// END Request_model class
 
 /* End of file request_model.php */
 /* Location: ./application/models/request_model.php */  

@@ -10,7 +10,10 @@
  */
 
 /**
- * UniBooks Book_model Class
+ * UniBooks Book_model class.
+ *
+ * Extends Book_base class and provides all
+ * methods to manage books.
  *
  * @package UniBooks
  * @category Models
@@ -50,7 +53,7 @@ class Book_model extends Book_base {
 
 	/**
 	 * Search for a book.
-	 * Throws an exception if can't found
+	 * Throws an exception if can't find
 	 *
 	 * @param string
 	 * @return void
@@ -127,6 +130,8 @@ class Book_model extends Book_base {
 		$this->categories = $book_data['categories'];
 	}
 }
+
+// END Book_model class
 
 /* End of file book_model.php */
 /* Location: ./application/models/book_model.php */

@@ -10,7 +10,10 @@
  */
 
 /**
- * UniBooks Sell_model Class
+ * UniBooks Sell_model class.
+ * 
+ * Extends Exchange_base class and provides
+ * all methods to manage sells
  *
  * @package UniBooks
  * @category Models
@@ -19,12 +22,16 @@
 class Sell_model extends Exchange_base {
 
 	/**
+	 * Selling price
+	 *
 	 * @var float
 	 * @access protected
 	 */
 	protected $price;
 
 	/**
+	 * All user sells
+	 *
 	 * @var array
 	 * @access protected
 	 */
@@ -52,6 +59,15 @@ class Sell_model extends Exchange_base {
 		return $this->_get('price');
 	}
 
+	/**
+	 * Set price
+	 *
+	 * Converts the $value parameter in a float value
+	 * and sets price property.
+	 *
+	 * @param float
+	 * @return void
+	 */
 	public function set_price($value)
 	{
 		$this->price = (float) str_replace(',', '.', $value);
@@ -62,7 +78,7 @@ class Sell_model extends Exchange_base {
 	 * See the Exchange_base class in ./application/core/MY_Model.php
 	 * for _insert method.
 	 *
-	 * @return boolean
+	 * @return void
 	 */
 	public function insert()
 	{
@@ -103,6 +119,8 @@ class Sell_model extends Exchange_base {
 		$this->_delete('books_for_sale');
 	}
 }
+
+// END Sell_model class
 
 /* End of file sell_model.php */
 /* Location: ./application/models/sell_model.php */ 

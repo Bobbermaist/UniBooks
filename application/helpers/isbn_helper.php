@@ -10,7 +10,10 @@
  */
 
 /**
- * UniBooks ISBN helper
+ * UniBooks ISBN helper.
+ * 
+ * Contains all the useful function
+ * to manage ISBNs
  *
  * @package UniBooks
  * @category Helpers

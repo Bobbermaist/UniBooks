@@ -25,11 +25,21 @@
  * file.
  *
  * @package UniBooks
- * @category Models
+ * @category Exception
  * @author Emiliano Bovetti
  */
 class Custom_exception extends Exception {
 
+	/**
+	 * Constructor.
+	 * Code constants are defined in ./application/config/constants.php
+	 *
+	 * Will call $this->_get_message() to retrieve the message.
+	 *
+	 * @param int
+	 * @param object  previous Exception (optional)
+	 * @return void
+	 */
 	public function __construct($code, Exception $previous = NULL)
 	{
 		$code = (int) $code;
@@ -38,9 +48,11 @@ class Custom_exception extends Exception {
 	}
 
 	/**
-	 * Retrieve exception message.
-	 * If not exists in exception_lang.php return the
-	 * INVALID_EXCEPTION message.
+	 * Retrieve exception message starting from a code.
+	 *
+	 * If does not exists a corresponding
+	 * message in exception_lang.php
+	 * return the INVALID_EXCEPTION message.
 	 *
 	 * @param int
 	 * @return string
@@ -56,6 +68,8 @@ class Custom_exception extends Exception {
 		return $message;
 	}
 }
+
+// END Custom_exception class
 
 /* End of file Custom_exception.php */
 /* Location: ./application/libraries/Custom_exception.php */  

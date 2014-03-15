@@ -10,7 +10,10 @@
  */
 
 /**
- * UniBooks MY_Model Class
+ * UniBooks MY_Model class.
+ *
+ * Extends CI_Model class and is extended
+ * by other application models.
  *
  * @package UniBooks
  * @category Models
@@ -51,6 +54,7 @@ class MY_Model extends CI_Model {
 
 	/**
 	 * Select one result from a table.
+	 *
 	 * Accepts three parameters, the table name,
 	 * a string with the field name or an associative array
 	 * ('field' => 'value').
@@ -72,11 +76,22 @@ class MY_Model extends CI_Model {
 	/**
 	 * Perform an insert query with 'on duplicate key update'
 	 * clause.
+	 *
 	 * The first parameter contains a tring with the table name,
 	 * the second one an associative array with th values.
 	 *
-	 * Ex. $table = 'users' $data = array('id' => 1, 'name' => 'test')
+	 * Ex.
+	 * <code>
+	 *	$table = 'users';
+	 *	$data = array(
+	 *		'id' => 1,
+	 *		'name' => 'test',
+	 *	);
+	 *	$this->_insert_on_duplicate($table, $data);
+	 * </code>
+	 *
 	 * produces the following query:
+	 *
 	 * INSERT INTO `users` (id, name) VALUES ('1', 'test')
 	 * ON DUPLICATE KEY UPDATE id='1', name='test'
 	 *
@@ -101,8 +116,14 @@ class MY_Model extends CI_Model {
 	}
 }
 
+// END MY_Model class
+
 /**
- * UniBooks User_base Class
+ * UniBooks User_base class.
+ *
+ * Is extended by User_model class and
+ * contains all user properties and
+ * base method to manage an user.
  *
  * @package UniBooks
  * @category Base Models
@@ -111,6 +132,8 @@ class MY_Model extends CI_Model {
 class User_base extends MY_Model {
 
 	/**
+	 * User ID.
+	 *
 	 * @var int
 	 * @access protected
 	 */
@@ -131,6 +154,8 @@ class User_base extends MY_Model {
 	protected $password;
 
 	/**
+	 * User email
+	 *
 	 * @var string
 	 * @access protected
 	 */
@@ -176,18 +201,26 @@ class User_base extends MY_Model {
 		parent::__construct();
 	}
 
+	/**
+	 * Get ID method.
+	 *
+	 * Return the user's ID if setted, bool(FALSE)
+	 * otherwise.
+	 *
+	 * @return mixed  int or FALSE
+	 */
 	public function get_id()
 	{
 		return $this->_get('ID');
 	}
 
 	/**
-	 * set_ID
+	 * Set ID method.
 	 *
 	 * Sets the ID property with the $value parameter
 	 * and then retrieve other properties from `users` table.
 	 *
-	 * If not exists the select_by method will throw an exception
+	 * If not exists the select_by method will *throw an exception*
 	 * 
 	 * @param int
 	 * @return void
@@ -198,13 +231,20 @@ class User_base extends MY_Model {
 		$this->select_by('ID');
 	}
 
+	/**
+	 * Get user name.
+	 *
+	 * @return mixed  string or FALSE
+	 */
 	public function get_user_name()
 	{
 		return $this->_get('user_name');
 	}
 
 	/**
-	 * trim and sets user_name.
+	 * Set user name.
+	 *
+	 * Trim and sets user_name property.
 	 *
 	 * @param string
 	 * @return void
@@ -214,13 +254,23 @@ class User_base extends MY_Model {
 		$this->user_name = trim($value);
 	}
 
+	/**
+	 * Get password.
+	 *
+	 * Retrieve password property, return FALSE if not setted.
+	 * NOTE: The password property is the *hashed* password.
+	 *
+	 * @return mixed  string or FALSE
+	 */
 	public function get_password()
 	{
 		$this->_get('password');
 	}
 
 	/**
-	 * hash and sets password.
+	 * Set password.
+	 *
+	 * Hash and sets password.
 	 *
 	 * @param string
 	 * @return void
@@ -231,12 +281,19 @@ class User_base extends MY_Model {
 		$this->password = do_hash($value);
 	}
 
+	/**
+	 * Get email.
+	 *
+	 * @return mixed  string or FALSE
+	 */
 	public function get_email()
 	{
 		return $this->_get('email');
 	}
 
 	/**
+	 * Set email.
+	 *
 	 * Sets email with $value to lower case and trim.
 	 *
 	 * @param string
@@ -248,7 +305,7 @@ class User_base extends MY_Model {
 	}
 
 	/**
-	 * get registration_time
+	 * Get registration time.
 	 *
 	 * @return mixed string or FALSE
 	 */
@@ -258,7 +315,7 @@ class User_base extends MY_Model {
 	}
 
 	/**
-	 * get rights
+	 * Get rights.
 	 *
 	 * @return mixed int or FALSE
 	 */
@@ -268,7 +325,7 @@ class User_base extends MY_Model {
 	}
 
 	/**
-	 * get confirm_code
+	 * Get confirm_code
 	 *
 	 * @return mixed string or FALSE
 	 */
@@ -277,11 +334,22 @@ class User_base extends MY_Model {
 		return $this->_get('confirm_code');
 	}
 
+	/**
+	 * Get temporary email.
+	 *
+	 * @return mixed  string or FALSE
+	 */
 	public function get_tmp_email()
 	{
 		return $this->_get('tmp_email');
 	}
 
+	/**
+	 * Set temporary email.
+	 *
+	 * @param string
+	 * @return void
+	 */
 	public function set_tmp_email($value)
 	{
 		$this->email = utf8_strtolower(trim($value));
@@ -339,11 +407,12 @@ class User_base extends MY_Model {
 	 *
 	 * The field indicated must be a unique value
 	 * (ID, user_name, email) and corresponding object 
-	 * property must be setted.
+	 * property should be setted.
 	 *
-	 * Throws an exeption on failure
+	 * Throws an exeption on failure.
 	 *
-	 * @return boolean
+	 * @param string
+	 * @return void
 	 */
 	public function select_by($field = 'ID')
 	{
@@ -401,9 +470,13 @@ class User_base extends MY_Model {
 	}
 }
 
+// END User_base class
 
 /**
- * UniBooks Book_base Class
+ * UniBooks Book_base class.
+ *
+ * Is extended by Book model class and contains
+ * all properties and base method to manage a book.
  *
  * @package UniBooks
  * @category Base Models
@@ -412,6 +485,8 @@ class User_base extends MY_Model {
 class Book_base extends MY_Model {
 
 	/**
+	 * Book ID
+	 *
 	 * @var int
 	 * @access protected
 	 */
@@ -434,6 +509,8 @@ class Book_base extends MY_Model {
 	protected $ISBN_10;
 
 	/**
+	 * Google id
+	 *
 	 * @var string
 	 * @access protected
 	 */
@@ -464,48 +541,64 @@ class Book_base extends MY_Model {
 	private $_authors_id = array();
 
 	/**
+	 * Book's publisher
+	 *
 	 * @var string
 	 * @access protected
 	 */
 	protected $publisher;
 
 	/**
+	 * Publisher ID
+	 *
 	 * @var int
 	 * @access private
 	 */
 	private $_publisher_id;
 
 	/**
+	 * Book's publication year
+	 *
 	 * @var int
 	 * @access protected
 	 */
 	protected $publication_year;
 
 	/**
+	 * The book's page count
+	 *
 	 * @var int
 	 * @access protected
 	 */
 	protected $pages;
 
 	/**
+	 * Book's language
+	 *
 	 * @var string
 	 * @access protected
 	 */
 	protected $language;
 
 	/**
+	 * Language ID
+	 *
 	 * @var int
 	 * @access private
 	 */
 	private $_language_id;
 
 	/**
+	 * Book's categories
+	 *
 	 * @var array (string)
 	 * @access protected
 	 */
 	protected $categories = array();
 
 	/**
+	 * Categories IDs
+	 *
 	 * @var array (int)
 	 * @access private
 	 */
@@ -546,16 +639,26 @@ class Book_base extends MY_Model {
 		);
 	}
 
+	/**
+	 * Get ID
+	 * 
+	 * Return book's ID if setted or FALSE.
+	 *
+	 * @return mixed  int or FALSE
+	 */
 	public function get_id()
 	{
 		return $this->_get('ID');
 	}
 
 	/**
+	 * Set ID
+	 *
 	 * Sets the ID property and try to set all properties
 	 * from `books` db.
 	 * Throws an exception on failure.
 	 *
+	 * @param int
 	 * @return void
 	 */
 	public function set_id($value)
@@ -644,8 +747,8 @@ class Book_base extends MY_Model {
 	}
 
 	/**
-	 * Insert a value in a table (if it already get its id)
-	 * and return the value's ID.
+	 * Insert a value in a table (if it already exists get its id)
+	 * and return the value's id.
 	 *
 	 * The value can be an array, in that case an array of
 	 * ID is returned.
@@ -689,6 +792,7 @@ class Book_base extends MY_Model {
 	 * $this->_authors_id must be setted.
 	 * 
 	 * @return void
+	 * @access private
 	 */
 	private function _insert_authors()
 	{
@@ -708,6 +812,7 @@ class Book_base extends MY_Model {
 	 * $this->_categories_id must be setted.
 	 * 
 	 * @return void
+	 * @access private
 	 */
 	private function _insert_categories()
 	{
@@ -724,11 +829,12 @@ class Book_base extends MY_Model {
 
 	/**
 	 * Select a book by a given field.
+	 *
 	 * This field must be unique
 	 * (ID, 13 or 10 digit ISBN, google_id)
 	 * and corresponding property must be setted.
 	 *
-	 * On success sets all properties, throws an exception
+	 * On success sets all properties, *throws an exception*
 	 * on failure.
 	 * 
 	 * @param string
@@ -754,7 +860,7 @@ class Book_base extends MY_Model {
 	 * Set all object properties from db.
 	 * The db query must be composed previously.
 	 *
-	 * Throws an exception if the query does not 
+	 * *Throws an exception* if the query does not 
 	 * procudes any result.
 	 * 
 	 * @return void
@@ -802,6 +908,7 @@ class Book_base extends MY_Model {
 
 	/**
 	 * Set authors property by joining the book ID on db.
+	 *
 	 * ID property must be setted.
 	 * 
 	 * @return void
@@ -820,6 +927,7 @@ class Book_base extends MY_Model {
 
 	/**
 	 * Set categories property by joining the book ID on db.
+	 *
 	 * ID property must be setted.
 	 * 
 	 * @return void
@@ -880,6 +988,7 @@ class Book_base extends MY_Model {
 	}
 }
 
+// END Book_base class
 
 /**
  * UniBooks Exchange_base Class
@@ -893,12 +1002,16 @@ class Book_base extends MY_Model {
 class Exchange_base extends MY_Model {
 
 	/**
+	 * User id
+	 *
 	 * @var int
 	 * @access protected
 	 */
 	protected $user_id;
 
 	/**
+	 * Book id
+	 *
 	 * @var int
 	 * @access protected
 	 */
@@ -913,6 +1026,8 @@ class Exchange_base extends MY_Model {
 	}
 
 	/**
+	 * Set user id
+	 *
 	 * Retrieve the user id from the session and set
 	 * user_id property.
 	 * 
@@ -926,13 +1041,18 @@ class Exchange_base extends MY_Model {
 		$this->user_id = $user->get_id();
 	}
 
+	/**
+	 * Get book id
+	 *
+	 * @return mixed  int or FALSE
+	 */
 	public function get_book_id()
 	{
 		return $this->_get('book_id');
 	}
 
 	/**
-	 * Sets book_id
+	 * Set book_id
 	 * 
 	 * @param int
 	 * @return void
@@ -945,14 +1065,13 @@ class Exchange_base extends MY_Model {
 	/**
 	 * _insert method, it inserts in $table the user_id and book_id
 	 * properties.
-	 * Throws an exception if exists a row with these values.
+	 * *Throws an exception* if exists a row with these values.
 	 *
 	 * The second parameter can be used to insert other 
 	 * property
-	 *
 	 * 
 	 * @param string
-	 * @param array (string)
+	 * @param array (string) (optional)
 	 * @return void
 	 * @access protected
 	 */
@@ -1004,6 +1123,8 @@ class Exchange_base extends MY_Model {
 		}
 	}
 }
+
+// END Exchange_base class
 
 /* End of file MY_Model.php */
 /* Location: ./application/core/MY_Model.php */  

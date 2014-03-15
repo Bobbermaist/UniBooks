@@ -1,18 +1,58 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks Custom_exception class.
+ *
+ * Extends native PHP Exception class.
+ * The Custom exception can be constructed
+ * with simply the error code.
+ *
+ * All error codes are defined as contants in
+ * ./application/config/constants.php
+ * 
+ * The custom exception class will construct
+ * the parent Exception class with this error
+ * code and the message retrieved by 'exception_lang'
+ * file.
+ *
+ * @package UniBooks
+ * @category Exception
+ * @author Emiliano Bovetti
+ */
 class Custom_exception extends Exception {
 
+	/**
+	 * Constructor.
+	 * Code constants are defined in ./application/config/constants.php
+	 *
+	 * Will call $this->_get_message() to retrieve the message.
+	 *
+	 * @param int
+	 * @param object  previous Exception (optional)
+	 * @return void
+	 */
 	public function __construct($code, Exception $previous = NULL)
 	{
 		$code = (int) $code;
 		
-		parent::__construct($this->_get_message, $code, $previous);
+		parent::__construct($this->_get_message($code), $code, $previous);
 	}
 
 	/**
-	 * Retrieve exception message.
-	 * If not exists in exception_lang.php return the
-	 * INVALID_EXCEPTION message.
+	 * Retrieve exception message starting from a code.
+	 *
+	 * If does not exists a corresponding
+	 * message in exception_lang.php
+	 * return the INVALID_EXCEPTION message.
 	 *
 	 * @param int
 	 * @return string
@@ -28,6 +68,8 @@ class Custom_exception extends Exception {
 		return $message;
 	}
 }
+
+// END Custom_exception class
 
 /* End of file Custom_exception.php */
 /* Location: ./application/libraries/Custom_exception.php */  

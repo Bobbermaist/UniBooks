@@ -1,12 +1,35 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * Require google API
+ */
 require_once GOOGLE_API_PATH . 'Google_Client.php';
 require_once GOOGLE_API_PATH . 'contrib/Google_BooksService.php';
 
+/**
+ * UniBooks Google_books class.
+ *
+ * Provides an interface to the
+ * google books API
+ *
+ * @package UniBooks
+ * @category Libraries
+ * @author Emiliano Bovetti
+ */
 class Google_books {
 
   /**
    * CodeIgniter istance
+   *
    * @var object
    * @access private
    */
@@ -14,6 +37,7 @@ class Google_books {
 
   /**
    * Google service
+   *
    * @var object
    * @access private
    */
@@ -21,25 +45,30 @@ class Google_books {
 
   /**
    * Array with all volumes retrieved
+   *
    * @var array
    */
   public $volumes = array();
 
   /**
    * Total books retrieved
+   *
    * @var int
    */
   public $total_items = 0;
 
   /**
    * Search key
+   *
    * @var string
    */
   public $search_key;
 
   /**
    * Constructor
+   *
    * Get the CI instance
+   *
    * @return void
    */
   public function __construct()
@@ -54,7 +83,9 @@ class Google_books {
   public function __destruct()
   {
     if (rand(1, 50) == 1)
+    {
       $this->empty_google_cache();
+    }
   }
 
   /**
@@ -73,6 +104,7 @@ class Google_books {
    * _service.
    *
    * @return void
+   * @access private
    */
   private function _get_service()
   {
@@ -111,6 +143,7 @@ class Google_books {
    * with fetched data.
    *
    * @return void
+   * @access private
    */
   private function _list_volumes()
   {
@@ -128,6 +161,7 @@ class Google_books {
    * 
    * @param array
    * @return mixed array or NULL
+   * @access private
    */
   private function _array_format($google_fetch)
   {
@@ -160,9 +194,11 @@ class Google_books {
 
   /**
    * Finds ISBN codes in 'volumeInfo' array.
+   *
    * @param array
    * @param string  ISBN type ('13' or '10')
    * @return mixed  string or NULL
+   * @access private
    */
   private function _get_isbn($item, $type = '13')
   {
@@ -178,5 +214,8 @@ class Google_books {
     return NULL;
   }
 }
+
+// END Google_books class
+
 /* End of file Google_books.php */
 /* Location: ./application/libraries/Google_books.php */ 

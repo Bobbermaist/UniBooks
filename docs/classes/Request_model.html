@@ -113,7 +113,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">269</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">204</span>
                                 </a>
                             </li>
                             <li>
@@ -138,10 +138,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1341289716"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-795034162"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-1341289716" class="accordion-body collapse in">
+            <div id="namespace-795034162" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -191,8 +191,9 @@
                     <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
 
                     <h1><small>\</small>Request_model</h1>
-                    <p><em>UniBooks Rquest_model Class</em></p>
-                    <p>extended by Sell_model and Request_model</p>
+                    <p><em>UniBooks Request_model class.</em></p>
+                    <p>Extends Exchange_base class and provides
+all methods to manage requests</p>
 
                     <section id="summary">
                         <h2>Summary</h2>
@@ -322,7 +323,7 @@
             <article class="property">
                 <h3 class="protected ">$requests</h3>
                 <pre class="signature">$requests : array</pre>
-                <p><em></em></p>
+                <p><em>All user requests</em></p>
                 
 
                                 <h4>Type</h4>
@@ -352,7 +353,7 @@
             <article class="property">
                 <h3 class="protected ">$user_id</h3>
                 <pre class="signature">$user_id : int</pre>
-                <p><em></em></p>
+                <p><em>User id</em></p>
                 
 
                                 <h4>Type</h4>
@@ -384,7 +385,7 @@
             <article class="property">
                 <h3 class="protected ">$book_id</h3>
                 <pre class="signature">$book_id : int</pre>
-                <p><em></em></p>
+                <p><em>Book id</em></p>
                 
 
                                 <h4>Type</h4>
@@ -551,13 +552,16 @@ user_id and book_id properties must be setted.</em></p>
             <article class="method">
                 <h3 class="public ">get_book_id()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">get_book_id()</pre>
-                <p><em></em></p>
+                <pre class="signature" style="margin-right: 54px;">get_book_id() : mixed</pre>
+                <p><em>Get book id</em></p>
                 
 
                 
                 
-                            </article>
+                                    <h4>Returns</h4>
+                    mixed
+                                            &mdash; <p>int or FALSE</p>
+                                                </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -585,7 +589,7 @@ user_id and book_id properties must be setted.</em></p>
                 <h3 class="public ">set_book_id()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">set_book_id( <span class="argument">$value</span>) : void</pre>
-                <p><em>Sets book_id</em></p>
+                <p><em>Set book_id</em></p>
                 
 
                                     <h4>Parameters</h4>
@@ -626,9 +630,9 @@ user_id and book_id properties must be setted.</em></p>
                 <h3 class="protected ">_set_user_id()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">_set_user_id() : void</pre>
-                <p><em>Retrieve the user id from the session and set
-user_id property.</em></p>
-                
+                <p><em>Set user id</em></p>
+                <p>Retrieve the user id from the session and set
+user_id property.</p>
 
                 
                 
@@ -662,7 +666,7 @@ user_id property.</em></p>
                 <pre class="signature" style="margin-right: 54px;">_insert( <span class="argument">$table</span>,  <span class="argument">$properties</span>) : void</pre>
                 <p><em>_insert method, it inserts in $table the user_id and book_id
 properties.</em></p>
-                <p>Throws an exception if exists a row with these values.</p>
+                <p><em>Throws an exception</em> if exists a row with these values.</p>
 <p>The second parameter can be used to insert other
 property</p>
 
@@ -864,9 +868,17 @@ the value.</p>
 clause.</em></p>
                 <p>The first parameter contains a tring with the table name,
 the second one an associative array with th values.</p>
-<p>Ex. $table = 'users' $data = array('id' => 1, 'name' => 'test')
-produces the following query:
-INSERT INTO <code>users</code> (id, name) VALUES ('1', 'test')
+<p>Ex.
+<code>
+$table = 'users';
+$data = array(</p>
+<pre><code>'id' =&gt; 1,
+'name' =&gt; 'test',</code></pre>
+<p>);
+$this->_insert_on_duplicate($table, $data);
+</code></p>
+<p>produces the following query:</p>
+<p>INSERT INTO <code>users</code> (id, name) VALUES ('1', 'test')
 ON DUPLICATE KEY UPDATE id='1', name='test'</p>
 
                                     <h4>Parameters</h4>
@@ -954,7 +966,7 @@ ON DUPLICATE KEY UPDATE id='1', name='test'</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on March 13th, 2014 at 23:53.
+                    on March 15th, 2014 at 12:26.
                 </section>
             </section>
         </section>

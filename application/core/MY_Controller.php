@@ -10,7 +10,14 @@
  */
 
 /**
- * UniBooks MY_Controller Class
+ * UniBooks MY_Controller class
+ *
+ * Extended by controllers.
+ *
+ * Initializes an instance variable
+ * indicating whether the user is logged in
+ * and has a system to queue and load
+ * multiple views.
  *
  * @package UniBooks
  * @category Controllers
@@ -19,6 +26,8 @@
 class MY_Controller extends CI_Controller  {
 
 	/**
+	 * Initialized by constructor.
+	 *
 	 * @var boolean
 	 * @access protected
 	 */
@@ -41,16 +50,9 @@ class MY_Controller extends CI_Controller  {
 	private $_view_data = array();
 
 	/**
-	 * Number of views to be showed.
-	 *
-	 * @var int
-	 * @access private
-	 */
-	private $_total_views = 0;
-
-	/**
 	 * Constructor
-	 * Sets UTF-8 header and sets $this->logged property.
+	 * Sets UTF-8 header and sets $this->logged property
+	 * calling read_session() method.
 	 *
 	 * @return void
 	 */
@@ -75,7 +77,6 @@ class MY_Controller extends CI_Controller  {
 	{
 		$this->_view_names[] = $name;
 		$this->_view_data[] = $content;
-		++$this->_total_views;
 	}
 
 	/**
@@ -88,11 +89,15 @@ class MY_Controller extends CI_Controller  {
 	{
 		$this->load->view('template/head');
 
-		for ($i=0; $i < $this->_total_views; ++$i)
+		while (current($this->_view_names) !== FALSE)
 		{
-			$this->load->view( $this->_view_names[$i], $this->_view_data[$i] );
+			$this->load->view( current($this->_view_names), current($this->_view_data) );
 			$this->load->clean_cached_vars();
+
+			next($this->_view_names);
+			next($this->_view_data);
 		}
+		
 		$this->load->view('template/coda');
 	}
 
@@ -146,3 +151,8 @@ class MY_Controller extends CI_Controller  {
 		}
 	}
 }
+
+// END MY_Controller class
+
+/* End of file MY_Controller.php */
+/* Location: ./application/core/MY_Controller.php */  

@@ -10,7 +10,10 @@
  */
 
 /**
- * UniBooks User_model Class
+ * UniBooks User_model class.
+ *
+ * Extends User_base class and provides all 
+ * functionalities to manage users
  *
  * @package UniBooks
  * @category Models
@@ -19,7 +22,9 @@
 class User_model extends User_base {
 
 	/**
-	 * Constructor load the db
+	 * Constructor
+	 *
+	 * Loads the db
 	 */
 	public function __construct()
 	{
@@ -433,6 +438,8 @@ class User_model extends User_base {
 			: site_url("$controller/" . $this->confirm_code);
 	}
 }
+
+// END User_model class
 
 /* End of file user_model.php */
 /* Location: ./application/models/user_model.php */ 

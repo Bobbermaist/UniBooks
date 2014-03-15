@@ -11,6 +11,8 @@
 
 /**
  * UniBooks MY_security_helper
+ * 
+ * Adds functions to the CI security helper.
  *
  * @package UniBooks
  * @category Helpers

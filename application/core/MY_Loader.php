@@ -37,9 +37,17 @@ class MY_Loader extends CI_Loader {
 	/**
 	 * The variables loaded in this way
 	 *
-	 * $this->load->vars($var) or $this->load->view('name', $var)
+	 * <code>
+	 * 	$this->load->vars($var);
+	 * </code>
+	 * or
+	 * <code>
+	 * 	$this->load->view('name', $var);
+	 * </code>
 	 *
-	 * are cached by CodeIgniter.
+	 * are cached by CodeIgniter and if you try
+	 * to load the same view with different
+	 * variables this could lead to problems.
 	 *
 	 * This method allows to unset all these cached variables.
 	 *
@@ -47,10 +55,12 @@ class MY_Loader extends CI_Loader {
 	 */
 	public function clean_cached_vars()
 	{
+		// sets this instance variable to its default value
 		$this->_ci_cached_vars = array();
-		//$this->_ci_cached_vars = (new CI_Loader)->_ci_cached_vars;
 	}
 }
+
+// END MY_Loader class
 
 /* End of file MY_Loader.php */
 /* Location: ./application/core/MY_Loader.php */

@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks MY_Form_validation Class
+ * UniBooks MY_Form_validation class.
+ *
+ * Extends the CI validation rules.
  *
  * @package UniBooks
  * @category Validation
@@ -28,6 +30,7 @@ class MY_Form_validation extends CI_Form_validation {
 
 	/**
 	 * Constructor
+	 *
 	 * Get the CodeIgniter istance
 	 *
 	 * @return void
@@ -62,17 +65,22 @@ class MY_Form_validation extends CI_Form_validation {
 	
 	/**
 	 * Validate an ISBN code.
-	 * to be redone
 	 *
 	 * @param string
 	 * @return boolean
 	 */
 	public function valid_ISBN($str)
 	{
+		$this->load->helper('isbn');
 		$this->CI->load->model('Book_model');
-		//return $this->CI->Book_model->setISBN($str);
+
+		return validate_isbn_13($str) OR
+						validate_isbn_10($str) OR
+						validate_isbn_13('978' . $str);
 	}
 }
+
+// END MY_Form_validation class
 
 /* End of file MY_Form_validation.php */
 /* Location: ./application/libraries/MY_Form_validation.php */

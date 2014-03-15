@@ -113,7 +113,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">269</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">204</span>
                                 </a>
                             </li>
                             <li>
@@ -138,10 +138,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1432793837"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-409155028"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-1432793837" class="accordion-body collapse in">
+            <div id="namespace-409155028" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -191,8 +191,9 @@
                     <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
 
                     <h1><small>\</small>User_model</h1>
-                    <p><em>UniBooks User_model Class</em></p>
-                    
+                    <p><em>UniBooks User_model class.</em></p>
+                    <p>Extends User_base class and provides all
+functionalities to manage users</p>
 
                     <section id="summary">
                         <h2>Summary</h2>
@@ -356,7 +357,7 @@
             <article class="property">
                 <h3 class="protected ">$ID</h3>
                 <pre class="signature">$ID : int</pre>
-                <p><em></em></p>
+                <p><em>User ID.</em></p>
                 
 
                                 <h4>Type</h4>
@@ -452,7 +453,7 @@
             <article class="property">
                 <h3 class="protected ">$email</h3>
                 <pre class="signature">$email : string</pre>
-                <p><em></em></p>
+                <p><em>User email</em></p>
                 
 
                                 <h4>Type</h4>
@@ -1268,13 +1269,17 @@ redirect to.</p>
             <article class="method">
                 <h3 class="public ">get_id()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">get_id()</pre>
-                <p><em></em></p>
-                
+                <pre class="signature" style="margin-right: 54px;">get_id() : mixed</pre>
+                <p><em>Get ID method.</em></p>
+                <p>Return the user's ID if setted, bool(FALSE)
+otherwise.</p>
 
                 
                 
-                            </article>
+                                    <h4>Returns</h4>
+                    mixed
+                                            &mdash; <p>int or FALSE</p>
+                                                </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -1302,10 +1307,10 @@ redirect to.</p>
                 <h3 class="public ">set_id()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">set_id( <span class="argument">$value</span>) : void</pre>
-                <p><em>set_ID</em></p>
+                <p><em>Set ID method.</em></p>
                 <p>Sets the ID property with the $value parameter
 and then retrieve other properties from <code>users</code> table.</p>
-<p>If not exists the select_by method will throw an exception</p>
+<p>If not exists the select_by method will <em>throw an exception</em></p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -1344,13 +1349,16 @@ and then retrieve other properties from <code>users</code> table.</p>
             <article class="method">
                 <h3 class="public ">get_user_name()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">get_user_name()</pre>
-                <p><em></em></p>
+                <pre class="signature" style="margin-right: 54px;">get_user_name() : mixed</pre>
+                <p><em>Get user name.</em></p>
                 
 
                 
                 
-                            </article>
+                                    <h4>Returns</h4>
+                    mixed
+                                            &mdash; <p>string or FALSE</p>
+                                                </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -1378,8 +1386,8 @@ and then retrieve other properties from <code>users</code> table.</p>
                 <h3 class="public ">set_user_name()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">set_user_name( <span class="argument">$value</span>) : void</pre>
-                <p><em>trim and sets user_name.</em></p>
-                
+                <p><em>Set user name.</em></p>
+                <p>Trim and sets user_name property.</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -1418,13 +1426,17 @@ and then retrieve other properties from <code>users</code> table.</p>
             <article class="method">
                 <h3 class="public ">get_password()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">get_password()</pre>
-                <p><em></em></p>
-                
+                <pre class="signature" style="margin-right: 54px;">get_password() : mixed</pre>
+                <p><em>Get password.</em></p>
+                <p>Retrieve password property, return FALSE if not setted.
+NOTE: The password property is the <em>hashed</em> password.</p>
 
                 
                 
-                            </article>
+                                    <h4>Returns</h4>
+                    mixed
+                                            &mdash; <p>string or FALSE</p>
+                                                </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -1452,8 +1464,8 @@ and then retrieve other properties from <code>users</code> table.</p>
                 <h3 class="public ">set_password()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">set_password( <span class="argument">$value</span>) : void</pre>
-                <p><em>hash and sets password.</em></p>
-                
+                <p><em>Set password.</em></p>
+                <p>Hash and sets password.</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -1492,13 +1504,16 @@ and then retrieve other properties from <code>users</code> table.</p>
             <article class="method">
                 <h3 class="public ">get_email()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">get_email()</pre>
-                <p><em></em></p>
+                <pre class="signature" style="margin-right: 54px;">get_email() : mixed</pre>
+                <p><em>Get email.</em></p>
                 
 
                 
                 
-                            </article>
+                                    <h4>Returns</h4>
+                    mixed
+                                            &mdash; <p>string or FALSE</p>
+                                                </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -1526,8 +1541,8 @@ and then retrieve other properties from <code>users</code> table.</p>
                 <h3 class="public ">set_email()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">set_email( <span class="argument">$value</span>) : void</pre>
-                <p><em>Sets email with $value to lower case and trim.</em></p>
-                
+                <p><em>Set email.</em></p>
+                <p>Sets email with $value to lower case and trim.</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -1567,7 +1582,7 @@ and then retrieve other properties from <code>users</code> table.</p>
                 <h3 class="public ">get_registration_time()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">get_registration_time() : mixed</pre>
-                <p><em>get registration_time</em></p>
+                <p><em>Get registration time.</em></p>
                 
 
                 
@@ -1603,7 +1618,7 @@ and then retrieve other properties from <code>users</code> table.</p>
                 <h3 class="public ">get_rights()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">get_rights() : mixed</pre>
-                <p><em>get rights</em></p>
+                <p><em>Get rights.</em></p>
                 
 
                 
@@ -1639,7 +1654,7 @@ and then retrieve other properties from <code>users</code> table.</p>
                 <h3 class="public ">get_confirm_code()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">get_confirm_code() : mixed</pre>
-                <p><em>get confirm_code</em></p>
+                <p><em>Get confirm_code</em></p>
                 
 
                 
@@ -1674,13 +1689,16 @@ and then retrieve other properties from <code>users</code> table.</p>
             <article class="method">
                 <h3 class="public ">get_tmp_email()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">get_tmp_email()</pre>
-                <p><em></em></p>
+                <pre class="signature" style="margin-right: 54px;">get_tmp_email() : mixed</pre>
+                <p><em>Get temporary email.</em></p>
                 
 
                 
                 
-                            </article>
+                                    <h4>Returns</h4>
+                    mixed
+                                            &mdash; <p>string or FALSE</p>
+                                                </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -1707,8 +1725,8 @@ and then retrieve other properties from <code>users</code> table.</p>
             <article class="method">
                 <h3 class="public ">set_tmp_email()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">set_tmp_email( <span class="argument">$value</span>)</pre>
-                <p><em></em></p>
+                <pre class="signature" style="margin-right: 54px;">set_tmp_email( <span class="argument">$value</span>) : void</pre>
+                <p><em>Set temporary email.</em></p>
                 
 
                                     <h4>Parameters</h4>
@@ -1781,13 +1799,13 @@ and then retrieve other properties from <code>users</code> table.</p>
             <article class="method">
                 <h3 class="public ">select_by()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">select_by( <span class="argument">$field</span>) : boolean</pre>
+                <pre class="signature" style="margin-right: 54px;">select_by( <span class="argument">$field</span>) : void</pre>
                 <p><em>Select all user fields from a property indicated
 in $field (default &#039;ID&#039;)</em></p>
                 <p>The field indicated must be a unique value
 (ID, user_name, email) and corresponding object
-property must be setted.</p>
-<p>Throws an exeption on failure</p>
+property should be setted.</p>
+<p>Throws an exeption on failure.</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -1799,9 +1817,7 @@ property must be setted.</p>
                                             </table>
                 
                 
-                                    <h4>Returns</h4>
-                    boolean
-                                                </article>
+                            </article>
         </div>
         <aside class="span4 detailsbar">
             <h1><i class="icon-arrow-down"></i></h1>
@@ -2044,9 +2060,17 @@ the value.</p>
 clause.</em></p>
                 <p>The first parameter contains a tring with the table name,
 the second one an associative array with th values.</p>
-<p>Ex. $table = 'users' $data = array('id' => 1, 'name' => 'test')
-produces the following query:
-INSERT INTO <code>users</code> (id, name) VALUES ('1', 'test')
+<p>Ex.
+<code>
+$table = 'users';
+$data = array(</p>
+<pre><code>'id' =&gt; 1,
+'name' =&gt; 'test',</code></pre>
+<p>);
+$this->_insert_on_duplicate($table, $data);
+</code></p>
+<p>produces the following query:</p>
+<p>INSERT INTO <code>users</code> (id, name) VALUES ('1', 'test')
 ON DUPLICATE KEY UPDATE id='1', name='test'</p>
 
                                     <h4>Parameters</h4>
@@ -2323,7 +2347,7 @@ only for registration.</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on March 13th, 2014 at 23:53.
+                    on March 15th, 2014 at 12:26.
                 </section>
             </section>
         </section>

@@ -113,7 +113,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">269</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">204</span>
                                 </a>
                             </li>
                             <li>
@@ -138,10 +138,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-2077279055"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-568438802"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-2077279055" class="accordion-body collapse in">
+            <div id="namespace-568438802" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -191,8 +191,16 @@
                     <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
 
                     <h1><small>\</small>Custom_exception</h1>
-                    <p><em></em></p>
-                    
+                    <p><em>UniBooks Custom_exception class.</em></p>
+                    <p>Extends native PHP Exception class.
+The Custom exception can be constructed
+with simply the error code.</p>
+<p>All error codes are defined as contants in
+./application/config/constants.php</p>
+<p>The custom exception class will construct
+the parent Exception class with this error
+code and the message retrieved by 'exception_lang'
+file.</p>
 
                     <section id="summary">
                         <h2>Summary</h2>
@@ -248,6 +256,8 @@
                     <dl>
                         <dt>File</dt>
                             <dd><a href="../files/core.Custom_exception.php.html"><div class="path-wrapper">core/Custom_exception.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">\UniBooks</div></dd>
                                                 <dt>Class hierarchy</dt>
                             <dd class="hierarchy">
                                                                                                                                                                                                                                                                                                 
@@ -262,6 +272,22 @@
                                                                         </dl>
                     <h2>Tags</h2>
                     <table class="table table-condensed">
+                                            <tr>
+                            <th>
+                                category
+                            </th>
+                            <td>
+                                                                    <p>Exception</p>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th>
+                                author
+                            </th>
+                            <td>
+                                                                    <p>Emiliano Bovetti</p>
+                                                            </td>
+                        </tr>
                                             <tr>
                             <th>
                                 todo
@@ -287,9 +313,10 @@
             <article class="method">
                 <h3 class="public ">__construct()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">__construct( <span class="argument">$code</span>, \Exception <span class="argument">$previous</span>)</pre>
-                <p><em></em></p>
-                
+                <pre class="signature" style="margin-right: 54px;">__construct( <span class="argument">$code</span>, \Exception <span class="argument">$previous</span>) : void</pre>
+                <p><em>Constructor.</em></p>
+                <p>Code constants are defined in ./application/config/constants.php</p>
+<p>Will call $this->_get_message() to retrieve the message.</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -332,9 +359,10 @@
                 <h3 class="private ">_get_message()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">_get_message( <span class="argument">$code</span>) : string</pre>
-                <p><em>Retrieve exception message.</em></p>
-                <p>If not exists in exception_lang.php return the
-INVALID_EXCEPTION message.</p>
+                <p><em>Retrieve exception message starting from a code.</em></p>
+                <p>If does not exists a corresponding
+message in exception_lang.php
+return the INVALID_EXCEPTION message.</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -416,7 +444,7 @@ INVALID_EXCEPTION message.</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on March 13th, 2014 at 23:53.
+                    on March 15th, 2014 at 12:26.
                 </section>
             </section>
         </section>
