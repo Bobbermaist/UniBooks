@@ -10,4 +10,4 @@ application/config/config.php
 
 # ignore cache folders #
 application/cache/*
-doc/phpdoc-cache-*
+phpdoc-cache-*
