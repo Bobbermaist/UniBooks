@@ -10,7 +10,7 @@
  */
 
 /**
- * Define the charset used is SQL queries.
+ * Define the charset used in SQL queries.
  */
 define('CHARSET', 'DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 

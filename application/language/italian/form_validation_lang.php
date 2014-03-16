@@ -1,30 +1,37 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
-$lang['required']			= "Il canoi %s è richiesto.";
+$lang['required']			= "Il campo %s è richiesto.";
 $lang['isset']				= "Il campo %s deve contentere un valore.";
 $lang['valid_email']		= "Il campo %s deve contenere un indirizzo email valido.";
-
-/* da tradurre! */
-$lang['valid_emails']		= "The %s field must contain all valid email addresses.";
-$lang['valid_url']			= "The %s field must contain a valid URL.";
-$lang['valid_ip']			= "The %s field must contain a valid IP.";
-$lang['min_length']			= "The %s field must be at least %s characters in length.";
-$lang['max_length']			= "The %s field can not exceed %s characters in length.";
-$lang['exact_length']		= "The %s field must be exactly %s characters in length.";
-$lang['alpha']				= "The %s field may only contain alphabetical characters.";
-$lang['alpha_numeric']		= "The %s field may only contain alpha-numeric characters.";
-$lang['alpha_dash']			= "The %s field may only contain alpha-numeric characters, underscores, and dashes.";
-$lang['numeric']			= "The %s field must contain only numbers.";
-$lang['is_numeric']			= "The %s field must contain only numeric characters.";
-$lang['integer']			= "The %s field must contain an integer.";
-$lang['regex_match']		= "The %s field is not in the correct format.";
-$lang['matches']			= "The %s field does not match the %s field.";
-$lang['is_unique'] 			= "The %s field must contain a unique value.";
-$lang['is_natural']			= "The %s field must contain only positive numbers.";
-$lang['is_natural_no_zero']	= "The %s field must contain a number greater than zero.";
-$lang['decimal']			= "The %s field must contain a decimal number.";
-$lang['less_than']			= "The %s field must contain a number less than %s.";
-$lang['greater_than']		= "The %s field must contain a number greater than %s.";
+$lang['valid_emails']		= "Tutti gli indirizzi email inseriti nel campo %s devono essere validi.";
+$lang['valid_url']			= "Il campo %s deve contenere un URL valido.";
+$lang['valid_ip']			= "Il campo %s deve contenere un indirizzo IP valido.";
+$lang['min_length']			= "Il campo %s dece contenere almeno %s caratteri.";
+$lang['max_length']			= "Il campo %s non deve contenere più di %s caratteri.";
+$lang['exact_length']		= "Il campo %s deve contenere esattamente %s caratteri.";
+$lang['alpha']				= "Il campo %s può contenere solo caratteri alfabetici.";
+$lang['alpha_numeric']		= "Il campo %s può contenere solo caratteri alfa-numerici.";
+$lang['alpha_dash']			= "Il campo %s può contenere caratteri alfa-numerici, underscore, and trattini.";
+$lang['numeric']			= "Il campo %s deve contenere solo numeri.";
+$lang['is_numeric']			= "Il campo %s deve contenere solo caratteri numerici.";
+$lang['integer']			= "Il campo %s deve conenere un intero.";
+$lang['regex_match']		= "Il campo %s non ha il giusto formato.";
+$lang['matches']			= "Il campo %s non corrisponde con il campo %s.";
+$lang['is_unique'] 			= "Il campo %s deve contenere un valore unico.";
+$lang['is_natural']			= "Il campo %s numeri positivi.";
+$lang['is_natural_no_zero']	= "Il campo %s un numero maggiore di zero.";
+$lang['decimal']			= "Il campo %s deve contenere un numero decimale.";
+$lang['less_than']			= "Il campo %s deve contenere un numero minore di %s.";
+$lang['greater_than']		= "Il campo %s deve contenere un numero maggiore di %s.";
 
 
 /* End of file form_validation_lang.php */

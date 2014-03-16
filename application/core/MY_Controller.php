@@ -68,8 +68,8 @@ class MY_Controller extends CI_Controller  {
 	 * Allows to add a view that can be showed later
 	 * by _view method.
 	 *
-	 * @param string  the name of the view
-	 * @param mixed  the data to pass to the view
+	 * @param string  $name the name of the view to queue
+	 * @param mixed  $content data to pass to the view queued
 	 * @return void
 	 * @access protected
 	 */
@@ -107,8 +107,8 @@ class MY_Controller extends CI_Controller  {
 	 * 
 	 * By default restricts to users (logged in)
 	 *
-	 * @param int  USER_RIGHTS or ADMIN_RIGHTS contants
-	 * @param string  optional - redirect here after log in
+	 * @param int  $required_rights USER_RIGHTS or ADMIN_RIGHTS contants
+	 * @param string  $redirect redirect here after log in (optional)
 	 * @return void
 	 * @access protected
 	 */
@@ -131,7 +131,7 @@ class MY_Controller extends CI_Controller  {
 	 * $fields can be a string indicating wich field POST is required
 	 * or a string array with all fields POST
 	 *
-	 * @param mixed  string or array
+	 * @param mixed  $fields the field or fields of POST data to check (string or array)
 	 * @return void
 	 * @access protected
 	 */

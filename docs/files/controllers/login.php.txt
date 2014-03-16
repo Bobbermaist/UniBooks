@@ -1,5 +1,21 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks Login class.
+ *
+ * @package UniBooks
+ * @category Controllers
+ * @author Emiliano Bovetti
+ */
 class Login extends MY_Controller {
 
 	public function __construct()
@@ -55,6 +71,8 @@ class Login extends MY_Controller {
 		$this->_view();
 	}
 }
+
+// END Login class
 
 /* End of file login.php */
 /* Location: ./application/controllers/login.php */ 

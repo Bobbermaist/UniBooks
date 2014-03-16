@@ -1,30 +1,38 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
-/* need to be translate */
-$lang['db_invalid_connection_str'] = 'Unable to determine the database settings based on the connection string you submitted.';
-$lang['db_unable_to_connect'] = 'Unable to connect to your database server using the provided settings.';
-$lang['db_unable_to_select'] = 'Unable to select the specified database: %s';
-$lang['db_unable_to_create'] = 'Unable to create the specified database: %s';
-$lang['db_invalid_query'] = 'The query you submitted is not valid.';
-$lang['db_must_set_table'] = 'You must set the database table to be used with your query.';
-$lang['db_must_use_set'] = 'You must use the "set" method to update an entry.';
-$lang['db_must_use_index'] = 'You must specify an index to match on for batch updates.';
-$lang['db_batch_missing_index'] = 'One or more rows submitted for batch updating is missing the specified index.';
-$lang['db_must_use_where'] = 'Updates are not allowed unless they contain a "where" clause.';
-$lang['db_del_must_use_where'] = 'Deletes are not allowed unless they contain a "where" or "like" clause.';
-$lang['db_field_param_missing'] = 'To fetch fields requires the name of the table as a parameter.';
-$lang['db_unsupported_function'] = 'This feature is not available for the database you are using.';
-$lang['db_transaction_failure'] = 'Transaction failure: Rollback performed.';
-$lang['db_unable_to_drop'] = 'Unable to drop the specified database.';
-$lang['db_unsuported_feature'] = 'Unsupported feature of the database platform you are using.';
-$lang['db_unsuported_compression'] = 'The file compression format you chose is not supported by your server.';
-$lang['db_filepath_error'] = 'Unable to write data to the file path you have submitted.';
-$lang['db_invalid_cache_path'] = 'The cache path you submitted is not valid or writable.';
-$lang['db_table_name_required'] = 'A table name is required for that operation.';
-$lang['db_column_name_required'] = 'A column name is required for that operation.';
-$lang['db_column_definition_required'] = 'A column definition is required for that operation.';
-$lang['db_unable_to_set_charset'] = 'Unable to set client connection character set: %s';
-$lang['db_error_heading'] = 'A Database Error Occurred';
+$lang['db_invalid_connection_str'] = 'Impossibile determinare le impostazioni del database in base alla stringa di connessione inserita.';
+$lang['db_unable_to_connect'] = 'Impossibile connettersi al database utilizzando le impostazioni fornite.';
+$lang['db_unable_to_select'] = 'Impossibile selezionare questo database: %s';
+$lang['db_unable_to_create'] = 'Impossibile creare questo database: %s';
+$lang['db_invalid_query'] = 'La query inserita non è valida.';
+$lang['db_must_set_table'] = 'È necessatio impostare la tabella nella quale eseguire le query.';
+$lang['db_must_use_set'] = 'È necessario usare il metodo "set" per aggiornare una voce.';
+$lang['db_must_use_index'] = 'È necessario specificare un index per abbinare gli aggiornamenti in batch.';
+$lang['db_batch_missing_index'] = 'Ad una o più rows presentate per l\'aggiornamento in batch updating manca l\'index.';
+$lang['db_must_use_where'] = 'Gli aggiornamenti senza clausola "where" non sono consentiti.';
+$lang['db_del_must_use_where'] = 'Le eliminazioni senza clausola "where" o "like" non sono consentite.';
+$lang['db_field_param_missing'] = 'Per fare il fetch dei campi è richiesto il nome della tabella come parametro.';
+$lang['db_unsupported_function'] = 'Questa caratteristica non è disponibile con il database che stai utilizzando.';
+$lang['db_transaction_failure'] = 'Errore nella trasizione: Rollback eseguito.';
+$lang['db_unable_to_drop'] = 'Impossibile eseguire il drop del database selezionato.';
+$lang['db_unsuported_feature'] = 'Caratteristica non supportata dalla piattaforma database in uso.';
+$lang['db_unsuported_compression'] = 'Il formato di compressione file scelto non è supportato dal server.';
+$lang['db_filepath_error'] = 'Impossibile scrivere dati nel file path indicato.';
+$lang['db_invalid_cache_path'] = 'La cache path indicata non è valida o non è scrivibile.';
+$lang['db_table_name_required'] = 'Il nome della tabella è richiesto per questa operazione.';
+$lang['db_column_name_required'] = 'Il nome della colonna è richiesto per questa operazione.';
+$lang['db_column_definition_required'] = 'Una definizione della colonna è richiesta per questa operazione.';
+$lang['db_unable_to_set_charset'] = 'Impossibile impostare la il charset per la connessione client: %s';
+$lang['db_error_heading'] = 'Si è verificato un errore nel database';
 
 /* End of file db_lang.php */
 /* Location: ./application/language/italian/db_lang.php */

@@ -1,5 +1,21 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks Reset class.
+ *
+ * @package UniBooks
+ * @category Controllers
+ * @author Emiliano Bovetti
+ */
 class Reset extends MY_Controller {
 
 	public function __construct()
@@ -99,6 +115,8 @@ class Reset extends MY_Controller {
 		}
 	}
 }
+
+// END Reset class
 
 /* End of file reset.php */
 /* Location: ./application/controllers/reset.php */ 

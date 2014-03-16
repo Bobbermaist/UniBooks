@@ -31,8 +31,9 @@ class MY_Form_validation extends CI_Form_validation {
 	/**
 	 * Constructor
 	 *
-	 * Get the CodeIgniter istance
+	 * Get the CodeIgniter istance.
 	 *
+	 * @param array  $rules - see CodeIgniter doc for this parameter
 	 * @return void
 	 */
   public function __construct($rules = array())
@@ -44,7 +45,7 @@ class MY_Form_validation extends CI_Form_validation {
 	/**
 	 * Validate an email address.
 	 *
-	 * @param string
+	 * @param string  $str contains the email address to validate
 	 * @return boolean
 	 */
   public function valid_email($str)
@@ -55,7 +56,7 @@ class MY_Form_validation extends CI_Form_validation {
 	/**
 	 * Validate a price.
 	 *
-	 * @param string
+	 * @param string  $str contains the price to validate
 	 * @return boolean
 	 */
 	public function valid_price($str)
@@ -66,7 +67,7 @@ class MY_Form_validation extends CI_Form_validation {
 	/**
 	 * Validate an ISBN code.
 	 *
-	 * @param string
+	 * @param string  $str contains the ISBN code to validate
 	 * @return boolean
 	 */
 	public function valid_ISBN($str)

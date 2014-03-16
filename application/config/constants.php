@@ -146,14 +146,17 @@ define('ISBN_NON_EXISTENT', 10005);
 define('GOOGLE_ID_NON_EXISTENT', 10006);
 
 /** A pair user_id - book_id already exists in sales db */
-define('EXISTING_SALE', 10007);
+define('WRONG_CONFIRM_CODE', 10007);
+
+/** A pair user_id - book_id already exists in sales db */
+define('EXISTING_SALE', 10008);
 /** A pair user_id - book_id already exists in requests db */
-define('EXISTING_REQUEST', 10008);
+define('EXISTING_REQUEST', 10009);
 
 /** An ISBN cannot be found using google API */
-define('ISBN_NOT_FOUND', 10009);
+define('ISBN_NOT_FOUND', 10010);
 /** A book cannot be found */
-define('BOOK_NOT_FOUND', 10010);
+define('BOOK_NOT_FOUND', 10011);
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

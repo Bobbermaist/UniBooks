@@ -1,4 +1,13 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
 $lang['exception_'.INVALID_EXCEPTION_CODE]	= 'Eccezione lanciata con un codice non valido';
 $lang['exception_'.INVALID_PARAMETER]				= 'Parametro non valido';

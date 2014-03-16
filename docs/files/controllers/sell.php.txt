@@ -1,5 +1,21 @@
- <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed'); 
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks Sell class.
+ *
+ * @package UniBooks
+ * @category Controllers
+ * @author Emiliano Bovetti
+ */
 class Sell extends MY_Controller {
 
 	public function __construct()
@@ -103,6 +119,8 @@ class Sell extends MY_Controller {
 		$this->load->view('template/coda');
 	}
 }
+
+// END Sell class
 
 /* End of file sell.php */
 /* Location: ./application/controllers/sell.php */ 

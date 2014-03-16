@@ -25,7 +25,7 @@
 /**
  * Validate a 13-digit ISBN.
  *
- * @param	string
+ * @param	string  $str the string to check
  * @return boolean
  * @access public 
  */
@@ -43,7 +43,7 @@ function validate_isbn_13( $str )
 /**
  * Validate a 10-digit ISBN.
  *
- * @param	string
+ * @param	string  $str the string to check
  * @return boolean
  * @access public 
  */
@@ -70,7 +70,7 @@ function validate_isbn_10( $str )
  * Cuts the '978' EAN prefix in the 13-digit ISBN
  * and cuts the last digit (witch is the check digits).
  *
- * @param	string
+ * @param	string  $isbn the ISBN code to cut
  * @return string
  * @access public 
  */
@@ -88,7 +88,7 @@ function cut_isbn( $isbn )
  * This function take a 9-digit code (output of cut_isbn() function)
  * and return a valid 13-digit ISBN.
  *
- * @param	string
+ * @param	string  $code the 9-digit code to uncut
  * @return string
  * @access public 
  */
@@ -108,7 +108,7 @@ function uncut_isbn_13( $code )
  * This function take a 9-digit code (output of cut_isbn() function)
  * and return a valid 10-digit ISBN.
  *
- * @param	string
+ * @param	string  $code the 9-digit code to uncut
  * @return string
  * @access public 
  */

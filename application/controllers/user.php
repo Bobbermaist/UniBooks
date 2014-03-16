@@ -1,5 +1,21 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks User class.
+ *
+ * @package UniBooks
+ * @category Controllers
+ * @author Emiliano Bovetti
+ */
 class User extends MY_Controller {
 
 	public function __construct()
@@ -225,8 +241,9 @@ class User extends MY_Controller {
 	{
 		$this->User_model->logout();
 	}
-
 }
+
+// END User class
 
 /* End of file user.php */
 /* Location: ./application/controllers/user.php */ 

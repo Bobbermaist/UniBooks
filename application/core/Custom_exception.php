@@ -36,8 +36,8 @@ class Custom_exception extends Exception {
 	 *
 	 * Will call $this->_get_message() to retrieve the message.
 	 *
-	 * @param int
-	 * @param object  previous Exception (optional)
+	 * @param int  $code the exception code
+	 * @param object  $previous previous Exception (default NULL)
 	 * @return void
 	 */
 	public function __construct($code, Exception $previous = NULL)
@@ -54,7 +54,7 @@ class Custom_exception extends Exception {
 	 * message in exception_lang.php
 	 * return the INVALID_EXCEPTION message.
 	 *
-	 * @param int
+	 * @param int  $code the exception code
 	 * @return string
 	 * @access private
 	 */

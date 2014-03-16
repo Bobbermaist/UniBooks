@@ -1,5 +1,21 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks Registration class.
+ *
+ * @package UniBooks
+ * @category Controllers
+ * @author Emiliano Bovetti
+ */
 class Registration extends MY_Controller {
 
 	public function __construct()
@@ -69,6 +85,8 @@ class Registration extends MY_Controller {
 		echo $this->email->print_debugger();
 	}
 }
+
+// END Registration class
 
 /* End of file registration.php */
 /* Location: ./application/controllers/registration.php */ 

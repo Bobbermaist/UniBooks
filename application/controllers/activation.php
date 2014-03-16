@@ -1,5 +1,21 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks Activation class.
+ *
+ * @package UniBooks
+ * @category Controllers
+ * @author Emiliano Bovetti
+ */
 class Activation extends MY_Controller {
 
 	public function __construct()
@@ -27,6 +43,8 @@ class Activation extends MY_Controller {
 		$this->_view();
 	}
 }
+
+// END Activation class
 
 /* End of file activation.php */
 /* Location: ./application/controllers/activation.php */ 

@@ -1,5 +1,22 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks Account class.
+ *
+ * @package UniBooks
+ * @category Controllers
+ * @author Emiliano Bovetti
+ * @todo delete this class
+ */
 class Account extends MY_Controller {
 
 	public function sells($page = 1)
@@ -66,6 +83,8 @@ class Account extends MY_Controller {
 		$this->load->view('template/coda');
 	}
 }
+
+// END Account class
 
 /* End of file account.php */
 /* Location: ./application/controllers/account.php */ 

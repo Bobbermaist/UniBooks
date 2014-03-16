@@ -44,7 +44,7 @@ class MY_Model extends CI_Model {
 	 * If the property contains one of those values,
 	 * or it isn't setted this method will return boolean FALSE
 	 * 
-	 * @param string the property name
+	 * @param string  $property the property name to retrieve
 	 * @return mixed object property or FALSE
 	 */
 	protected function _get($property)
@@ -61,9 +61,9 @@ class MY_Model extends CI_Model {
 	 * If the second parameter is a string, the third accepts
 	 * the value.
 	 * 
-	 * @param string  table name
-	 * @param mixed  string or array
-	 * @param mixed  string or NULL
+	 * @param string  $table is the table name
+	 * @param mixed  $where is a string or an array
+	 * @param mixed  $value is string or NULL (optional)
 	 * @return mixed  a row object on success or FALSE
 	 */
 	protected function _select_one($table, $where, $value = NULL)
@@ -95,8 +95,8 @@ class MY_Model extends CI_Model {
 	 * INSERT INTO `users` (id, name) VALUES ('1', 'test')
 	 * ON DUPLICATE KEY UPDATE id='1', name='test'
 	 *
-	 * @param string
-	 * @param array
+	 * @param string  $table is the table name
+	 * @param array  $data the associative array to insert
 	 * @return void
 	 */
 	protected function _insert_on_duplicate($table, $data)
@@ -140,6 +140,8 @@ class User_base extends MY_Model {
 	protected $ID;
 
 	/**
+	 * User name.
+	 *
 	 * @var string
 	 * @access protected
 	 */
@@ -222,7 +224,7 @@ class User_base extends MY_Model {
 	 *
 	 * If not exists the select_by method will *throw an exception*
 	 * 
-	 * @param int
+	 * @param int  $value the ID value to set
 	 * @return void
 	 */
 	public function set_id($value)
@@ -246,7 +248,7 @@ class User_base extends MY_Model {
 	 *
 	 * Trim and sets user_name property.
 	 *
-	 * @param string
+	 * @param string  $value the user name to set
 	 * @return void
 	 */
 	public function set_user_name($value)
@@ -272,7 +274,7 @@ class User_base extends MY_Model {
 	 *
 	 * Hash and sets password.
 	 *
-	 * @param string
+	 * @param string  $value the password (not hashed) to set
 	 * @return void
 	 */
 	public function set_password($value)
@@ -296,7 +298,7 @@ class User_base extends MY_Model {
 	 *
 	 * Sets email with $value to lower case and trim.
 	 *
-	 * @param string
+	 * @param string  $value the email address to set
 	 * @return void
 	 */
 	public function set_email($value)
@@ -347,7 +349,7 @@ class User_base extends MY_Model {
 	/**
 	 * Set temporary email.
 	 *
-	 * @param string
+	 * @param string  $value the email to confirm
 	 * @return void
 	 */
 	public function set_tmp_email($value)
@@ -411,7 +413,7 @@ class User_base extends MY_Model {
 	 *
 	 * Throws an exeption on failure.
 	 *
-	 * @param string
+	 * @param string  $field the field name
 	 * @return void
 	 */
 	public function select_by($field = 'ID')
@@ -658,7 +660,7 @@ class Book_base extends MY_Model {
 	 * from `books` db.
 	 * Throws an exception on failure.
 	 *
-	 * @param int
+	 * @param int  $value the ID to set
 	 * @return void
 	 */
 	public function set_id($value)
@@ -692,7 +694,7 @@ class Book_base extends MY_Model {
 	 *
 	 * Return boolean indicating whether the code is valid
 	 * 
-	 * @param string
+	 * @param string  $value the ISBN code to set
 	 * @return boolean
 	 */
 	public function set_isbn($value)
@@ -755,9 +757,9 @@ class Book_base extends MY_Model {
 	 *
 	 * If $value is empty (0, NULL, FALSE etc...), return NULL
 	 * 
-	 * @param string table name
-	 * @param mixed string or strings array
-	 * @return mixed int or int array
+	 * @param string  $table the table name
+	 * @param mixed  $value string or array of data to insert
+	 * @return mixed int or array
 	 * @access private
 	 */
 	private function _insert_info($table, $value)
@@ -837,7 +839,7 @@ class Book_base extends MY_Model {
 	 * On success sets all properties, *throws an exception*
 	 * on failure.
 	 * 
-	 * @param string
+	 * @param string  $field the field name
 	 * @return void
 	 */
 	public function select_by($field)
@@ -991,7 +993,7 @@ class Book_base extends MY_Model {
 // END Book_base class
 
 /**
- * UniBooks Exchange_base Class
+ * UniBooks Exchange_base class.
  *
  * extended by Sell_model and Request_model
  *
@@ -1054,7 +1056,7 @@ class Exchange_base extends MY_Model {
 	/**
 	 * Set book_id
 	 * 
-	 * @param int
+	 * @param int  $value the book ID to set
 	 * @return void
 	 */
 	public function set_book_id($value)
@@ -1070,8 +1072,8 @@ class Exchange_base extends MY_Model {
 	 * The second parameter can be used to insert other 
 	 * property
 	 * 
-	 * @param string
-	 * @param array (string) (optional)
+	 * @param string  $table the table name
+	 * @param array  $properties other object properties to insert, like 'price' (optional)
 	 * @return void
 	 * @access protected
 	 */
@@ -1108,7 +1110,7 @@ class Exchange_base extends MY_Model {
 	 * Deletes a row from $table.
 	 * user_id and book_id properties must be setted
 	 * 
-	 * @param string
+	 * @param string  $table the table name
 	 * @return void
 	 * @access protected
 	 */

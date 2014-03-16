@@ -79,7 +79,7 @@ class User_model extends User_base {
 	 * Activate an account. Sets user rights to standard USER_RIGHTS.
 	 * The user can now log in.
 	 *
-	 * @param string
+	 * @param string  $activation_key the key needed to activate the account
 	 * @return boolean
 	 */
 	public function activate($activation_key)
@@ -103,7 +103,7 @@ class User_model extends User_base {
 	 * (because both are unique fields)
 	 *
 	 *
-	 * @param string
+	 * @param string  $user_or_email user name or email address
 	 * @return boolean
 	 */
 	public function ask_for_reset_password($user_or_email)
@@ -127,7 +127,7 @@ class User_model extends User_base {
 	 * Reset the password if $confirm_code is correct.
 	 * The password property must be setted with the new password.
 	 *
-	 * @param string
+	 * @param string  $confirm_code the code needed to confirm the reset password
 	 * @return boolean
 	 */
 	public function reset_password($confirm_code)
@@ -145,7 +145,7 @@ class User_model extends User_base {
 	/**
 	 * Updates the user's name if this does not exists.
 	 *
-	 * @param string
+	 * @param string  $user_name new user name
 	 * @return boolean
 	 */
 	public function update_user_name($user_name)
@@ -165,7 +165,7 @@ class User_model extends User_base {
 	 * The $email must be unique (return FALSE otherwise)
 	 * and the `tmp_users` must not contain the user's ID.
 	 *
-	 * @param string
+	 * @param string  $email new email address (to confirm)
 	 * @return boolean
 	 */
 	public function ask_for_update_email($email)
@@ -183,7 +183,7 @@ class User_model extends User_base {
 	/**
 	 * Updates the email if the $confirm_code is correct.
 	 *
-	 * @param string
+	 * @param string  $confirm_code the code needed to confirm the email address
 	 * @return boolean
 	 */
 	public function update_email($confirm_code)
@@ -203,9 +203,10 @@ class User_model extends User_base {
 	/**
 	 * Updates the password if $old_pass is correct
 	 *
-	 * @param string
-	 * @param string
+	 * @param string  $old_pass old account password
+	 * @param string  $new_pass new password
 	 * @return boolean
+	 * @todo throw an exception instead return FALSE
 	 */
 	public function update_password($old_pass, $new_pass)
 	{
@@ -223,9 +224,10 @@ class User_model extends User_base {
 	 * Log trough user name and password.
 	 * Sets the userdata. 
 	 *
-	 * @param string
-	 * @param string
+	 * @param string  $user_name the user name
+	 * @param string  $password password
 	 * @return boolean
+	 * @todo throw an exception instead return FALSE
 	 */
 	public function login($user_name, $password)
 	{
@@ -255,12 +257,16 @@ class User_model extends User_base {
 	/**
 	 * Add an item to userdata.
 	 *
-	 * $data can be an associative array or a string.
-	 * In this case $value should contain the value 
+	 * The first parameter can be an associative array or a string.
+	 * 
+	 * If an associative array is passed to this method,
+	 * the second parameter should be NULL (default value).
+	 *
+	 * Otherwise $value should contain the value 
 	 * to add.
 	 *
-	 * @param mixed  array or string
-	 * @param mixed  (optional) string or NULL
+	 * @param mixed  $data associative array or a string indicating the name of the data to add
+	 * @param mixed  $value if $data is a string contains the value to add
 	 * @return void
 	 */
 	public function add_userdata($data, $value = NULL)
@@ -278,10 +284,11 @@ class User_model extends User_base {
 	 *
 	 * If invoked without parameters returns an associative
 	 * array with all userdata. FALSE if not setted.
-	 * Otherwise if called with a string as parameter
-	 * return the userdata relative to this string.
 	 *
-	 * @param mixed  string or NULL
+	 * Otherwise if called with a string as parameter
+	 * return the userdata relative to this string. (or FALSE)
+	 *
+	 * @param mixed  $item the item to retrieve or NULL if all items needed
 	 * @return mixed 
 	 */
 	public function userdata($item = NULL)
@@ -301,7 +308,7 @@ class User_model extends User_base {
 	 * If is a string will delete the element required.
 	 * If is an array will delete all elements.
 	 *
-	 * @param mixed
+	 * @param mixed  $items the item to delete or NULL if all items should be deleted
 	 * @return void
 	 */
 	public function del_userdata($items = NULL)
@@ -328,7 +335,7 @@ class User_model extends User_base {
 	/**
 	 * Check the password through the security helper.
 	 *
-	 * @param string
+	 * @param string  $password the password (not hashed) to compare with 'password' property
 	 * @return boolean
 	 * @access private
 	 */
@@ -343,8 +350,10 @@ class User_model extends User_base {
 	 * The parameter $registration shuld be TRUE
 	 * only for registration.
 	 *
+	 * @param boolean  $registration indicates whether you are making a registration
 	 * @return boolean
 	 * @access private
+	 * @todo throws an exception insted return boolean
 	 */
 	private function _insert_tmp($registration = FALSE)
 	{
@@ -393,7 +402,7 @@ class User_model extends User_base {
 	 * Check if $confirm code corresponds with one stored in
 	 * `tmp_users` table
 	 *
-	 * @param string
+	 * @param string  $confirm_code the code to compare with 'confirm_code' property
 	 * @return boolean
 	 * @access private
 	 */
@@ -427,8 +436,8 @@ class User_model extends User_base {
 	 *
 	 * $id indicates if the confirm link needs the users id.
 	 *
-	 * @param string
-	 * @param boolean
+	 * @param string  $controller the controller wich confirm link redirect to
+	 * @param boolean  $id indicates whether the link should contains the user id
 	 * @return string
 	 */
 	public function get_confirm_link($controller, $id = TRUE)

@@ -91,7 +91,7 @@ class Google_books {
   /**
    * Set search key
    *
-   * @param string
+   * @param string  $str the key for the search
    * @return void
    */
   public function set_search_key($str)
@@ -127,7 +127,7 @@ class Google_books {
   /**
    * Get a book by its ISBN.
    * 
-   * @param string
+   * @param string  $isbn the ISBN code
    * @return void
    */
   public function get_by_isbn($isbn)
@@ -159,7 +159,7 @@ class Google_books {
    * Reformats google data to a simpler associative array.
    * Indexes can be setted with fetched data or NULL otherwise.
    * 
-   * @param array
+   * @param array  $google_fetch the output of service->volumes->listVolumes()
    * @return mixed array or NULL
    * @access private
    */
@@ -195,8 +195,8 @@ class Google_books {
   /**
    * Finds ISBN codes in 'volumeInfo' array.
    *
-   * @param array
-   * @param string  ISBN type ('13' or '10')
+   * @param array  $item the $google_fetch['items'] array
+   * @param string  $type the ISBN type ('13' or '10')
    * @return mixed  string or NULL
    * @access private
    */

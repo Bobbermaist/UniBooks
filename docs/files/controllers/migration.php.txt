@@ -1,5 +1,21 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+/**
+ * UniBooks
+ *
+ * An application for books trade off
+ *
+ * @package UniBooks
+ * @author Emiliano Bovetti
+ * @since Version 1.0
+ */
 
+/**
+ * UniBooks Migration class.
+ *
+ * @package UniBooks
+ * @category Controllers
+ * @author Emiliano Bovetti
+ */
 class Migration extends CI_Controller {
 
 	public function __construct()
@@ -39,6 +55,8 @@ class Migration extends CI_Controller {
 		echo 'Tutte le tabelle sono state eliminate';
 	}
 }
+
+// END Migration class
 
 /* End of file migration.php */
 /* Location: ./application/controllers/migration.php */ 

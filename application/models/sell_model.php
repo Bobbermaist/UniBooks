@@ -65,7 +65,7 @@ class Sell_model extends Exchange_base {
 	 * Converts the $value parameter in a float value
 	 * and sets price property.
 	 *
-	 * @param float
+	 * @param float  $value contains the price to set
 	 * @return void
 	 */
 	public function set_price($value)

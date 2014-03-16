@@ -26,8 +26,8 @@ require_once PHPASS_PATH . 'PasswordHash.php';
 /**
  * Uses the PHPass library to make secure hash.
  *
- * @param	string
- * @return string  (hash)
+ * @param	string  $str the string to hash
+ * @return string  (hashed)
  * @access public 
  */
 function do_hash( $str )
@@ -39,8 +39,8 @@ function do_hash( $str )
 /**
  * Uses the PHPass library to check the validity of an hash.
  *
- * @param	string  hashed password
- * @param string  password
+ * @param	string  $hashed_password the hashed password
+ * @param string  $str the password provided (not hashed)
  * @return boolean
  * @access public 
  */
