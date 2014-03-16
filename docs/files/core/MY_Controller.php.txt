@@ -34,6 +34,15 @@ class MY_Controller extends CI_Controller  {
 	protected $logged;
 
 	/**
+	 * The _try method stores here the exception
+	 * code if an exception is catched.
+	 *
+	 * @var int
+	 * @access protected
+	 */
+	protected $exception_code = NO_EXCEPTIONS;
+
+	/**
 	 * An array of all view names to be showed.
 	 *
 	 * @var array  (string)
@@ -99,6 +108,79 @@ class MY_Controller extends CI_Controller  {
 		}
 		
 		$this->load->view('template/coda');
+	}
+
+	/**
+	 * Executes a *try* - *catch* command through a callback.
+	 *
+	 * The first parameter indicates the controller property
+	 * to call (e.g. 'User_model'), the second one the object model
+	 * (like any method or User_model).
+	 *
+	 * It is also possible to pass an arbitrary numer of parameters
+	 * in addition to these two
+	 * `$this->_try('User_model', 'method_name', $param1, $param2...)`.
+	 *
+	 * In this case all parameters will be passed to the called method.
+	 *
+	 * E.g.
+	 * <code>
+	 *	$this->_try('A_model', 'a_model_method');
+	 * </code>
+	 * <code>
+	 *	$confirm_code = $this->input->post('confirm_code');
+	 *	$new_password = $this->input->post('password');
+	 *	$this->_try('User_model', 'reset_password', $confirm_code, $new_password);
+	 * </code>
+	 * 
+	 * The model in these examples should be loaded before 
+	 * calling this method, otherwise an INVALID_PARAMETER 
+	 * exception will be thrown.
+	 *
+	 * If the called method raises a Custom_exception,
+	 * its code will be stored in *exception_code*
+	 * property.
+	 *
+	 * @param string  $property_name the controller's property name
+	 * @param string  $method_name the method name
+	 * @return void
+	 * @access protected
+	 */
+	protected function _try($property_name, $method_name)
+	{
+		$callback = array($this->{$property_name}, $method_name);
+
+		$param_arr = array();
+		if (func_num_args() > 2)
+		{
+			for ($i=2; func_num_args() > $i; $i++)
+			{
+				$param_arr[] = func_get_arg($i);
+			}
+		}
+
+		if (is_callable($callback))
+		{
+			try
+			{
+				if (empty($param_arr))
+				{
+					call_user_func($callback);
+				}
+				else
+				{
+					call_user_func_array($callback, $param_arr);
+				}
+			}
+			catch (Custom_exception $e)
+			{
+				$this->exception_code = $e->getCode();
+			}
+		}
+		else
+		{
+			throw new Custom_exception(INVALID_PARAMETER);
+		}
 	}
 
 	/**

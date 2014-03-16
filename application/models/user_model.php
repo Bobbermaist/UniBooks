@@ -79,22 +79,28 @@ class User_model extends User_base {
 	 * Activate an account. Sets user rights to standard USER_RIGHTS.
 	 * The user can now log in.
 	 *
+	 * *Throws an exception* if the activation code is incorrect or if
+	 * the account is already activated
+	 *
 	 * @param string  $activation_key the key needed to activate the account
-	 * @return boolean
+	 * @return void
 	 */
 	public function activate($activation_key)
 	{
-		if ($this->rights > UNCONFIRMED_ACCOUNT OR
-					$this->_check_confirm_code($activation_key) === FALSE)
+		if ($this->rights > UNCONFIRMED_ACCOUNT)
 		{
-			return FALSE;
+			throw new Custom_exception(ACCOUNT_ALREADY_CONFIRMED);
+		}
+
+		if ($this->_check_confirm_code($activation_key) === FALSE)
+		{
+			throw new Custom_exception(WRONG_CONFIRM_CODE);
 		}
 
 		// updating rights
 		$this->rights = USER_RIGHTS;
 		$this->update();
 		$this->_empty_tmp();
-		return TRUE;
 	}
 
 	/**
@@ -102,44 +108,56 @@ class User_model extends User_base {
 	 * The request can be done by user name or email
 	 * (because both are unique fields)
 	 *
+	 * *Throws an exception* if the $user_or_email parameter
+	 * does not match neither a user name nor email address.
 	 *
 	 * @param string  $user_or_email user name or email address
-	 * @return boolean
+	 * @return void
 	 */
 	public function ask_for_reset_password($user_or_email)
 	{
-		$this->set_email($user_or_email);
-		if ($this->select_by('email') === FALSE)
+		try
 		{
-			$this->set_user_name($user_or_email);
-			$this->select_by('user_name');
+			$this->set_email($user_or_email);
+			$this->select_by('email');
+		}
+		catch (Custom_exception $e)
+		{
+			try
+			{
+				$this->set_user_name($user_or_email);
+				$this->select_by('user_name');
+			}
+			catch (Custom_exception $e)
+			{
+				throw new Custom_exception(NEITHER_USER_NOR_EMAIL);
+			}
 		}
 
-		if ($this->get_id() !== FALSE)
-		{
-			$this->_set_confirm_code();
-			return $this->_insert_tmp();
-		}
-		return FALSE;
+		$this->_set_confirm_code();
+		$this->_insert_tmp();
 	}
 
 	/**
 	 * Reset the password if $confirm_code is correct.
 	 * The password property must be setted with the new password.
 	 *
+	 * *Throws an exception* if the confirm code is wrong
+	 *
 	 * @param string  $confirm_code the code needed to confirm the reset password
-	 * @return boolean
+	 * @param strin  $new_pass new password (not hashed)
+	 * @return void
 	 */
-	public function reset_password($confirm_code)
+	public function reset_password($confirm_code, $new_pass)
 	{
 		if ($this->_check_confirm_code($confirm_code) === FALSE)
 		{
-			return FALSE;
+			throw new Custom_exception(WRONG_CONFIRM_CODE);
 		}
 
+		$this->set_password($new_pass);
 		$this->update();
 		$this->_empty_tmp();
-		return TRUE;
 	}
 
 	/**

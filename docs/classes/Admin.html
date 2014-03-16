@@ -113,7 +113,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">125</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">129</span>
                                 </a>
                             </li>
                             <li>
@@ -138,10 +138,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-881210569"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1883719042"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-881210569" class="accordion-body collapse in">
+            <div id="namespace-1883719042" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -227,11 +227,13 @@ multiple views.</p>
                             <section class="span4">
                                                                     <a href="../classes/MY_Controller.html#method__set_view" class="">_set_view()</a><br />
                                                                     <a href="../classes/MY_Controller.html#method__view" class="">_view()</a><br />
+                                                                    <a href="../classes/MY_Controller.html#method__try" class="">_try()</a><br />
                                                                     <a href="../classes/MY_Controller.html#method__restrict_area" class="">_restrict_area()</a><br />
                                                                     <a href="../classes/MY_Controller.html#method__post_required" class="">_post_required()</a><br />
                                                             </section>
                             <section class="span4">
                                                                     <a href="../classes/MY_Controller.html#property_logged" class="">$logged</a><br />
+                                                                    <a href="../classes/MY_Controller.html#property_exception_code" class="">$exception_code</a><br />
                                                             </section>
                             <section class="span4">
                                 <em>N/A</em>
@@ -322,6 +324,39 @@ multiple views.</p>
 
                                 <h4>Type</h4>
                 boolean
+                                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                    <dt>Inherited from</dt>
+                    <dd><a href="../classes/MY_Controller.html"><div class="path-wrapper">\MY_Controller</div></a></dd>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_exception_code" name="property_exception_code" class="anchor"></a>
+            <article class="property">
+                <h3 class="protected ">$exception_code</h3>
+                <pre class="signature">$exception_code : int</pre>
+                <p><em>The _try method stores here the exception
+code if an exception is catched.</em></p>
+                
+
+                                <h4>Type</h4>
+                int
                                             </article>
         </div>
         <aside class="span4 detailsbar">
@@ -562,6 +597,73 @@ by _view method.</em></p>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
+            <a id="method__try" name="method__try" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">_try()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">_try(string <span class="argument">$property_name</span>, string <span class="argument">$method_name</span>) : void</pre>
+                <p><em>Executes a *try* - *catch* command through a callback.</em></p>
+                <p>The first parameter indicates the controller property
+to call (e.g. 'User_model'), the second one the object model
+(like any method or User_model).</p>
+<p>It is also possible to pass an arbitrary numer of parameters
+in addition to these two
+<code>$this-&gt;_try('User_model', 'method_name', $param1, $param2...)</code>.</p>
+<p>In this case all parameters will be passed to the called method.</p>
+<p>E.g.
+<code>
+$this->_try('A_model', 'a_model_method');
+</code>
+<code>
+$confirm_code = $this->input->post('confirm_code');
+$new_password = $this->input->post('password');
+$this->_try('User_model', 'reset_password', $confirm_code, $new_password);
+</code></p>
+<p>The model in these examples should be loaded before
+calling this method, otherwise an INVALID_PARAMETER
+exception will be thrown.</p>
+<p>If the called method raises a Custom_exception,
+its code will be stored in <em>exception_code</em>
+property.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$property_name</td>
+                                <td><p>the controller's property name</p></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$method_name</td>
+                                <td><p>the method name</p></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                    <dt>Inherited from</dt>
+                    <dd><a href="../classes/MY_Controller.html"><div class="path-wrapper">\MY_Controller</div></a></dd>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
             <a id="method__restrict_area" name="method__restrict_area" class="anchor"></a>
             <article class="method">
                 <h3 class="protected ">_restrict_area()</h3>
@@ -699,7 +801,7 @@ or a string array with all fields POST</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on March 15th, 2014 at 16:24.
+                    on March 16th, 2014 at 22:27.
                 </section>
             </section>
         </section>

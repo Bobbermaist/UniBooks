@@ -70,7 +70,7 @@ class MY_Form_validation extends CI_Form_validation {
 	 * @param string  $str contains the ISBN code to validate
 	 * @return boolean
 	 */
-	public function valid_ISBN($str)
+	public function valid_isbn($str)
 	{
 		$this->load->helper('isbn');
 		$this->CI->load->model('Book_model');

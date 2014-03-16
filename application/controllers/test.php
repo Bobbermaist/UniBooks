@@ -25,8 +25,20 @@ class Test extends MY_Controller {
 
 	public function index()
 	{
-		$code = 1;
-		var_dump($this->lang->line('exception_' . $code));
+		$this->prova(1, 2, 3, 4, 5);
+	}
+
+	public function prova($param0, $param1)
+	{
+		$parameters = array();
+		if (func_num_args() > 2)
+		{
+			for ($i=2; func_num_args() > $i; $i++)
+			{
+				$parameters[] = func_get_arg($i);
+			}
+		}
+		var_dump($parameters);
 	}
 }
 

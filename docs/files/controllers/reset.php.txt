@@ -40,19 +40,24 @@ class Reset extends MY_Controller {
 			),
 		));
 
-		if ($input AND $this->User_model->ask_for_reset_password($input) === TRUE)
+		if ($input !== FALSE)
 		{
-			$this->_send_reset();
-			$this->_set_view('generic', array(
-				'p'		=> 'Ti &egrave; stata inviata un\'email con le istruzioni per effettuare il reset della password',
-			));
-		}
-		elseif ($input !== FALSE)
-		{
-			$this->_set_view('generic', array(
-				'p'		=> 'I parametri inseriti non corrispondono a nessun utente',
-				'id'	=> 'error',
-			));
+			$this->_try('User_model', 'ask_for_reset_password', $input);
+
+			if ($this->exception_code === NEITHER_USER_NOR_EMAIL)
+			{
+				$this->_set_view('generic', array(
+					'p'		=> 'I parametri inseriti non corrispondono a nessun utente',
+					'id'	=> 'error',
+				));
+			}
+			else
+			{
+				$this->_send_reset();
+				$this->_set_view('generic', array(
+					'p'		=> 'Ti &egrave; stata inviata un\'email con le istruzioni per effettuare il reset della password',
+				));
+			}
 		}
 
 		$this->_view();
@@ -89,29 +94,33 @@ class Reset extends MY_Controller {
 			),
 		));
 
-		if ($this->input->post('password') !== FALSE)
-		{
-			$this->User_model->set_password($this->input->post('password'));
-			$this->_reset_password($confirm_code);
-		}
-
+		$this->_reset_password($confirm_code);
+		
 		$this->_view();
 	}
 
 	private function _reset_password($confirm_code)
 	{
-		if ($this->User_model->reset_password($confirm_code) === TRUE)
+		$new_password = $this->input->post('password');
+
+		// do nothing if no new password is retrieved
+		if ($new_password !== FALSE)
 		{
-			$this->_set_view('generic', array(
-				'p' => 'Reset password effettuato con successo',
-			));
-		}
-		else
-		{
-			$this->_set_view('generic', array(
-				'p'		=> 'Errore nel reset password',
-				'id'	=> 'error',
-			));
+			$this->_try('User_model', 'reset_password', $confirm_code, $new_password);
+
+			if ($this->exception_code === WRONG_CONFIRM_CODE)
+			{
+				$this->_set_view('generic', array(
+					'p'		=> 'Errore nel reset password (codice di conferma errato)',
+					'id'	=> 'error',
+				));
+			}
+			else
+			{
+				$this->_set_view('generic', array(
+					'p' => 'Reset password effettuato con successo',
+				));
+			}
 		}
 	}
 }

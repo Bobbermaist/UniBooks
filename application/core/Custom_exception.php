@@ -30,8 +30,12 @@
  */
 class Custom_exception extends Exception {
 
+	private $_CI;
+
 	/**
 	 * Constructor.
+	 * Get the CI instance.
+	 *
 	 * Code constants are defined in ./application/config/constants.php
 	 *
 	 * Will call $this->_get_message() to retrieve the message.
@@ -42,6 +46,8 @@ class Custom_exception extends Exception {
 	 */
 	public function __construct($code, Exception $previous = NULL)
 	{
+		$this->_CI =& get_instance();
+
 		$code = (int) $code;
 		
 		parent::__construct($this->_get_message($code), $code, $previous);
@@ -60,10 +66,10 @@ class Custom_exception extends Exception {
 	 */
 	private function _get_message($code)
 	{
-		$message = $this->lang->line('exception_' . $code);
+		$message = $this->_CI->lang->line('exception_' . $code);
 		if ($message === FALSE)
 		{
-			return $this->lang->line('exception_' . INVALID_EXCEPTION_CODE);
+			return $this->_CI->lang->line('exception_' . INVALID_EXCEPTION_CODE);
 		}
 		return $message;
 	}

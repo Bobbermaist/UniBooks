@@ -129,34 +129,41 @@ define('ADMIN_RIGHTS', 3);
 |
 */
 
+/** Everything OK! */
+define('NO_EXCEPTIONS', 10000);
+
 /** Invalid exception code */
-define('INVALID_EXCEPTION_CODE', 0);
+define('INVALID_EXCEPTION_CODE', 10001);
 /** An invalid parameter was passed to a function */
-define('INVALID_PARAMETER', 10001);
+define('INVALID_PARAMETER', 10002);
 
 /** An ID does not exists in local db */
-define('ID_NON_EXISTENT', 10002);
+define('ID_NON_EXISTENT', 10003);
 /** An User name does not exists in local db */
-define('USER_NAME_NON_EXISTENT', 10003);
+define('USER_NAME_NON_EXISTENT', 10004);
 /** An email address does not exists in local db */
-define('EMAIL_NON_EXISTENT', 10004);
+define('EMAIL_NON_EXISTENT', 10005);
 /** An ISBN code does not exists in local db */
-define('ISBN_NON_EXISTENT', 10005);
+define('ISBN_NON_EXISTENT', 10006);
 /** A Google ID does not exists in local db */
-define('GOOGLE_ID_NON_EXISTENT', 10006);
+define('GOOGLE_ID_NON_EXISTENT', 10007);
+/** Invalid key provided for reset password */
+define('NEITHER_USER_NOR_EMAIL', 10008);
+
+/** The provided confirmation code is incorrect */
+define('WRONG_CONFIRM_CODE', 10009);
+/** Trying to confirm an account a second time */
+define('ACCOUNT_ALREADY_CONFIRMED', 10010);
 
 /** A pair user_id - book_id already exists in sales db */
-define('WRONG_CONFIRM_CODE', 10007);
-
-/** A pair user_id - book_id already exists in sales db */
-define('EXISTING_SALE', 10008);
+define('EXISTING_SALE', 10011);
 /** A pair user_id - book_id already exists in requests db */
-define('EXISTING_REQUEST', 10009);
+define('EXISTING_REQUEST', 10012);
 
 /** An ISBN cannot be found using google API */
-define('ISBN_NOT_FOUND', 10010);
+define('ISBN_NOT_FOUND', 10013);
 /** A book cannot be found */
-define('BOOK_NOT_FOUND', 10011);
+define('BOOK_NOT_FOUND', 10014);
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */
