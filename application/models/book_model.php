@@ -55,8 +55,12 @@ class Book_model extends Book_base {
 	 * Search for a book.
 	 * Throws an exception if can't find
 	 *
-	 * @param string
+	 * @param string  $key a search key
 	 * @return void
+	 * @throws Custom_exception(ISBN_NOT_FOUND)
+	 * @see _search_by_isbn()
+	 * @throws Custom_exception(BOOK_NOT_FOUND) if can't
+	 *     find a book with the provided search key
 	 */
 	public function search($key)
 	{
@@ -78,6 +82,8 @@ class Book_model extends Book_base {
 	 *
 	 * @return void
 	 * @access private
+	 * @throws Custom_exception(ISBN_NOT_FOUND) if can't
+	 *    find the given ISBN code on google books API
 	 */
 	private function _search_by_isbn()
 	{

@@ -26,30 +26,8 @@ class Activation extends MY_Controller {
 	public function index($id = NULL, $activation_key = NULL)
 	{
 		$this->User_model->set_id($id);
-
 		$this->_try('User_model', 'activate', $activation_key);
-
-		if ($this->exception_code === NO_EXCEPTIONS)
-		{
-			$this->_set_view('generic', array(
-				'p' => 'Attivazione effettuata con successo',
-			));
-		}
-		if ($this->exception_code === ACCOUNT_ALREADY_CONFIRMED)
-		{
-			$this->_set_view('generic', array(
-				'p'		=> 'Impossibile attivare l\'account (account già attivato)',
-				'id'	=> 'error',
-			));
-		}
-		elseif ($this->exception_code === WRONG_CONFIRM_CODE)
-		{
-			$this->_set_view('generic', array(
-				'p'		=> 'Impossibile attivare l\'account (codice di conferma errato)',
-				'id'	=> 'error',
-			));
-		}
-		//else { unknown error }
+		$this->_set_message('activation_complete');
 
 		$this->_view();
 	}

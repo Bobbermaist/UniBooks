@@ -41,38 +41,8 @@ class Login extends MY_Controller {
 
 		if ($this->form_validation->run() === TRUE)
 		{
-			$this->_try('User_model', 'login',
-					$this->input->post('user_name'), $this->input->post('password'));
-			
-			if ($this->exception_code === NO_EXCEPTIONS) // log in OK, redirect in
-			{
-				$redirect = $this->User_model->userdata('redirect');
-				if ($redirect === FALSE)
-				{
-					redirect('user');
-				}
-				else
-				{
-					$this->User_model->del_userdata('redirect');
-					redirect($redirect);
-				}
-			}
-			elseif ($this->exception_code === ACCOUNT_NOT_CONFIRMED)
-			{
-				$this->_set_view('generic', array(
-					'p'		=> 'Errore nel login (account non confermato)',
-					'id'	=> 'error',
-				));
-			}
-			elseif ($this->exception_code === WRONG_PASSWORD)
-			{
-				$this->_set_view('generic', array(
-					'p'		=> 'Errore nel login (password errata)',
-					'id'	=> 'error',
-				));
-			}
-			// else { unknown error }
-
+			$this->_try('User_model', 'login', $this->input->post('user_name'), $this->input->post('password'));
+			$this->_redirect($this->User_model->userdata('redirect'));
 		}
 
 		$this->_view();

@@ -37,9 +37,8 @@ class Signup extends MY_Controller {
 			$this->User_model->set_email($this->input->post('email'));
 			$this->User_model->insert();
 			$this->_send_activation();
-			$this->_set_view('generic', array(
-				'p' => 'Controlla la tua casella email per l\'attivazione account',
-			));
+
+			$this->_set_message('signup_complete');
 		}
 		else
 		{
