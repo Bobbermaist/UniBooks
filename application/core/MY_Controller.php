@@ -10,14 +10,15 @@
  */
 
 /**
- * UniBooks MY_Controller class
+ * UniBooks MY_Controller class.
  *
  * Extended by controllers.
  *
  * Initializes an instance variable
- * indicating whether the user is logged in
- * and has a system to queue and load
- * multiple views.
+ * indicating whether the user is logged in,
+ * has a system to queue and load
+ * multiple views and provides an exception
+ * handler system.
  *
  * @package UniBooks
  * @category Controllers
@@ -34,7 +35,7 @@ class MY_Controller extends CI_Controller  {
 	protected $logged;
 
 	/**
-	 * The _try method stores here the exception
+	 * The "_try" method stores here the exception
 	 * code if an exception is catched.
 	 *
 	 * @var int
@@ -43,7 +44,7 @@ class MY_Controller extends CI_Controller  {
 	protected $exception_code = NO_EXCEPTIONS;
 
 	/**
-	 * An array of all view names to be showed.
+	 * An array of all view names to be shown.
 	 *
 	 * @var array  (string)
 	 * @access private
@@ -59,7 +60,8 @@ class MY_Controller extends CI_Controller  {
 	private $_view_data = array();
 
 	/**
-	 * Constructor
+	 * Constructor.
+	 *
 	 * Sets UTF-8 header and sets $this->logged property
 	 * calling read_session() method.
 	 *
@@ -111,29 +113,35 @@ class MY_Controller extends CI_Controller  {
 	}
 
 	/**
-	 * Executes a *try* - *catch* command through a callback.
+	 * Executes a try - catch command through a callback.
 	 *
 	 * The first parameter indicates the controller property
-	 * to call (e.g. 'User_model'), the second one the object model
+	 * to call (e.g. 'User_model'), the second one the object method
 	 * (like any method or User_model).
 	 *
 	 * It is also possible to pass an arbitrary numer of parameters
 	 * in addition to these two
-	 * `$this->_try('User_model', 'method_name', $param1, $param2...)`.
+	 * `$this->_try('User_model', 'method_name', $param1, $param2, ...)`.
 	 *
 	 * In this case all parameters will be passed to the called method.
 	 *
 	 * E.g.
-	 * <code>
-	 *	$this->_try('A_model', 'a_model_method');
-	 * </code>
-	 * <code>
-	 *	$confirm_code = $this->input->post('confirm_code');
-	 *	$new_password = $this->input->post('password');
-	 *	$this->_try('User_model', 'reset_password', $confirm_code, $new_password);
-	 * </code>
+	 *
+	 * <pre> 
+	 *  $this->_try('User_model', 'reset_password', $confirm_code, $new_password);
+	 * </pre>
 	 * 
-	 * The model in these examples should be loaded before 
+	 * Corresponds to:
+	 *
+	 * <pre>
+	 *  try {
+	 *    $this->User_model->reset_password($confirm_code, $new_password);
+	 *  } catch (Custom_exception $e) {
+	 *    $this->exception_code = $e->getCode();
+	 *  }
+	 * </pre>
+	 *
+	 * The model in this example should be loaded before 
 	 * calling this method, otherwise an INVALID_PARAMETER 
 	 * exception will be thrown.
 	 *
@@ -141,8 +149,9 @@ class MY_Controller extends CI_Controller  {
 	 * its code will be stored in *exception_code*
 	 * property.
 	 *
-	 * @param string  $property_name the controller's property name
-	 * @param string  $method_name the method name
+	 * @param string  $property_name controller's property name
+	 * @param string  $method_name method name
+	 * @param mixed  $optional,...
 	 * @return void
 	 * @access protected
 	 */

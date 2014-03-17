@@ -138,10 +138,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1882030057"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-2071352141"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-1882030057" class="accordion-body collapse in">
+            <div id="namespace-2071352141" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -260,7 +260,7 @@ methods to manage books.</p>
                                                                     <a href="../classes/Book_base.html#method__insert_info" class="">_insert_info()</a><br />
                                                                     <a href="../classes/Book_base.html#method__insert_authors" class="">_insert_authors()</a><br />
                                                                     <a href="../classes/Book_base.html#method__insert_categories" class="">_insert_categories()</a><br />
-                                                                    <a href="../classes/Book_base.html#method__set" class="">_set()</a><br />
+                                                                    <a href="../classes/Book_base.html#method__set_by" class="">_set_by()</a><br />
                                                                     <a href="../classes/Book_base.html#method__join_authors" class="">_join_authors()</a><br />
                                                                     <a href="../classes/Book_base.html#method__join_categories" class="">_join_categories()</a><br />
                                                             </section>
@@ -1208,7 +1208,7 @@ on failure.</p>
             <article class="method">
                 <h3 class="protected ">_get_publisher()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">_get_publisher() : mixed</pre>
+                <pre class="signature" style="margin-right: 54px;">_get_publisher() : string|null</pre>
                 <p><em>Get publisher&#039;s name from the table `publisher_codes`
 through ISBN.</em></p>
                 <p>ISBN_13 or ISBN_10 must be setted.</p>
@@ -1216,8 +1216,7 @@ through ISBN.</em></p>
                 
                 
                                     <h4>Returns</h4>
-                    mixed
-                                            &mdash; <p>string or NULL</p>
+                    string|null
                                                 </article>
         </div>
         <aside class="span4 detailsbar">
@@ -1245,7 +1244,7 @@ through ISBN.</em></p>
             <article class="method">
                 <h3 class="protected ">_get_country()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">_get_country() : mixed</pre>
+                <pre class="signature" style="margin-right: 54px;">_get_country() : string|null</pre>
                 <p><em>Get country name from the table `language_groups`
 through ISBN.</em></p>
                 <p>ISBN_13 or ISBN_10 must be setted.</p>
@@ -1253,8 +1252,7 @@ through ISBN.</em></p>
                 
                 
                                     <h4>Returns</h4>
-                    mixed
-                                            &mdash; <p>string or NULL</p>
+                    string|null
                                                 </article>
         </div>
         <aside class="span4 detailsbar">
@@ -1630,17 +1628,36 @@ ID is returned.</p>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
-            <a id="method__set" name="method__set" class="anchor"></a>
+            <a id="method__set_by" name="method__set_by" class="anchor"></a>
             <article class="method">
-                <h3 class="private ">_set()</h3>
+                <h3 class="private ">_set_by()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">_set() : void</pre>
+                <pre class="signature" style="margin-right: 54px;">_set_by(string <span class="argument">$field</span>) : void</pre>
                 <p><em>Set all object properties from db.</em></p>
                 <p>The db query must be composed previously.</p>
 <p><em>Throws an exception</em> if the query does not
 procudes any result.</p>
 
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$field</td>
+                                <td><p>the field name</p></td>
+                            </tr>
+                                            </table>
                 
+                                    <h4>Throws</h4>
+                    <dl>
+                                                    <dt>\Custom_exception(ID_NON_EXISTENT)</dt>
+                            <dd><p>if the ID does not exists</p></dd>
+                                                    <dt>\Custom_exception(ISBN_NON_EXISTENT)</dt>
+                            <dd><p>if the ISBN code does not exists in local db</p></dd>
+                                                    <dt>\Custom_exception(GOOGLE_ID_NON_EXISTENT)</dt>
+                            <dd><p>if the google ID does not exists</p></dd>
+                                                    <dt>\Custom_exception(INVALID_PARAMETER)</dt>
+                            <dd><p>if the profided field does not match with any valid field</p></dd>
+                                                                    </dl>
                 
                             </article>
         </div>
@@ -1778,7 +1795,7 @@ procudes any result.</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on March 16th, 2014 at 22:27.
+                    on March 17th, 2014 at 08:50.
                 </section>
             </section>
         </section>

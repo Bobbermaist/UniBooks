@@ -10,13 +10,13 @@
  */
 
 /**
- * UniBooks Registration class.
+ * UniBooks Signup class.
  *
  * @package UniBooks
  * @category Controllers
  * @author Emiliano Bovetti
  */
-class Registration extends MY_Controller {
+class Signup extends MY_Controller {
 
 	public function __construct()
 	{
@@ -86,7 +86,7 @@ class Registration extends MY_Controller {
 	}
 }
 
-// END Registration class
+// END Signup class
 
-/* End of file registration.php */
-/* Location: ./application/controllers/registration.php */ 
+/* End of file signup.php */
+/* Location: ./application/controllers/signup.php */ 

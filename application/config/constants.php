@@ -150,20 +150,28 @@ define('GOOGLE_ID_NON_EXISTENT', 10007);
 /** Invalid key provided for reset password */
 define('NEITHER_USER_NOR_EMAIL', 10008);
 
+/** The provided password does not match */
+define('WRONG_PASSWORD', 10009);
 /** The provided confirmation code is incorrect */
-define('WRONG_CONFIRM_CODE', 10009);
+define('WRONG_CONFIRM_CODE', 10010);
 /** Trying to confirm an account a second time */
-define('ACCOUNT_ALREADY_CONFIRMED', 10010);
+define('ACCOUNT_ALREADY_CONFIRMED', 10011);
+/** Account must be confirmed */
+define('ACCOUNT_NOT_CONFIRMED', 10012);
 
 /** A pair user_id - book_id already exists in sales db */
-define('EXISTING_SALE', 10011);
+define('EXISTING_SALE', 10013);
 /** A pair user_id - book_id already exists in requests db */
-define('EXISTING_REQUEST', 10012);
+define('EXISTING_REQUEST', 10014);
+/** User name already existing */
+define('EXISTING_USER_NAME', 10015);
+/** Email address already existing */
+define('EXISTING_EMAIL', 10016);
 
 /** An ISBN cannot be found using google API */
-define('ISBN_NOT_FOUND', 10013);
+define('ISBN_NOT_FOUND', 10017);
 /** A book cannot be found */
-define('BOOK_NOT_FOUND', 10014);
+define('BOOK_NOT_FOUND', 10018);
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

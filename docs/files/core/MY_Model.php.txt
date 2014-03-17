@@ -415,6 +415,14 @@ class User_base extends MY_Model {
 	 *
 	 * @param string  $field the field name
 	 * @return void
+	 * @throws Custom_exception(ID_NON_EXISTENT) if the
+	 *    ID does not exists
+	 * @throws Custom_exception(USER_NAME_NON_EXISTENT) if the
+	 *    user name does not exists
+	 * @throws Custom_exception(EMAIL_NON_EXISTENT) if the
+	 *    email address dows not exists
+	 * @throws Custom_exception(INVALID_PARAMETER) if
+	 *    the parameter provided does not match with valid ones
 	 */
 	public function select_by($field = 'ID')
 	{
@@ -855,7 +863,7 @@ class Book_base extends MY_Model {
 			$this->db->where($field, $this->$field);
 		}
 		$this->db->limit(1);
-		$this->_set();
+		$this->_set_by($field);
 	}
 
 	/**
@@ -866,9 +874,18 @@ class Book_base extends MY_Model {
 	 * procudes any result.
 	 * 
 	 * @return void
+	 * @param string  $field the field name
+	 * @throws Custom_exception(ID_NON_EXISTENT)
+	 *    if the ID does not exists
+	 * @throws Custom_exception(ISBN_NON_EXISTENT)
+	 *    if the ISBN code does not exists in local db
+	 * @throws Custom_exception(GOOGLE_ID_NON_EXISTENT)
+	 *    if the google ID does not exists
+	 * @throws Custom_exception(INVALID_PARAMETER)
+	 *    if the profided field does not match with any valid field
 	 * @access private
 	 */
-	private function _set()
+	private function _set_by($field)
 	{
 		$query = $this->db->get();
 		if ($res->num_rows == 0)
@@ -951,7 +968,7 @@ class Book_base extends MY_Model {
 	 * through ISBN.
 	 * ISBN_13 or ISBN_10 must be setted.
 	 * 
-	 * @return mixed string or NULL
+	 * @return string|null
 	 * @access protected
 	 */
 	protected function _get_publisher()
@@ -973,7 +990,7 @@ class Book_base extends MY_Model {
 	 * through ISBN.
 	 * ISBN_13 or ISBN_10 must be setted.
 	 * 
-	 * @return mixed string or NULL
+	 * @return string|null
 	 * @access protected
 	 */
 	protected function _get_country()

@@ -84,6 +84,10 @@ class User_model extends User_base {
 	 *
 	 * @param string  $activation_key the key needed to activate the account
 	 * @return void
+	 * @throws Custom_exception(ACCOUNT_ALREADY_CONFIRMED)
+	 *    if user rights are greater than UNCONFIRMED_ACCOUNT
+	 * @throws Custom_exception(WRONG_CONFIRM_CODE)
+	 *    if the $actiovation_key does not match with the stored one
 	 */
 	public function activate($activation_key)
 	{
@@ -111,8 +115,13 @@ class User_model extends User_base {
 	 * *Throws an exception* if the $user_or_email parameter
 	 * does not match neither a user name nor email address.
 	 *
+	 * The `_insert_tmp()` method will throws an exception
+	 * if the user ha not confirmed his account yet.
+	 *
 	 * @param string  $user_or_email user name or email address
 	 * @return void
+	 * @throws Custom_exception(NEITHER_USER_NOR_EMAIL) if the provided
+	 *    parameter does not match with any user name or email
 	 */
 	public function ask_for_reset_password($user_or_email)
 	{
@@ -147,6 +156,8 @@ class User_model extends User_base {
 	 * @param string  $confirm_code the code needed to confirm the reset password
 	 * @param strin  $new_pass new password (not hashed)
 	 * @return void
+	 * @throws Custom_exception(WRONG_CONFIRM_CODE)
+	 *    if $confirm_code does not match with the stored one
 	 */
 	public function reset_password($confirm_code, $new_pass)
 	{
@@ -164,58 +175,66 @@ class User_model extends User_base {
 	 * Updates the user's name if this does not exists.
 	 *
 	 * @param string  $user_name new user name
-	 * @return boolean
+	 * @return void
+	 * @throws Custom_exception(EXISTING_USER_NAME) if $user_name
+	 *    already exists
 	 */
 	public function update_user_name($user_name)
 	{
 		if ($this->_select_one('users', 'user_name', $user_name) !== FALSE)
 		{
-			return FALSE;
+			throw new Custom_exception(EXISTING_USER_NAME);
 		}
 
 		$this->set_user_name($user_name);
 		$this->update();
-		return TRUE;
 	}
 
 	/**
 	 * Set a request for update email.
+	 *
 	 * The $email must be unique (return FALSE otherwise)
 	 * and the `tmp_users` must not contain the user's ID.
 	 *
+	 * `_insert_tmp()` method will throws an exception if
+	 * an user not confirmed yet tries to update his email
+	 *
 	 * @param string  $email new email address (to confirm)
-	 * @return boolean
+	 * @return void
+	 * @throws throw new Custom_exception(EXISTING_EMAIL) if $email
+	 *    already exists
 	 */
 	public function ask_for_update_email($email)
 	{
 		if ($this->_select_one('users', 'email', $email) !== FALSE)
 		{
-			return FALSE;
+			throw new Custom_exception(EXISTING_EMAIL);
 		}
 		
 		$this->tmp_email = $email;
 		$this->_set_confirm_code();
-		return $this->_insert_tmp();
+		$this->_insert_tmp();
 	}
 
 	/**
 	 * Updates the email if the $confirm_code is correct.
 	 *
 	 * @param string  $confirm_code the code needed to confirm the email address
-	 * @return boolean
+	 * @return void
+	 * @throws Custom_exception(WRONG_CONFIRM_CODE) if the provided
+	 *    confirm code does not match
 	 */
 	public function update_email($confirm_code)
 	{
 		if ($this->_check_confirm_code($confirm_code) === FALSE)
 		{
-			return FALSE;
+			throw new Custom_exception(WRONG_CONFIRM_CODE);
 		}
 
 		$this->_get_tmp();
 		$this->set_email($this->tmp_email);
 		$this->update();
 		$this->_empty_tmp();
-		return TRUE;
 	}
 
 	/**
@@ -223,19 +242,19 @@ class User_model extends User_base {
 	 *
 	 * @param string  $old_pass old account password
 	 * @param string  $new_pass new password
-	 * @return boolean
-	 * @todo throw an exception instead return FALSE
+	 * @return void
+	 * @throws Custom_exception(WRONG_PASSWORD) if the
+	 *    provided password does not match
 	 */
 	public function update_password($old_pass, $new_pass)
 	{
 		if($this->_check_password($old_pass) === FALSE)
 		{
-			return FALSE;
+			throw new Custom_exception(WRONG_PASSWORD);
 		}
 
 		$this->set_password($new_pass);
 		$this->update();
-		return TRUE;
 	}
 
 	/**
@@ -244,20 +263,26 @@ class User_model extends User_base {
 	 *
 	 * @param string  $user_name the user name
 	 * @param string  $password password
-	 * @return boolean
-	 * @todo throw an exception instead return FALSE
+	 * @return void
+	 * @throws Custom_exception(ACCOUNT_NOT_CONFIRMED) if
+	 *    a non confirmed user tries to log in
+	 * @throws Custom_exception(WRONG_PASSWORD) if the
+	 *    provided password does not match
 	 */
 	public function login($user_name, $password)
 	{
 		$this->set_user_name($user_name);
 		$this->select_by('user_name');
-		if ($this->_check_password($password) === FALSE OR $this->rights < USER_RIGHTS)
+		if ($this->rights < USER_RIGHTS)
 		{
-			return FALSE;
+			throw new Custom_exception(ACCOUNT_NOT_CONFIRMED);
+		}
+		if ($this->_check_password($password) === FALSE)
+		{
+			throw new Custom_exception(WRONG_PASSWORD);
 		}
 
 		$this->add_userdata('user_id', $this->ID);
-		return TRUE;
 	}
 
 	/**
@@ -369,16 +394,17 @@ class User_model extends User_base {
 	 * only for registration.
 	 *
 	 * @param boolean  $registration indicates whether you are making a registration
-	 * @return boolean
+	 * @return void
 	 * @access private
-	 * @todo throws an exception insted return boolean
+	 * @throws Custom_exception(ACCOUNT_NOT_CONFIRMED) if an user not confirmed
+	 *    tries to overwrite tmp data (e.g. tries to reset his password)
 	 */
 	private function _insert_tmp($registration = FALSE)
 	{
 		// Account not confirmed. Won't overwrite user tmp
 		if ($this->rights === UNCONFIRMED_ACCOUNT AND $registration === FALSE)
 		{
-			return FALSE;
+			throw new Custom_exception(ACCOUNT_NOT_CONFIRMED);
 		}
 
 		$data = array(
@@ -391,7 +417,6 @@ class User_model extends User_base {
 		}
 
 		$this->_insert_on_duplicate('tmp_users', $data);
-		return TRUE;
 	}
 
 	/**

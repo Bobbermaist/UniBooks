@@ -84,6 +84,7 @@ class User_model extends User_base {
 	 *
 	 * @param string  $activation_key the key needed to activate the account
 	 * @return void
+	 * @throws 
 	 */
 	public function activate($activation_key)
 	{

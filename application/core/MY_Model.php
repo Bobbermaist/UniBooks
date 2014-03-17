@@ -45,7 +45,7 @@ class MY_Model extends CI_Model {
 	 * or it isn't setted this method will return boolean FALSE
 	 * 
 	 * @param string  $property the property name to retrieve
-	 * @return mixed object property or FALSE
+	 * @return mixed  object property or FALSE
 	 */
 	protected function _get($property)
 	{
@@ -62,8 +62,8 @@ class MY_Model extends CI_Model {
 	 * the value.
 	 * 
 	 * @param string  $table is the table name
-	 * @param mixed  $where is a string or an array
-	 * @param mixed  $value is string or NULL (optional)
+	 * @param string|string[]  $where is a string or an associative array
+	 * @param string|null  $value NULL if $where is an array, string otherwise (optional)
 	 * @return mixed  a row object on success or FALSE
 	 */
 	protected function _select_one($table, $where, $value = NULL)
@@ -80,20 +80,22 @@ class MY_Model extends CI_Model {
 	 * The first parameter contains a tring with the table name,
 	 * the second one an associative array with th values.
 	 *
-	 * Ex.
-	 * <code>
-	 *	$table = 'users';
-	 *	$data = array(
-	 *		'id' => 1,
-	 *		'name' => 'test',
-	 *	);
-	 *	$this->_insert_on_duplicate($table, $data);
-	 * </code>
+	 * E.g.
+	 * <pre>
+	 *  $table = 'users';
+	 *  $data = array(
+	 *    'id' => 1,
+	 *    'name' => 'test',
+	 *  );
+	 *  $this->_insert_on_duplicate($table, $data);
+	 * </pre>
 	 *
 	 * produces the following query:
 	 *
-	 * INSERT INTO `users` (id, name) VALUES ('1', 'test')
-	 * ON DUPLICATE KEY UPDATE id='1', name='test'
+	 * <pre>
+	 *  INSERT INTO `users` (id, name) VALUES ('1', 'test')
+	 *  ON DUPLICATE KEY UPDATE id='1', name='test'
+	 * </pre>
 	 *
 	 * @param string  $table is the table name
 	 * @param array  $data the associative array to insert
@@ -206,10 +208,9 @@ class User_base extends MY_Model {
 	/**
 	 * Get ID method.
 	 *
-	 * Return the user's ID if setted, bool(FALSE)
-	 * otherwise.
+	 * Return the user's ID if setted, FALSE otherwise.
 	 *
-	 * @return mixed  int or FALSE
+	 * @return int|false
 	 */
 	public function get_id()
 	{
@@ -226,6 +227,7 @@ class User_base extends MY_Model {
 	 * 
 	 * @param int  $value the ID value to set
 	 * @return void
+	 * @see select_by method for exceptions thrown
 	 */
 	public function set_id($value)
 	{
@@ -236,7 +238,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get user name.
 	 *
-	 * @return mixed  string or FALSE
+	 * @return string|false
 	 */
 	public function get_user_name()
 	{
@@ -262,7 +264,7 @@ class User_base extends MY_Model {
 	 * Retrieve password property, return FALSE if not setted.
 	 * NOTE: The password property is the *hashed* password.
 	 *
-	 * @return mixed  string or FALSE
+	 * @return string|false
 	 */
 	public function get_password()
 	{
@@ -286,7 +288,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get email.
 	 *
-	 * @return mixed  string or FALSE
+	 * @return string|false
 	 */
 	public function get_email()
 	{
@@ -309,7 +311,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get registration time.
 	 *
-	 * @return mixed string or FALSE
+	 * @return string|false
 	 */
 	public function get_registration_time()
 	{
@@ -319,7 +321,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get rights.
 	 *
-	 * @return mixed int or FALSE
+	 * @return int|false
 	 */
 	public function get_rights()
 	{
@@ -329,7 +331,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get confirm_code
 	 *
-	 * @return mixed string or FALSE
+	 * @return string|false
 	 */
 	public function get_confirm_code()
 	{
@@ -339,7 +341,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get temporary email.
 	 *
-	 * @return mixed  string or FALSE
+	 * @return string|false
 	 */
 	public function get_tmp_email()
 	{
@@ -415,6 +417,14 @@ class User_base extends MY_Model {
 	 *
 	 * @param string  $field the field name
 	 * @return void
+	 * @throws Custom_exception(ID_NON_EXISTENT) if the
+	 *    ID does not exists
+	 * @throws Custom_exception(USER_NAME_NON_EXISTENT) if the
+	 *    user name does not exists
+	 * @throws Custom_exception(EMAIL_NON_EXISTENT) if the
+	 *    email address dows not exists
+	 * @throws Custom_exception(INVALID_PARAMETER) if
+	 *    the parameter provided does not match with valid ones
 	 */
 	public function select_by($field = 'ID')
 	{
@@ -529,7 +539,7 @@ class Book_base extends MY_Model {
 	/**
 	 * Book's authors
 	 *
-	 * @var array (string)
+	 * @var string[]
 	 * @access protected
 	 */
 	protected $authors = array();
@@ -537,7 +547,7 @@ class Book_base extends MY_Model {
 	/**
 	 * Authors id
 	 *
-	 * @var array (int)
+	 * @var int[]
 	 * @access private
 	 */
 	private $_authors_id = array();
@@ -593,7 +603,7 @@ class Book_base extends MY_Model {
 	/**
 	 * Book's categories
 	 *
-	 * @var array (string)
+	 * @var string[]
 	 * @access protected
 	 */
 	protected $categories = array();
@@ -601,7 +611,7 @@ class Book_base extends MY_Model {
 	/**
 	 * Categories IDs
 	 *
-	 * @var array (int)
+	 * @var int[]
 	 * @access private
 	 */
 	private $_categories_id = array();
@@ -646,7 +656,7 @@ class Book_base extends MY_Model {
 	 * 
 	 * Return book's ID if setted or FALSE.
 	 *
-	 * @return mixed  int or FALSE
+	 * @return int|false
 	 */
 	public function get_id()
 	{
@@ -675,7 +685,7 @@ class Book_base extends MY_Model {
 	 * Return a 13-digit ISBN if setted, 10-digit if not,
 	 * FALSE if neither are setted.
 	 * 
-	 * @return mixed  string or boolean
+	 * @return string|false
 	 */
 	public function get_isbn()
 	{
@@ -759,7 +769,7 @@ class Book_base extends MY_Model {
 	 * 
 	 * @param string  $table the table name
 	 * @param mixed  $value string or array of data to insert
-	 * @return mixed int or array
+	 * @return mixed  int if $value is a string or int[] if $value is an array
 	 * @access private
 	 */
 	private function _insert_info($table, $value)
@@ -791,7 +801,7 @@ class Book_base extends MY_Model {
 
 	/**
 	 * Links all authors with a book.
-	 * $this->_authors_id must be setted.
+	 * `$this->_authors_id` must be setted.
 	 * 
 	 * @return void
 	 * @access private
@@ -811,7 +821,7 @@ class Book_base extends MY_Model {
 
 	/**
 	 * Links all categories with a book.
-	 * $this->_categories_id must be setted.
+	 * `$this->_categories_id` must be setted.
 	 * 
 	 * @return void
 	 * @access private
@@ -840,6 +850,14 @@ class Book_base extends MY_Model {
 	 * on failure.
 	 * 
 	 * @param string  $field the field name
+	 * @throws Custom_exception(ID_NON_EXISTENT)
+	 *    if the ID does not exists
+	 * @throws Custom_exception(ISBN_NON_EXISTENT)
+	 *    if the ISBN code does not exists in local db
+	 * @throws Custom_exception(GOOGLE_ID_NON_EXISTENT)
+	 *    if the google ID does not exists
+	 * @throws Custom_exception(INVALID_PARAMETER)
+	 *    if the profided field does not match with any valid field
 	 * @return void
 	 */
 	public function select_by($field)
@@ -855,7 +873,7 @@ class Book_base extends MY_Model {
 			$this->db->where($field, $this->$field);
 		}
 		$this->db->limit(1);
-		$this->_set();
+		$this->_set_by($field);
 	}
 
 	/**
@@ -866,9 +884,18 @@ class Book_base extends MY_Model {
 	 * procudes any result.
 	 * 
 	 * @return void
+	 * @param string  $field the field name
+	 * @throws Custom_exception(ID_NON_EXISTENT)
+	 *    if the ID does not exists
+	 * @throws Custom_exception(ISBN_NON_EXISTENT)
+	 *    if the ISBN code does not exists in local db
+	 * @throws Custom_exception(GOOGLE_ID_NON_EXISTENT)
+	 *    if the google ID does not exists
+	 * @throws Custom_exception(INVALID_PARAMETER)
+	 *    if the profided field does not match with any valid field
 	 * @access private
 	 */
-	private function _set()
+	private function _set_by($field)
 	{
 		$query = $this->db->get();
 		if ($res->num_rows == 0)
@@ -951,7 +978,7 @@ class Book_base extends MY_Model {
 	 * through ISBN.
 	 * ISBN_13 or ISBN_10 must be setted.
 	 * 
-	 * @return mixed string or NULL
+	 * @return string|null
 	 * @access protected
 	 */
 	protected function _get_publisher()
@@ -973,7 +1000,7 @@ class Book_base extends MY_Model {
 	 * through ISBN.
 	 * ISBN_13 or ISBN_10 must be setted.
 	 * 
-	 * @return mixed string or NULL
+	 * @return string|null
 	 * @access protected
 	 */
 	protected function _get_country()
@@ -1046,7 +1073,7 @@ class Exchange_base extends MY_Model {
 	/**
 	 * Get book id
 	 *
-	 * @return mixed  int or FALSE
+	 * @return int|false
 	 */
 	public function get_book_id()
 	{
@@ -1073,8 +1100,12 @@ class Exchange_base extends MY_Model {
 	 * property
 	 * 
 	 * @param string  $table the table name
-	 * @param array  $properties other object properties to insert, like 'price' (optional)
+	 * @param string[]  $properties other object properties to insert, like 'price' (optional)
 	 * @return void
+	 * @throws Custom_exception(EXISTING_SALE) if the pair
+	 *    user_id - book_id exists in the 'books_for_sale' table
+	 * @throws Custom_exception(EXISTING_REQUEST) if the pair
+	 *    user_id - book_id exists int the 'books_requested' table
 	 * @access protected
 	 */
 	protected function _insert($table, $properties = array())
@@ -1092,10 +1123,6 @@ class Exchange_base extends MY_Model {
 			elseif ($table === 'books_requested')
 			{
 				throw new Custom_exception(EXISTING_REQUEST);
-			}
-			else
-			{
-				throw new Custom_exception(INVALID_PARAMETER);
 			}
 		}
 
