@@ -22,6 +22,7 @@ class Request extends MY_Controller {
 	{
 		parent::__construct();
 		$this->_restrict_area(USER_RIGHTS, 'request');
+		$this->load->model('Request_model');
 	}
 
 	public function index()
@@ -47,31 +48,22 @@ class Request extends MY_Controller {
 	public function complete()
 	{
 		$this->load->model('Book_model');
-		$this->load->model('Sell_model');
 
 		$book_id = $this->User_model->userdata('book_found');
-		$price = $this->User_model->userdata('price');
-		if ($book_id !== FALSE AND $price !== FALSE)
+		if ($book_id !== FALSE)
 		{
-			$this->Sell_model->set_book_id($book_id);
-			$this->Sell_model->set_price($price);
+			$this->Request_model->set_book_id($book_id);
 		}
 		else
 		{
-			show_error('Errore nella creazione della vendita');
+			show_error('Errore nell\'inserimento della richiesta');
 		}
 
-		$this->User_model->del_userdata('price');
 		$this->User_model->del_userdata('book_found');
 
-		if($this->Sell_model->insert() === TRUE)
-		{
-			$this->_set_view('generic', array('p'	=> 'Vendita creata con successo'));
-		}
-		else
-		{
-			$this->_set_view('generic', array('p'	=> 'Hai gi&agrave; messo in vendita questo libro'));
-		}
+		$this->_try('Request_model', 'insert');
+		$this->_set_message('request_complete');
+
 		$this->Book_model->set_id($book_id);
 		$this->_set_view('book', $this->Book_model->get_array());
 
@@ -98,20 +90,11 @@ class Request extends MY_Controller {
 
 	public function delete()
 	{
-		$this->load->model('Request_model');
-		$user_id = $this->session->userdata('ID');
-		if( $post = $this->input->post() )
-		{
-			$this->Request_model->delete($user_id, $post['book_id']);
-			$view_data = array('p' => 'Annuncio eliminato correttamente');
-		}
-		else
-			$view_data = array('p' => 'Errore');
+		$this->Request_model->set_book_id($this->input->post('book_id'));
+		$this->_try('Request_model', 'delete');
+		$this->_set_message('request_delete');
 
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-		$this->load->view('paragraphs', $view_data);
-		$this->load->view('template/coda');
+		$this->_view();
 	}
 }
 

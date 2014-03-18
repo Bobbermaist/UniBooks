@@ -44,24 +44,8 @@ class Book extends MY_Controller {
 	public function search()
 	{
 		$this->_post_required('search_key');
-
-		if ($this->Book_model->search($this->input->post('search_key')) === FALSE)
-		{
-			show_error($this->lang->line("error_search_failed"));
-		}
-		else
-		{
-			$this->User_model->add_userdata('book_found', $this->Book_model->get_id());
-			$action = $this->User_model->userdata('search_action');
-			if ($action === FALSE)
-			{
-				redirect('book/result');
-			}
-			else
-			{
-				redirect($action);
-			}
-		}
+		$this->_try('Book_model', 'search', $this->input->post('search_key'));
+		$this->_redirect($this->User_model->userdata('search_action'), 'book/result');
 	}
 
 	public function result()

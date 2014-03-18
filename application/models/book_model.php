@@ -66,7 +66,7 @@ class Book_model extends Book_base {
 	{
 		if ($this->set_isbn($key) === TRUE)
 		{
-			return $this->_search_by_isbn();
+			$this->_search_by_isbn();
 		}
 		
 		throw new Custom_exception(BOOK_NOT_FOUND);
@@ -87,7 +87,11 @@ class Book_model extends Book_base {
 	 */
 	private function _search_by_isbn()
 	{
-		if ($this->select_by('ISBN') === FALSE)
+		try
+		{
+			$this->select_by('ISBN');
+		}
+		catch (Custom_exception $e)
 		{
 			$this->load->library('google_books');
 			$this->google_books->get_by_isbn( $this->get_isbn() );

@@ -20,6 +20,8 @@ $lang['exception_'.EMAIL_NON_EXISTENT] = 'Indirizzo email inesistente';
 $lang['exception_'.ISBN_NON_EXISTENT] = 'Codice ISBN non presente nel database';
 $lang['exception_'.GOOGLE_ID_NON_EXISTENT] = 'Google id inesistente';
 $lang['exception_'.NEITHER_USER_NOR_EMAIL] = 'Indirizzo email o nome utente non valido';
+$lang['exception_'.SALE_NON_EXISTENT] = 'Vendita inesistente';
+$lang['exception_'.REQUEST_NON_EXISTENT] = 'Richiesta inesistente';
 
 $lang['exception_'.WRONG_PASSWORD] = 'La password inserita è errata';
 $lang['exception_'.WRONG_CONFIRM_CODE] = 'Il codice di conferma non corrisponde';

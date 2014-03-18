@@ -898,7 +898,7 @@ class Book_base extends MY_Model {
 	private function _set_by($field)
 	{
 		$query = $this->db->get();
-		if ($res->num_rows == 0)
+		if ($query->num_rows == 0)
 		{
 			switch ($field)
 			{
@@ -1058,16 +1058,19 @@ class Exchange_base extends MY_Model {
 	 * Set user id
 	 *
 	 * Retrieve the user id from the session and set
-	 * user_id property.
+	 * user_id property only if is not setted.
 	 * 
 	 * @return void
 	 * @access protected
 	 */
 	protected function _set_user_id()
 	{
-		$user = new User_base;
-		$user->read_session();
-		$this->user_id = $user->get_id();
+		if ( ! isset($this->user_id))
+		{
+			$user = new User_base;
+			$user->read_session();
+			$this->user_id = $user->get_id();
+		}
 	}
 
 	/**
@@ -1138,18 +1141,16 @@ class Exchange_base extends MY_Model {
 	 * user_id and book_id properties must be setted
 	 * 
 	 * @param string  $table the table name
-	 * @return void
+	 * @return boolean
 	 * @access protected
 	 */
 	protected function _delete($table)
 	{
-		if (isset($this->book_id))
-		{
-			$this->db->delete($table, array(
-				'user_id'	=> $this->user_id,
-				'book_id'	=> $this->book_id,
-			));
-		}
+		$this->_set_user_id();
+		return $this->db->delete($table, array(
+			'user_id'	=> $this->user_id,
+			'book_id'	=> $this->_get('book_id'),
+		));
 	}
 }
 

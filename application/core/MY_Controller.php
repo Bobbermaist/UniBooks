@@ -248,10 +248,12 @@ class MY_Controller extends CI_Controller  {
 	 * Redirect to 'user' if an empty variable is provided.
 	 *
 	 * @param string  $controller redirect here
+	 * @param string|false  $default if $controller can be 
+	 *    FALSE it is possible to set a default redirect
 	 * @return void
 	 * @access protected
 	 */
-	protected function _redirect($controller)
+	protected function _redirect($controller, $default = 'user')
 	{
 		if ($this->exception_code !== NO_EXCEPTIONS)
 		{
@@ -261,9 +263,12 @@ class MY_Controller extends CI_Controller  {
 		{
 			if (empty($controller))
 			{
-				$controller = 'user';
+				redirect($default);
 			}
-			redirect($controller);
+			else
+			{
+				redirect($controller);
+			}
 		}
 	}
 
@@ -280,8 +285,10 @@ class MY_Controller extends CI_Controller  {
 			'p'		=> $this->exception_message,
 			'id'	=> 'error',
 		));
+		/*
 		$this->exception_code = NO_EXCEPTIONS;
 		unset($this->exception_message);
+		*/
 	}
 
 	/**
