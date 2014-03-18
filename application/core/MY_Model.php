@@ -931,45 +931,29 @@ class Book_base extends MY_Model {
 
 		$this->publisher = $this->_select_one('publishers', 'ID', $this->_publisher_id)->name;
 		$this->language = $this->_select_one('languages', 'ID', $this->_language_id)->name;
-		$this->_join_authors();
-		$this->_join_categories();
+		$this->_join('authors', 'links_book_author', 'author_id');
+		$this->_join('categories', 'links_book_category', 'category_id');
 	}
-
+	
 	/**
-	 * Set authors property by joining the book ID on db.
+	 * Join a book field by joining book ID with a property
+	 * ('categories' and 'authors') and sets the corresponding
+	 * property.
 	 *
-	 * ID property must be setted.
-	 * 
+	 * @param string  $property property name
+	 * @param string  $join_table join table name
+	 * @param string  $join_field the field of "join_table" containing book ID
 	 * @return void
-	 * @access private
+	 * @access private 
 	 */
-	private function _join_authors()
+	private function _join($property, $join_table, $join_field)
 	{
-		$this->db->from('authors')->where('book_id', $this->ID)
-			->join('links_book_author', 'authors.ID = links_book_author.author_id');
+		$this->db->from($property)->where('book_id', $this->ID)
+			->join($join_table, "{$property}.ID = {$join_table}.{$join_field}");
 		$results = $this->db->get()->result();
 		foreach ($results as $result)
 		{
-			$this->authors[] = $result->name;
-		}
-	}
-
-	/**
-	 * Set categories property by joining the book ID on db.
-	 *
-	 * ID property must be setted.
-	 * 
-	 * @return void
-	 * @access private
-	 */
-	private function _join_categories()
-	{
-		$this->db->from('categories')->where('book_id', $this->ID)
-			->join('links_book_category', 'categories.ID = links_book_category.category_id');
-		$results = $this->db->get()->result();
-		foreach ($results as $result)
-		{
-			$this->categories[] = $result->name;
+			$this->{$property}[] = $result->name;
 		}
 	}
 
