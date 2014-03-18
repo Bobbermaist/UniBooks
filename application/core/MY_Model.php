@@ -754,8 +754,8 @@ class Book_base extends MY_Model {
 		));
 		$this->ID = $this->db->insert_id();
 
-		$this->_insert_authors();
-		$this->_insert_categories();
+		$this->_create_links('_authors_id', 'author_id', 'links_book_author');
+		$this->_create_links('_categories_id', 'category_id', 'links_book_category');
 	}
 
 	/**
@@ -800,43 +800,27 @@ class Book_base extends MY_Model {
 	}
 
 	/**
-	 * Links all authors with a book.
-	 * `$this->_authors_id` must be setted.
-	 * 
+	 * Create book links (authors and categories).
+	 *
+	 * @param string  $property_name the name of the property
+	 *    contains an array of ID to insert
+	 * @param string  $field_name name of the field that
+	 *    contains this value
+	 * @param string  $table the table name where insert
 	 * @return void
 	 * @access private
 	 */
-	private function _insert_authors()
+	private function _create_links($property_name, $field_name, $table)
 	{
 		$data = array();
-		foreach ($this->_authors_id as $author_id)
+		foreach ($this->{$property_name} as $item)
 		{
 			$data[] = array(
 				'book_id'		=> $this->ID,
-				'author_id'	=> $author_id,
+				$field_name	=> $item,
 			);
 		}
-		$this->db->insert_batch('links_book_author', $data);
-	}
-
-	/**
-	 * Links all categories with a book.
-	 * `$this->_categories_id` must be setted.
-	 * 
-	 * @return void
-	 * @access private
-	 */
-	private function _insert_categories()
-	{
-		$data = array();
-		foreach ($this->_categories_id as $category_id)
-		{
-			$data[] = array(
-				'book_id'			=> $this->ID,
-				'category_id'	=> $category_id,
-			);
-		}
-		$this->db->insert_batch('links_book_category', $data);
+		$this->db->insert_batch($table, $data);
 	}
 
 	/**
