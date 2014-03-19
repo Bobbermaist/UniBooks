@@ -53,6 +53,40 @@ class MY_Model extends CI_Model {
 	}
 
 	/**
+	 * Checks if some properties are not empty
+	 * and if they are throws an exception.
+	 *
+	 * Can be called with an undefined number of parameter
+	 * each of wich can be a string (indicating the property name)
+	 * or a string[]
+	 *
+	 * @param string|string[] ... the name or names of
+	 *    properties that have to be checked
+	 * @return void
+	 * @throws Custom_exception(REQUIRED_PROPERTY) if a
+	 *    required property is empty
+	 */
+	protected function _required_properties()
+	{
+		for ($i=0; func_num_args() > $i; $i++)
+		{
+			$required_property = func_get_arg($i);
+
+			if (is_array($required_property))
+			{
+				foreach ($required_property as $item)
+				{
+					$this->_required_properties($item);
+				}
+			}
+			elseif ($this->_get($required_property) === FALSE)
+			{
+				throw new Custom_exception(REQUIRED_PROPERTY, $required_property);
+			}
+		}
+	}
+
+	/**
 	 * Select one result from a table.
 	 *
 	 * Accepts three parameters, the table name,
@@ -66,7 +100,7 @@ class MY_Model extends CI_Model {
 	 * @param string|null  $value NULL if $where is an array, string otherwise (optional)
 	 * @return mixed  a row object on success or FALSE
 	 */
-	protected function _select_one($table, $where, $value = NULL)
+	protected function _single_select($table, $where, $value = NULL)
 	{
 		$this->db->from($table)->where($where, $value)->limit(1);
 		$query = $this->db->get();
@@ -428,6 +462,8 @@ class User_base extends MY_Model {
 	 */
 	public function select_by($field = 'ID')
 	{
+		$this->_required_properties($field);
+
 		$this->db->from('users')->where($field, $this->{$field});
 		$res = $this->db->get();
 
@@ -702,10 +738,12 @@ class Book_base extends MY_Model {
 	 * If $value is a valid 13-digit ISBN it sets ISBN_13 property,
 	 * if it is a valid 10-digit ISBN sets ISBN_10.
 	 *
-	 * Return boolean indicating whether the code is valid
+	 * *Throws an exception* if the ISBN code provided is not valid
 	 * 
 	 * @param string  $value the ISBN code to set
-	 * @return boolean
+	 * @return void
+	 * @throws Custom_exception(WRONG_ISBN) if can't set
+	 *    the ISBN code
 	 */
 	public function set_isbn($value)
 	{
@@ -724,7 +762,27 @@ class Book_base extends MY_Model {
 			// did you forget the '978' prefix?
 			$this->ISBN_13 = '978' . $value;
 		}
-		return isset($this->ISBN_13) OR isset($this->ISBN_10);
+
+		if ( ! isset($this->ISBN_13) AND ! isset($this->ISBN_10))
+		{
+			throw new Custom_exception(WRONG_ISBN);
+		}
+	}
+
+	/**
+	 * Works as "_required_properties()" with ISBN properties
+	 *
+	 * @return void
+	 * @throws Custom_exception(REQUIRED_PROPERTY)
+	 * @see _required_properties()
+	 * @access protected
+	 */
+	protected function _required_isbn()
+	{
+		if ($this->get_isbn() === FALSE)
+		{
+			throw new Custom_exception(REQUIRED_PROPERTY, 'ISBN_13 - ISBN_10');
+		}
 	}
 
 	/**
@@ -736,6 +794,8 @@ class Book_base extends MY_Model {
 	 */
 	public function insert()
 	{
+		$this->_required_isbn();
+
 		$this->load->database();
 
 		$this->_publisher_id = $this->_insert_info('publishers', $this->publisher);
@@ -782,7 +842,7 @@ class Book_base extends MY_Model {
 
 		if ( ! is_array($value))
 		{
-			$result = $this->_select_one($table, 'name', $value);
+			$result = $this->_single_select($table, 'name', $value);
 			if ($result !== FALSE)
 			{
 				return $result->ID;
@@ -812,6 +872,8 @@ class Book_base extends MY_Model {
 	 */
 	private function _create_links($property_name, $field_name, $table)
 	{
+		$this->_required_properties($property_name);
+
 		$data = array();
 		foreach ($this->{$property_name} as $item)
 		{
@@ -850,11 +912,15 @@ class Book_base extends MY_Model {
 		$this->db->from('books');
 		if ($field === 'ISBN')
 		{
+			$this->_required_isbn();
+			
 			$this->db->where('ISBN', cut_isbn( $this->get_isbn() ));
 		}
 		else
 		{
-			$this->db->where($field, $this->$field);
+			$this->_required_properties($field);
+
+			$this->db->where($field, $this->{$field});
 		}
 		$this->db->limit(1);
 		$this->_set_by($field);
@@ -913,8 +979,8 @@ class Book_base extends MY_Model {
 		$this->pages = (int) $book->pages;
 		$this->_language_id = (int) $book->language_id;
 
-		$this->publisher = $this->_select_one('publishers', 'ID', $this->_publisher_id)->name;
-		$this->language = $this->_select_one('languages', 'ID', $this->_language_id)->name;
+		$this->publisher = $this->_single_select('publishers', 'ID', $this->_publisher_id)->name;
+		$this->language = $this->_single_select('languages', 'ID', $this->_language_id)->name;
 		$this->_join('authors', 'links_book_author', 'author_id');
 		$this->_join('categories', 'links_book_category', 'category_id');
 	}
@@ -1081,11 +1147,14 @@ class Exchange_base extends MY_Model {
 	 */
 	protected function _insert($table, $properties = array())
 	{
+		$this->_required_properties($properties);
+		$this->_required_properties('user_id', 'book_id');
+
 		$clause = array(
 			'user_id'	=> $this->user_id,
 			'book_id'	=> $this->book_id,
 		);
-		if ($this->_select_one($table, $clause) !== FALSE)
+		if ($this->_single_select($table, $clause) !== FALSE)
 		{
 			if ($table === 'books_for_sale')
 			{
@@ -1114,10 +1183,12 @@ class Exchange_base extends MY_Model {
 	 */
 	protected function _delete($table)
 	{
+		$this->_required_properties('book_id');
+
 		$this->_set_user_id();
 		return $this->db->delete($table, array(
 			'user_id'	=> $this->user_id,
-			'book_id'	=> $this->_get('book_id'),
+			'book_id'	=> $this->book_id,
 		));
 	}
 }

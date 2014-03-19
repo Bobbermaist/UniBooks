@@ -27,32 +27,48 @@ class Book extends MY_Controller {
 	public function index()
 	{
 		$this->load->helper('form');
+		$this->load->library('form_validation');
 		$this->_set_view('form/single_field', array(
-			'action'				=> 'book/search',
+			'action'				=> 'book/',
 			'label'					=> 'Cerca un libro (ISBN)',
 			'submit_name'		=> 'search_book',
 			'submit_value'	=> 'Cerca',
 			'input'					=> array(
-     		'name'      => 'search_key',
-     		'id'				=> 'search_book',
-     		'maxlength' => '255',
-    	),
+				'name'			=> 'search_key',
+				'id'				=> 'search_book',
+				'maxlength'	=> '255',
+			),
 		));
+
+		if ($this->form_validation->run() === TRUE)
+		{
+			$search_key = $this->input->post('search_key');
+			if ($search_key !== FALSE)
+			{
+				$this->_try('Book_model', 'set_isbn', $search_key);
+				if ($this->exception_code === NO_EXCEPTIONS)
+				{
+					redirect("book/result/{$search_key}");
+				}
+				else
+				{
+					$this->_set_message();
+				}
+			}
+		}
+
 		$this->_view();
 	}
 
-	public function search()
+	public function result($isbn = 0)
 	{
-		$this->_post_required('search_key');
-		$this->_try('Book_model', 'search', $this->input->post('search_key'));
-		$this->_redirect($this->User_model->userdata('search_action'), 'book/result');
-	}
+		$this->_try('Book_model', 'search_by_isbn', $isbn);
 
-	public function result()
-	{
-		$book_id = $this->User_model->userdata('book_found');
-		$this->Book_model->set_id($book_id);
-		$this->_set_view('book', $this->Book_model->get_array());
+		if ($this->exception_code === NO_EXCEPTIONS)
+		{
+			$this->_set_view('book', $this->Book_model->get_array());
+		}
+		$this->_set_message();
 		$this->_view();
 	}
 }

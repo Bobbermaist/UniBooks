@@ -113,7 +113,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">122</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">120</span>
                                 </a>
                             </li>
                             <li>
@@ -138,10 +138,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-89021736"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1717394220"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-89021736" class="accordion-body collapse in">
+            <div id="namespace-1717394220" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -255,7 +255,8 @@ functionalities to manage users</p>
                                                                     <a href="../classes/User_base.html#method__set_confirm_code" class="">_set_confirm_code()</a><br />
                                                                     <a href="../classes/User_base.html#method__set_time" class="">_set_time()</a><br />
                                                                     <a href="../classes/MY_Model.html#method__get" class="">_get()</a><br />
-                                                                    <a href="../classes/MY_Model.html#method__select_one" class="">_select_one()</a><br />
+                                                                    <a href="../classes/MY_Model.html#method__required_properties" class="">_required_properties()</a><br />
+                                                                    <a href="../classes/MY_Model.html#method__single_select" class="">_single_select()</a><br />
                                                                     <a href="../classes/MY_Model.html#method__insert_on_duplicate" class="">_insert_on_duplicate()</a><br />
                                                             </section>
                             <section class="span4">
@@ -2052,11 +2053,53 @@ or it isn't setted this method will return boolean FALSE</p>
 
                                     <div class="row-fluid">
         <div class="span8 content class">
-            <a id="method__select_one" name="method__select_one" class="anchor"></a>
+            <a id="method__required_properties" name="method__required_properties" class="anchor"></a>
             <article class="method">
-                <h3 class="protected ">_select_one()</h3>
+                <h3 class="protected ">_required_properties()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">_select_one(string <span class="argument">$table</span>, string|string[] <span class="argument">$where</span>, string|null <span class="argument">$value</span>) : mixed</pre>
+                <pre class="signature" style="margin-right: 54px;">_required_properties() : void</pre>
+                <p><em>Checks if some properties are not empty
+and if they are throws an exception.</em></p>
+                <p>Can be called with an undefined number of parameter
+each of wich can be a string (indicating the property name)
+or a string[]</p>
+
+                
+                                    <h4>Throws</h4>
+                    <dl>
+                                                    <dt>\Custom_exception(REQUIRED_PROPERTY)</dt>
+                            <dd><p>if a
+   required property is empty</p></dd>
+                                                                    </dl>
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                    <dt>Inherited from</dt>
+                    <dd><a href="../classes/MY_Model.html"><div class="path-wrapper">\MY_Model</div></a></dd>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method__single_select" name="method__single_select" class="anchor"></a>
+            <article class="method">
+                <h3 class="protected ">_single_select()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">_single_select(string <span class="argument">$table</span>, string|string[] <span class="argument">$where</span>, string|null <span class="argument">$value</span>) : mixed</pre>
                 <p><em>Select one result from a table.</em></p>
                 <p>Accepts three parameters, the table name,
 a string with the field name or an associative array
@@ -2412,7 +2455,7 @@ only for registration.</p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on March 18th, 2014 at 20:13.
+                    on March 19th, 2014 at 16:47.
                 </section>
             </section>
         </section>

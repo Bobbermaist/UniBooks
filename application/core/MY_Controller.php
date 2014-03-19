@@ -124,6 +124,9 @@ class MY_Controller extends CI_Controller  {
 	/**
 	 * Executes a try - catch command through a callback.
 	 *
+	 * A model that may throws exception should be executed
+	 * with this method.
+	 *
 	 * The first parameter indicates the model name to call
 	 * (e.g. 'User_model'), the second one the method
 	 * (like any method or User_model).
@@ -246,10 +249,8 @@ class MY_Controller extends CI_Controller  {
 	 * Works as _set_message() but redirect if no exception
 	 * where thrown.
 	 *
-	 * Redirect to 'user' if an empty variable is provided.
-	 *
 	 * @param string  $controller redirect here
-	 * @param string|false  $default if $controller can be 
+	 * @param string  $default in cases where $controller can be 
 	 *    FALSE it is possible to set a default redirect
 	 * @return void
 	 * @access protected

@@ -59,8 +59,6 @@ class Migration_Db extends CI_Migration {
 		$this->books_requested_up();
 		$this->language_groups_up();
 		$this->publisher_codes_up();
-		$this->google_search_keys_up();
-		$this->google_results_up();
 	}
 
 	/**
@@ -86,8 +84,6 @@ class Migration_Db extends CI_Migration {
 		$this->authors_down();
 		$this->language_groups_down();
 		$this->publisher_codes_down();
-		$this->google_search_keys_down();
-		$this->google_results_down();
 	}
 
 	/**
@@ -425,6 +421,7 @@ class Migration_Db extends CI_Migration {
 	/**
 	 * Creates `books_for_sale` table
 	 *
+	 * VARCHAR(500) requires MySQL 5.0.3
 	 * @return void
 	 * @access private
 	 */
@@ -434,6 +431,7 @@ class Migration_Db extends CI_Migration {
 							`user_id` int(9) unsigned NOT NULL DEFAULT 0,
 							`book_id` int(9) unsigned NOT NULL DEFAULT 0,
 							`price` float(4,2) NOT NULL DEFAULT '0.00',
+							`description` VARCHAR(" . SALE_DESCRIPTION_LENGTH . ") DEFAULT NULL,
 							UNIQUE KEY `selling` (`user_id`, `book_id`),
 							FOREIGN KEY (user_id) REFERENCES users(ID)
 								ON DELETE CASCADE

@@ -113,7 +113,7 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a href="../reports/errors.html">
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">122</span>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">120</span>
                                 </a>
                             </li>
                             <li>
@@ -138,10 +138,10 @@
                                 <div class="accordion" style="margin-bottom: 0">
         <div class="accordion-group">
             <div class="accordion-heading">
-                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-1253079637"></a>
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-184125535"></a>
                                 <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
             </div>
-            <div id="namespace-1253079637" class="accordion-body collapse in">
+            <div id="namespace-184125535" class="accordion-body collapse in">
                 <div class="accordion-inner">
 
                     
@@ -640,7 +640,9 @@ by _view method.</em></p>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
                 <pre class="signature" style="margin-right: 54px;">_try(string <span class="argument">$property_name</span>, string <span class="argument">$method_name</span>) : void</pre>
                 <p><em>Executes a try - catch command through a callback.</em></p>
-                <p>The first parameter indicates the model name to call
+                <p>A model that may throws exception should be executed
+with this method.</p>
+<p>The first parameter indicates the model name to call
 (e.g. 'User_model'), the second one the method
 (like any method or User_model).</p>
 <p>It is also possible to pass an arbitrary numer of parameters
@@ -709,7 +711,7 @@ and its message in <em>exception_message</em>.</p>
             <article class="method">
                 <h3 class="protected ">_set_message()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">_set_message(mixed <span class="argument">$name</span>) : void</pre>
+                <pre class="signature" style="margin-right: 54px;">_set_message(string|false <span class="argument">$name</span>) : void</pre>
                 <p><em>Loads a message from message_lang and enqueue
 this message through &quot;_set_view()&quot;.</em></p>
                 <p>If an exception was previously catched
@@ -717,11 +719,14 @@ enqueue the exception message instead the
 requested message.
 After sets the <em>exception_message</em> to
 NO_EXCEPTIONS.</p>
+<p>If $name parameter is FALSE (default)
+won't load any message in case of the is
+no exception</p>
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
                                                     <tr>
-                                <td>mixed</td>
+                                <td>string|false</td>
                                 <td>$name</td>
                                 <td><p>the name of message lang</p></td>
                             </tr>
@@ -760,10 +765,10 @@ NO_EXCEPTIONS.</p>
             <article class="method">
                 <h3 class="protected ">_redirect()</h3>
                 <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
-                <pre class="signature" style="margin-right: 54px;">_redirect(string <span class="argument">$controller</span>, string|false <span class="argument">$default</span>) : void</pre>
+                <pre class="signature" style="margin-right: 54px;">_redirect(string <span class="argument">$controller</span>, string <span class="argument">$default</span>) : void</pre>
                 <p><em>Works as _set_message() but redirect if no exception
 where thrown.</em></p>
-                <p>Redirect to 'user' if an empty variable is provided.</p>
+                
 
                                     <h4>Parameters</h4>
                     <table class="table table-condensed table-hover">
@@ -773,9 +778,9 @@ where thrown.</em></p>
                                 <td><p>redirect here</p></td>
                             </tr>
                                                     <tr>
-                                <td>string|false</td>
+                                <td>string</td>
                                 <td>$default</td>
-                                <td><p>if $controller can be
+                                <td><p>in cases where $controller can be
    FALSE it is possible to set a default redirect</p></td>
                             </tr>
                                             </table>
@@ -870,6 +875,11 @@ or a string array with all fields POST</p>
                             </tr>
                                             </table>
                 
+                                    <h4>Throws</h4>
+                    <dl>
+                                                    <dt>\Custom_exception(INVALID_PARAMETER)</dt>
+                            <dd><p>if a POST data missing</p></dd>
+                                                                    </dl>
                 
                             </article>
         </div>
@@ -1006,7 +1016,7 @@ as a paragraph with id &quot;error&quot;</em></p>
                 <section class="span10 offset1">
                     <hr />
                     Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
-                    on March 18th, 2014 at 20:13.
+                    on March 19th, 2014 at 16:47.
                 </section>
             </section>
         </section>

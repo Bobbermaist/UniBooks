@@ -38,6 +38,17 @@ class Sell_model extends Exchange_base {
 	protected $sells = array();
 
 	/**
+	 * Sale description.
+	 *
+	 * User can specify additional informations
+	 * about sale
+	 *
+	 * @var string
+	 * @access protected
+	 */
+	protected $description;
+
+	/**
 	 * Constructor, loads db and sets user_id from session.
 	 *
 	 * @return void
@@ -52,7 +63,7 @@ class Sell_model extends Exchange_base {
 	/**
 	 * Get price
 	 *
-	 * @return mixed  float or FALSE
+	 * @return float|false
 	 */
 	public function get_price()
 	{
@@ -72,6 +83,31 @@ class Sell_model extends Exchange_base {
 	{
 		$this->price = (float) str_replace(',', '.', $value);
 	}
+
+	/**
+	 * Get description
+	 *
+	 * @return string|false
+	 */
+	public function get_description()
+	{
+		return $this->_get('description');
+	}
+
+	/**
+	 * Sets the description field if the specified 
+	 * value is not empty.
+	 *
+	 * @param string  $value the string to set
+	 * @return void 
+	 */
+	public function set_description($value)
+	{
+		if ($value)
+		{
+			$this->description = $value;
+		}
+	}
 	
 	/**
 	 * Insert method.
@@ -83,7 +119,14 @@ class Sell_model extends Exchange_base {
 	 */
 	public function insert()
 	{
-		$this->_insert('books_for_sale', array('price'));
+		if (isset($this->description))
+		{
+			$this->_insert('books_for_sale', array('price', 'description'));
+		}
+		else
+		{
+			$this->_insert('books_for_sale', array('price'));
+		}
 	}
 
 	/**

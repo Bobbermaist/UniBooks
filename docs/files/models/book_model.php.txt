@@ -52,27 +52,6 @@ class Book_model extends Book_base {
 	}
 
 	/**
-	 * Search for a book.
-	 * Throws an exception if can't find
-	 *
-	 * @param string  $key a search key
-	 * @return void
-	 * @throws Custom_exception(ISBN_NOT_FOUND)
-	 * @see _search_by_isbn()
-	 * @throws Custom_exception(BOOK_NOT_FOUND) if can't
-	 *     find a book with the provided search key
-	 */
-	public function search($key)
-	{
-		if ($this->set_isbn($key) === TRUE)
-		{
-			$this->_search_by_isbn();
-		}
-		
-		throw new Custom_exception(BOOK_NOT_FOUND);
-	}
-
-	/**
 	 * Search by ISBN code.
 	 * 
 	 * Search first in local db, if ISBN code is not found
@@ -81,26 +60,34 @@ class Book_model extends Book_base {
 	 * If google books api fail throws an exception
 	 *
 	 * @return void
-	 * @access private
 	 * @throws Custom_exception(ISBN_NOT_FOUND) if can't
 	 *    find the given ISBN code on google books API
 	 */
-	private function _search_by_isbn()
+	public function search_by_isbn()
 	{
+		$this->_required_isbn();
+
 		try
 		{
 			$this->select_by('ISBN');
 		}
 		catch (Custom_exception $e)
 		{
-			$this->load->library('google_books');
-			$this->google_books->get_by_isbn( $this->get_isbn() );
-			if ($this->google_books->total_items === 0)
+			if ($e->getCode() === ISBN_NON_EXISTENT)
 			{
-				throw new Custom_exception(ISBN_NOT_FOUND);
+				$this->load->library('google_books');
+				$this->google_books->get_by_isbn( $this->get_isbn() );
+				if ($this->google_books->total_items === 0)
+				{
+					throw new Custom_exception(ISBN_NOT_FOUND);
+				}
+				$this->_set_from_google();
+				$this->insert();
 			}
-			$this->_set_from_google();
-			$this->insert();
+			else
+			{
+				throw $e;
+			}
 		}
 	}
 

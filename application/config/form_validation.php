@@ -61,16 +61,9 @@ $config = array(
   ),
   'request/index' => array(
     array(
-      'field'   => 'book_search',
-      'label'   => 'Chiave di ricerca',
-      'rules'   => 'valid_isbn',
-    ),
-  ),
-  'sell/choose_price' => array(
-    array(
-      'field'   => 'price',
-      'label'   => 'Book price',
-      'rules'   => 'required|valid_price',
+      'field'   => 'isbn',
+      'label'   => 'Codice ISBN',
+      'rules'   => 'required|valid_isbn',
     ),
   ),
 );

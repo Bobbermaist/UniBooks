@@ -5,67 +5,74 @@ $config = array(
     array(
       'field'   => 'user_name', 
       'label'   => 'Username', 
-      'rules'   => 'required|min_length[3]|max_length[20]|xss_clean|is_unique[users.user_name]'
+      'rules'   => 'required|min_length[3]|max_length[20]|xss_clean|is_unique[users.user_name]',
     ),
     array(
       'field'   => 'password', 
       'label'   => 'Password', 
-      'rules'   => 'required|min_length[4]|max_length[32]|matches[passconf]'
+      'rules'   => 'required|min_length[4]|max_length[32]|matches[passconf]',
     ),
     array(
       'field'   => 'passconf', 
       'label'   => 'Password Confirmation', 
-      'rules'   => 'required'
+      'rules'   => 'required',
     ),
     array(
       'field'   => 'email', 
       'label'   => 'Email', 
-      'rules'   => 'required|valid_email|is_unique[users.email]'
-    )
+      'rules'   => 'required|valid_email|is_unique[users.email]',
+    ),
   ),
   'login/index' => array(
     array(
       'field'   => 'user_name',
       'label'   => 'Username',
-      'rules'   => 'required|min_length[3]|max_length[20]|xss_clean'
+      'rules'   => 'required|min_length[3]|max_length[20]|xss_clean',
     ),
     array(
       'field'   => 'password',
       'label'   => 'Password',
-      'rules'   => 'required|min_length[4]|max_length[32]'
-    )
+      'rules'   => 'required|min_length[4]|max_length[32]',
+    ),
 	),
-  'account/password' => array(
+  'book/index' => array(
     array(
-      'field'   => 'old_pass',
-      'label'   => 'Old password',
-      'rules'   => 'required'
+      'field'   => 'search_key',
+      'label'   => 'Ricerca libro',
+      'rules'   => 'required|valid_isbn',
+    ),
+  ),
+  'sell/index' => array(
+    array(
+      'field'   => 'isbn',
+      'label'   => 'Codice ISBN',
+      'rules'   => 'required|valid_isbn',
     ),
     array(
-      'field'   => 'new_pass', 
-      'label'   => 'New password', 
-      'rules'   => 'required|min_length[4]|max_length[32]|matches[passconf]'
+      'field'   => 'price',
+      'label'   => 'Prezzo di vendta',
+      'rules'   => 'required|valid_price',
     ),
     array(
-      'field'   => 'passconf', 
-      'label'   => 'Password Confirmation', 
-      'rules'   => 'required'
-    )
+      'field'   => 'description',
+      'label'   => 'Descrizione',
+      'rules'   => 'max_length[' . SALE_DESCRIPTION_LENGTH . ']',
+    ),
   ),
   'request/index' => array(
     array(
       'field'   => 'book_search',
       'label'   => 'Chiave di ricerca',
-      'rules'   => 'valid_isbn'
-    )
+      'rules'   => 'valid_isbn',
+    ),
   ),
   'sell/choose_price' => array(
     array(
       'field'   => 'price',
       'label'   => 'Book price',
-      'rules'   => 'required|valid_price'
-    )
-  )
+      'rules'   => 'required|valid_price',
+    ),
+  ),
 );
 
 /* End of file form_validation.php */
