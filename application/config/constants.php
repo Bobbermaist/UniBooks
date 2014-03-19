@@ -193,7 +193,7 @@ define('ISBN_NOT_FOUND', 10021);
 define('BOOK_NOT_FOUND', 10022);
 
 /** If a request exceeds the maximum */
-define('REQUEST_OVERFLOW', 10023)
+define('REQUEST_OVERFLOW', 10023);
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

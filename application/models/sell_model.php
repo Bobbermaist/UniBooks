@@ -84,6 +84,11 @@ class Sell_model extends Exchange_base {
 		$this->price = (float) str_replace(',', '.', $value);
 	}
 
+	public function get_sells()
+	{
+		return $this->_get('sells');
+	}
+
 	/**
 	 * Get description
 	 *
@@ -134,10 +139,10 @@ class Sell_model extends Exchange_base {
 	 * The number of sells in a page is defined in ITEMS_PER_PAGE
 	 * constant.
 	 *
-	 * @param int  $page_numbe must be > 1
+	 * @param int  $page_number must be > 1
 	 * @return void
 	 */
-	public function get_page($page_numbe)
+	public function get_page($page_number)
 	{
 		$this->sells = $this->_get_page($page_number, 'books_for_sale');
 	}

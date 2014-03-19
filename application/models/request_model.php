@@ -41,6 +41,11 @@ class Request_model extends Exchange_base {
 		$this->_set_user_id();
 	}
 
+	public function get_requests()
+	{
+		return $this->_get('requests');
+	}
+
 	/**
 	 * Insert method.
 	 * See the Exchange_base class in ./application/core/MY_Model.php
@@ -58,10 +63,10 @@ class Request_model extends Exchange_base {
 	 * The number of requests in a page is defined in ITEMS_PER_PAGE
 	 * constant.
 	 *
-	 * @param int  $page_numbe must be > 1
+	 * @param int  $page_number must be > 1
 	 * @return void
 	 */
-	public function get_page($page_numbe)
+	public function get_page($page_number)
 	{
 		$this->requests = $this->_get_page($page_number, 'books_requested');
 	}

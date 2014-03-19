@@ -199,9 +199,29 @@ class User extends MY_Controller {
 		$this->User_model->logout();
 	}
 
-	public function sells()
+	public function sells($page = 1)
 	{
-		
+		$this->load->model('Sell_model');
+		$this->load->library('pagination');
+
+		$this->_try('Sell_model', 'get_page', $page);
+
+		$config['base_url'] = site_url('user/sells');
+		$config['use_page_numbers'] = TRUE;
+		$config['total_rows'] = $this->Sell_model->get_total_items();
+		$config['per_page'] = ITEMS_PER_PAGE;
+		$this->pagination->initialize($config);
+		$this->_set_view('generic', array(
+			'div'	=> $this->pagination->create_links(),
+		));
+
+		$selling_books = $this->Sell_model->get_sells();
+		foreach ($selling_books as $book)
+		{
+			$this->_set_view('book', $book);
+		}
+
+		$this->_view();
 	}
 }
 
