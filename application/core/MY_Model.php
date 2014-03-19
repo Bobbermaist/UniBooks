@@ -150,6 +150,59 @@ class MY_Model extends CI_Model {
 		}
 		$this->db->query($sql);
 	}
+
+	/**
+	 * Get the number of items from a table.
+	 *
+	 * If second and third parameters are FALSE
+	 * retrieves all items from $table, otherwise
+	 * counts all items having a $value in $field_name
+	 *
+	 * @param string  $table the table name
+	 * @param string|false  $field_name restricts results on this field
+	 * @param string|false  $value the value of the field
+	 * @return int
+	 * @access protected
+	 */
+	protected function _fetch_total_items($table, $field_name = FALSE, $value = FALSE)
+	{
+		if ($field_name === FALSE)
+		{
+			return (int) $this->db->count_all($table);
+		}
+		$this->db->from($table)->where($field_name, $value);
+		return (int) $this->db->count_all_results();
+	}
+
+	/**
+	 * Calculates the starting index to retrieve items
+	 * from db.
+	 *
+	 * If $total_items parameter is not FALSE calculates
+	 * if there are enugh items
+	 *
+	 * @param int  $page_number number of the page
+	 * @param int  $items_per_page how many items shown per page
+	 * @param int|false  $total_items FALSE if don't want to control
+	 * @return int
+	 * @throws Custom_exception(INVALID_PARAMETER) if $page_number < 1
+	 * @throws Custom_exception(REQUEST_OVERFLOW) if
+	 *    $total_items parameter was setted and $start_index > $total_items
+	 */
+	protected function _get_start_index($page_number, $items_per_page, $total_items = FALSE)
+	{
+		if ($page_number < 1)
+		{
+			throw new Custom_exception(INVALID_PARAMETER);
+		}
+		$start_index = ($page_number - 1) * $items_per_page;
+
+		if ($total_items !== FALSE AND $start_index > $total_items)
+		{
+			throw new Custom_exception(REQUEST_OVERFLOW);
+		}
+		return $start_index;
+	}
 }
 
 // END MY_Model class
@@ -1081,6 +1134,14 @@ class Exchange_base extends MY_Model {
 	protected $book_id;
 
 	/**
+	 * Total sells / requests of a user
+	 *
+	 * @var int
+	 * @access protected
+	 */
+	protected $total_items = 0;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct()
@@ -1105,6 +1166,22 @@ class Exchange_base extends MY_Model {
 			$user->read_session();
 			$this->user_id = $user->get_id();
 		}
+	}
+
+	public function get_total_items()
+	{
+		return $this->_get('total_items');
+	}
+
+	/**
+	 * Set total excanges from a $table.
+	 *
+	 * @param string  $table the table name
+	 * @return void
+	 */
+	protected function _set_total_items($table)
+	{
+		$this->total_items = $this->_fetch_total_items($table, 'user_id', $this->user_id);
 	}
 
 	/**
@@ -1190,6 +1267,22 @@ class Exchange_base extends MY_Model {
 			'user_id'	=> $this->user_id,
 			'book_id'	=> $this->book_id,
 		));
+	}
+
+	/**
+	 * Get "a page" of exchanges (sells - requests)
+	 * The number of items in a page is defined in ITEMS_PER_PAGE
+	 * constant.
+	 *
+	 * @param int  $page_number
+	 * @param string  $table the table name where to get items
+	 * @return object  the results
+	 */
+	protected function _get_page($page_number, $table)
+	{
+		$this->_set_total_items($table);
+		$start_index = $this->_get_start_index($page_number, ITEMS_PER_PAGE, $this->total_items);
+		return $this->db->get($table, ITEMS_PER_PAGE, $start_index)->result();
 	}
 }
 

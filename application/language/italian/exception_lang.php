@@ -39,6 +39,7 @@ $lang['exception_'.EXISTING_EMAIL] = 'Indirizzo email gi&agrave; esistente';
 $lang['exception_'.ISBN_NOT_FOUND] = 'Impossibile trovare codice ISBN (dalle API di google)';
 $lang['exception_'.BOOK_NOT_FOUND] = 'Nessun libro trovato con i parametri indicati';
 
+$lang['exception_'.REQUEST_OVERFLOW] = 'L\'elemento a cui stai cercando di accedere non esiste';
 
 /* End of file exception_lang.php */
 /* Location: ./application/language/italian/exception_lang.php */ 

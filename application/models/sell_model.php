@@ -130,26 +130,16 @@ class Sell_model extends Exchange_base {
 	}
 
 	/**
-	 * Get all books for sale of a user and sets $this->sells array.
+	 * Get "a page" of sells.
+	 * The number of sells in a page is defined in ITEMS_PER_PAGE
+	 * constant.
 	 *
+	 * @param int  $page_numbe must be > 1
 	 * @return void
 	 */
-	public function get()
+	public function get_page($page_numbe)
 	{
-		$this->db->from('books_for_sale')->where('user_id', $this->user_id);
-		if (($query = $this->db->get()) !== 0)
-		{
-			$this->sells = $query->result_array();
-			/*
-			foreach ($query->result() as $row)
-			{
-				$this->sells[] = array(
-					'book_id'	=> $row->book_id,
-					'price'		=> $row->price,
-				);
-			}
-			*/
-		}
+		$this->sells = $this->_get_page($page_number, 'books_for_sale');
 	}
 
 	/**

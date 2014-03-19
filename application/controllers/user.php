@@ -198,6 +198,11 @@ class User extends MY_Controller {
 	{
 		$this->User_model->logout();
 	}
+
+	public function sells()
+	{
+		
+	}
 }
 
 // END User class

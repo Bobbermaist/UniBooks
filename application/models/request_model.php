@@ -54,25 +54,16 @@ class Request_model extends Exchange_base {
 	}
 
 	/**
-	 * Get all books requested by a user and sets $this->requests array.
+	 * Get "a page" of requests.
+	 * The number of requests in a page is defined in ITEMS_PER_PAGE
+	 * constant.
 	 *
+	 * @param int  $page_numbe must be > 1
 	 * @return void
 	 */
-	public function get()
+	public function get_page($page_numbe)
 	{
-		$this->db->from('books_requested')->where('user_id', $this->ID);
-		if (($query = $this->db->get()) !== 0)
-		{
-			$this->requests = $query->result_array();
-			/*
-			foreach ($query->result() as $row)
-			{
-				$this->requests[] = array(
-					'book_id'	=> $row->book_id,
-				);
-			}
-			*/
-		}
+		$this->requests = $this->_get_page($page_number, 'books_requested');
 	}
 
 	/**
