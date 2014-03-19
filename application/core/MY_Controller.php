@@ -170,12 +170,9 @@ class MY_Controller extends CI_Controller  {
 		$callback = array($this->{$property_name}, $method_name);
 
 		$param_arr = array();
-		if (func_num_args() > 2)
+		for ($i=2; func_num_args() > $i; $i++)
 		{
-			for ($i=2; func_num_args() > $i; $i++)
-			{
-				$param_arr[] = func_get_arg($i);
-			}
+			$param_arr[] = func_get_arg($i);
 		}
 
 		if (is_callable($callback))

@@ -4,10 +4,10 @@
 
 <?php echo
 	form_input(array(
-		'name'			=> 'book_isbn',
+		'name'			=> 'isbn',
 		'id'				=> 'isbn_field',
 		'maxlength'	=> '13',
-		'value'			=> isset($isbn) ? $isbn : '';
+		'value'			=> $isbn,
 	));
 ?>
       <label for="price_field">Prezzo di vendita</label>
@@ -17,7 +17,7 @@
 		'name'			=> 'price',
 		'id'				=> 'price_field',
 		'maxlength'	=> '7',
-		'value'			=> isset($price) ? $price : '';
+		'value'			=> $price,
 	));
 ?>
       <label for="description_field">Descrizione (opzionale)</label>
@@ -26,7 +26,7 @@
 	form_textarea(array(
 		'name'			=> 'description',
 		'id'				=> 'description_field',
-		'value'			=> isset($description) ? $description : '';
+		'value'			=> $description,
 	)),
 	form_submit('book_sell', 'Continua'),
 	form_close(),

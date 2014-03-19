@@ -28,33 +28,29 @@ class Sell extends MY_Controller {
 	public function index()
 	{
 		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->load->model('Book_model');
+
 		$this->_set_view('form/sell_book', array(
-			'action'	=> 'sell/index',
+			'action'			=> 'sell/index',
+			'isbn'				=> $this->input->post('isbn'),
+			'price'				=> $this->input->post('price'),
+			'description'	=> $this->input->post('description'),
 		));
 
-		$this->_view();
-	}
-
-	public function choose_price()
-	{
-		$this->load->library('form_validation');
-		$this->load->helper('form');
 		if ($this->form_validation->run() === TRUE)
 		{
-			$this->User_model->add_userdata('price', $this->input->post('price'));
-			redirect('sell/complete');
+			$this->Book_model->set_isbn($this->input->post('isbn'));
+			$this->_try('Book_model', 'search_by_isbn');
+			$this->_set_message();
+
+			$this->Sell_model->set_book_id($this->Book_model->get_id());
+			$this->Sell_model->set_price($this->input->post('price'));
+			$this->_try('Sell_model', 'insert');
+
+			$this->_set_message('sell_complete');
 		}
-		$this->_set_view('form/single_field', array(
-			'action'				=> 'sell/choose_price',
-			'label'					=> 'Indica il prezzo di vendita',
-			'submit_name'		=> 'submit_price',
-			'submit_value'	=> 'Inserisci',
-			'input'					=> array(
-					'name'			=> 'price',
-					'maxlength'	=> '7',
-					'id'				=> 'submit_price',
-			),
-		));
+
 		$this->_view();
 	}
 

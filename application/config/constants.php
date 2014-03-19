@@ -136,48 +136,50 @@ define('NO_EXCEPTIONS', 10000);
 define('INVALID_EXCEPTION_CODE', 10001);
 /** An invalid parameter was passed to a function */
 define('INVALID_PARAMETER', 10002);
+/** Property not setted while a method requires this property */
+define('REQUIRED_PROPERTY', 10003);
 
 /** An ID does not exists in local db */
-define('ID_NON_EXISTENT', 10003);
+define('ID_NON_EXISTENT', 10004);
 /** An User name does not exists in local db */
-define('USER_NAME_NON_EXISTENT', 10004);
+define('USER_NAME_NON_EXISTENT', 10005);
 /** An email address does not exists in local db */
-define('EMAIL_NON_EXISTENT', 10005);
+define('EMAIL_NON_EXISTENT', 10006);
 /** An ISBN code does not exists in local db */
-define('ISBN_NON_EXISTENT', 10006);
+define('ISBN_NON_EXISTENT', 10007);
 /** A Google ID does not exists in local db */
-define('GOOGLE_ID_NON_EXISTENT', 10007);
+define('GOOGLE_ID_NON_EXISTENT', 10008);
 /** Invalid key provided for reset password */
-define('NEITHER_USER_NOR_EMAIL', 10008);
+define('NEITHER_USER_NOR_EMAIL', 10009);
 /** This sale does not exist */
-define('SALE_NON_EXISTENT', 10009);
+define('SALE_NON_EXISTENT', 10010);
 /** This request does not exist */
-define('REQUEST_NON_EXISTENT', 10010);
+define('REQUEST_NON_EXISTENT', 10011);
 
 /** The provided password does not match */
-define('WRONG_PASSWORD', 10011);
+define('WRONG_PASSWORD', 10012);
 /** The provided confirmation code is incorrect */
-define('WRONG_CONFIRM_CODE', 10012);
+define('WRONG_CONFIRM_CODE', 10013);
 /** The provided ISBN code is invalid */
-define('WRONG_ISBN', 10013);
+define('WRONG_ISBN', 10014);
 /** Trying to confirm an account a second time */
-define('ACCOUNT_ALREADY_CONFIRMED', 10014);
+define('ACCOUNT_ALREADY_CONFIRMED', 10015);
 /** Account must be confirmed */
-define('ACCOUNT_NOT_CONFIRMED', 10015);
+define('ACCOUNT_NOT_CONFIRMED', 10016);
 
 /** A pair user_id - book_id already exists in sales db */
-define('EXISTING_SALE', 10016);
+define('EXISTING_SALE', 10017);
 /** A pair user_id - book_id already exists in requests db */
-define('EXISTING_REQUEST', 10017);
+define('EXISTING_REQUEST', 10018);
 /** User name already existing */
-define('EXISTING_USER_NAME', 10018);
+define('EXISTING_USER_NAME', 10019);
 /** Email address already existing */
-define('EXISTING_EMAIL', 10019);
+define('EXISTING_EMAIL', 10020);
 
 /** An ISBN cannot be found using google API */
-define('ISBN_NOT_FOUND', 10020);
+define('ISBN_NOT_FOUND', 10021);
 /** A book cannot be found */
-define('BOOK_NOT_FOUND', 10021);
+define('BOOK_NOT_FOUND', 10022);
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

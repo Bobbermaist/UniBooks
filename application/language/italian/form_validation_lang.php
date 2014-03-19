@@ -33,6 +33,7 @@ $lang['decimal']			= "Il campo %s deve contenere un numero decimale.";
 $lang['less_than']			= "Il campo %s deve contenere un numero minore di %s.";
 $lang['greater_than']		= "Il campo %s deve contenere un numero maggiore di %s.";
 $lang['valid_isbn']			= "Il campo %s deve contenere un codice ISBN valido.";
+$lang['valid_price']		= "Il campo %s deve contenere un prezzo valido";
 
 /* End of file form_validation_lang.php */
 /* Location: ./application/language/italian/form_validation_lang.php */

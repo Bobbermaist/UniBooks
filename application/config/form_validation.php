@@ -39,7 +39,24 @@ $config = array(
     array(
       'field'   => 'search_key',
       'label'   => 'Ricerca libro',
-      'rules'   => 'requires|valid_isbn',
+      'rules'   => 'required|valid_isbn',
+    ),
+  ),
+  'sell/index' => array(
+    array(
+      'field'   => 'isbn',
+      'label'   => 'Codice ISBN',
+      'rules'   => 'required|valid_isbn',
+    ),
+    array(
+      'field'   => 'price',
+      'label'   => 'Prezzo di vendta',
+      'rules'   => 'required|valid_price',
+    ),
+    array(
+      'field'   => 'description',
+      'label'   => 'Descrizione',
+      'rules'   => 'max_length[500]',
     ),
   ),
   'request/index' => array(

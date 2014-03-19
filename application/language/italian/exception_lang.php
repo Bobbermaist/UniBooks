@@ -13,6 +13,7 @@ $lang['exception_'.NO_EXCEPTIONS] = 'Nessuna eccezione sollevata';
 
 $lang['exception_'.INVALID_EXCEPTION_CODE] = 'Eccezione lanciata con un codice non valido';
 $lang['exception_'.INVALID_PARAMETER] = 'È stato fornito un parametro non valido';
+$lang['exception_'.REQUIRED_PROPERTY] = 'La seguente proprietà deve essere settata per eseguire il metodo: ';
 
 $lang['exception_'.ID_NON_EXISTENT] = 'ID inesistente';
 $lang['exception_'.USER_NAME_NON_EXISTENT] = 'User name inesistente';

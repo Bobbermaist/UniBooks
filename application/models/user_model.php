@@ -43,6 +43,8 @@ class User_model extends User_base {
 	 */
 	public function insert()
 	{
+		$this->_required_properties('user_name', 'password', 'email');
+		
 		$this->_set_confirm_code();
 		$this->_set_time();
 		$this->rights = UNCONFIRMED_ACCOUNT;
@@ -181,7 +183,7 @@ class User_model extends User_base {
 	 */
 	public function update_user_name($user_name)
 	{
-		if ($this->_select_one('users', 'user_name', $user_name) !== FALSE)
+		if ($this->_single_select('users', 'user_name', $user_name) !== FALSE)
 		{
 			throw new Custom_exception(EXISTING_USER_NAME);
 		}
@@ -206,7 +208,7 @@ class User_model extends User_base {
 	 */
 	public function ask_for_update_email($email)
 	{
-		if ($this->_select_one('users', 'email', $email) !== FALSE)
+		if ($this->_single_select('users', 'email', $email) !== FALSE)
 		{
 			throw new Custom_exception(EXISTING_EMAIL);
 		}

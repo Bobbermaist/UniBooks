@@ -47,16 +47,18 @@ class Custom_exception extends Exception {
 	 * Will call $this->_get_message() to retrieve the message.
 	 *
 	 * @param int  $code the exception code
-	 * @param object  $previous previous Exception (default NULL)
+	 * @param string  $append_message if you want to append something
+	 *    after the standard message
 	 * @return void
 	 */
-	public function __construct($code, Exception $previous = NULL)
+	public function __construct($code, $append_message = '')
 	{
 		$this->_CI =& get_instance();
 
 		$code = (int) $code;
-		
-		parent::__construct($this->_get_message($code), $code, $previous);
+		$message = $this->_get_message($code) . $append_message;
+
+		parent::__construct($message, $code);
 	}
 
 	/**
