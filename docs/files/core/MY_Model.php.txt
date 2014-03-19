@@ -45,7 +45,7 @@ class MY_Model extends CI_Model {
 	 * or it isn't setted this method will return boolean FALSE
 	 * 
 	 * @param string  $property the property name to retrieve
-	 * @return mixed object property or FALSE
+	 * @return mixed  object property or FALSE
 	 */
 	protected function _get($property)
 	{
@@ -62,8 +62,8 @@ class MY_Model extends CI_Model {
 	 * the value.
 	 * 
 	 * @param string  $table is the table name
-	 * @param mixed  $where is a string or an array
-	 * @param mixed  $value is string or NULL (optional)
+	 * @param string|string[]  $where is a string or an associative array
+	 * @param string|null  $value NULL if $where is an array, string otherwise (optional)
 	 * @return mixed  a row object on success or FALSE
 	 */
 	protected function _select_one($table, $where, $value = NULL)
@@ -80,20 +80,22 @@ class MY_Model extends CI_Model {
 	 * The first parameter contains a tring with the table name,
 	 * the second one an associative array with th values.
 	 *
-	 * Ex.
-	 * <code>
-	 *	$table = 'users';
-	 *	$data = array(
-	 *		'id' => 1,
-	 *		'name' => 'test',
-	 *	);
-	 *	$this->_insert_on_duplicate($table, $data);
-	 * </code>
+	 * E.g.
+	 * <pre>
+	 *  $table = 'users';
+	 *  $data = array(
+	 *    'id' => 1,
+	 *    'name' => 'test',
+	 *  );
+	 *  $this->_insert_on_duplicate($table, $data);
+	 * </pre>
 	 *
 	 * produces the following query:
 	 *
-	 * INSERT INTO `users` (id, name) VALUES ('1', 'test')
-	 * ON DUPLICATE KEY UPDATE id='1', name='test'
+	 * <pre>
+	 *  INSERT INTO `users` (id, name) VALUES ('1', 'test')
+	 *  ON DUPLICATE KEY UPDATE id='1', name='test'
+	 * </pre>
 	 *
 	 * @param string  $table is the table name
 	 * @param array  $data the associative array to insert
@@ -206,10 +208,9 @@ class User_base extends MY_Model {
 	/**
 	 * Get ID method.
 	 *
-	 * Return the user's ID if setted, bool(FALSE)
-	 * otherwise.
+	 * Return the user's ID if setted, FALSE otherwise.
 	 *
-	 * @return mixed  int or FALSE
+	 * @return int|false
 	 */
 	public function get_id()
 	{
@@ -226,6 +227,7 @@ class User_base extends MY_Model {
 	 * 
 	 * @param int  $value the ID value to set
 	 * @return void
+	 * @see select_by method for exceptions thrown
 	 */
 	public function set_id($value)
 	{
@@ -236,7 +238,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get user name.
 	 *
-	 * @return mixed  string or FALSE
+	 * @return string|false
 	 */
 	public function get_user_name()
 	{
@@ -262,7 +264,7 @@ class User_base extends MY_Model {
 	 * Retrieve password property, return FALSE if not setted.
 	 * NOTE: The password property is the *hashed* password.
 	 *
-	 * @return mixed  string or FALSE
+	 * @return string|false
 	 */
 	public function get_password()
 	{
@@ -286,7 +288,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get email.
 	 *
-	 * @return mixed  string or FALSE
+	 * @return string|false
 	 */
 	public function get_email()
 	{
@@ -309,7 +311,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get registration time.
 	 *
-	 * @return mixed string or FALSE
+	 * @return string|false
 	 */
 	public function get_registration_time()
 	{
@@ -319,7 +321,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get rights.
 	 *
-	 * @return mixed int or FALSE
+	 * @return int|false
 	 */
 	public function get_rights()
 	{
@@ -329,7 +331,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get confirm_code
 	 *
-	 * @return mixed string or FALSE
+	 * @return string|false
 	 */
 	public function get_confirm_code()
 	{
@@ -339,7 +341,7 @@ class User_base extends MY_Model {
 	/**
 	 * Get temporary email.
 	 *
-	 * @return mixed  string or FALSE
+	 * @return string|false
 	 */
 	public function get_tmp_email()
 	{
@@ -537,7 +539,7 @@ class Book_base extends MY_Model {
 	/**
 	 * Book's authors
 	 *
-	 * @var array (string)
+	 * @var string[]
 	 * @access protected
 	 */
 	protected $authors = array();
@@ -545,7 +547,7 @@ class Book_base extends MY_Model {
 	/**
 	 * Authors id
 	 *
-	 * @var array (int)
+	 * @var int[]
 	 * @access private
 	 */
 	private $_authors_id = array();
@@ -601,7 +603,7 @@ class Book_base extends MY_Model {
 	/**
 	 * Book's categories
 	 *
-	 * @var array (string)
+	 * @var string[]
 	 * @access protected
 	 */
 	protected $categories = array();
@@ -609,7 +611,7 @@ class Book_base extends MY_Model {
 	/**
 	 * Categories IDs
 	 *
-	 * @var array (int)
+	 * @var int[]
 	 * @access private
 	 */
 	private $_categories_id = array();
@@ -654,7 +656,7 @@ class Book_base extends MY_Model {
 	 * 
 	 * Return book's ID if setted or FALSE.
 	 *
-	 * @return mixed  int or FALSE
+	 * @return int|false
 	 */
 	public function get_id()
 	{
@@ -683,7 +685,7 @@ class Book_base extends MY_Model {
 	 * Return a 13-digit ISBN if setted, 10-digit if not,
 	 * FALSE if neither are setted.
 	 * 
-	 * @return mixed  string or boolean
+	 * @return string|false
 	 */
 	public function get_isbn()
 	{
@@ -752,8 +754,8 @@ class Book_base extends MY_Model {
 		));
 		$this->ID = $this->db->insert_id();
 
-		$this->_insert_authors();
-		$this->_insert_categories();
+		$this->_create_links('_authors_id', 'author_id', 'links_book_author');
+		$this->_create_links('_categories_id', 'category_id', 'links_book_category');
 	}
 
 	/**
@@ -767,7 +769,7 @@ class Book_base extends MY_Model {
 	 * 
 	 * @param string  $table the table name
 	 * @param mixed  $value string or array of data to insert
-	 * @return mixed int or array
+	 * @return mixed  int if $value is a string or int[] if $value is an array
 	 * @access private
 	 */
 	private function _insert_info($table, $value)
@@ -798,43 +800,27 @@ class Book_base extends MY_Model {
 	}
 
 	/**
-	 * Links all authors with a book.
-	 * $this->_authors_id must be setted.
-	 * 
+	 * Create book links (authors and categories).
+	 *
+	 * @param string  $property_name the name of the property
+	 *    contains an array of ID to insert
+	 * @param string  $field_name name of the field that
+	 *    contains this value
+	 * @param string  $table the table name where insert
 	 * @return void
 	 * @access private
 	 */
-	private function _insert_authors()
+	private function _create_links($property_name, $field_name, $table)
 	{
 		$data = array();
-		foreach ($this->_authors_id as $author_id)
+		foreach ($this->{$property_name} as $item)
 		{
 			$data[] = array(
 				'book_id'		=> $this->ID,
-				'author_id'	=> $author_id,
+				$field_name	=> $item,
 			);
 		}
-		$this->db->insert_batch('links_book_author', $data);
-	}
-
-	/**
-	 * Links all categories with a book.
-	 * $this->_categories_id must be setted.
-	 * 
-	 * @return void
-	 * @access private
-	 */
-	private function _insert_categories()
-	{
-		$data = array();
-		foreach ($this->_categories_id as $category_id)
-		{
-			$data[] = array(
-				'book_id'			=> $this->ID,
-				'category_id'	=> $category_id,
-			);
-		}
-		$this->db->insert_batch('links_book_category', $data);
+		$this->db->insert_batch($table, $data);
 	}
 
 	/**
@@ -848,6 +834,14 @@ class Book_base extends MY_Model {
 	 * on failure.
 	 * 
 	 * @param string  $field the field name
+	 * @throws Custom_exception(ID_NON_EXISTENT)
+	 *    if the ID does not exists
+	 * @throws Custom_exception(ISBN_NON_EXISTENT)
+	 *    if the ISBN code does not exists in local db
+	 * @throws Custom_exception(GOOGLE_ID_NON_EXISTENT)
+	 *    if the google ID does not exists
+	 * @throws Custom_exception(INVALID_PARAMETER)
+	 *    if the profided field does not match with any valid field
 	 * @return void
 	 */
 	public function select_by($field)
@@ -888,7 +882,7 @@ class Book_base extends MY_Model {
 	private function _set_by($field)
 	{
 		$query = $this->db->get();
-		if ($res->num_rows == 0)
+		if ($query->num_rows == 0)
 		{
 			switch ($field)
 			{
@@ -921,45 +915,29 @@ class Book_base extends MY_Model {
 
 		$this->publisher = $this->_select_one('publishers', 'ID', $this->_publisher_id)->name;
 		$this->language = $this->_select_one('languages', 'ID', $this->_language_id)->name;
-		$this->_join_authors();
-		$this->_join_categories();
+		$this->_join('authors', 'links_book_author', 'author_id');
+		$this->_join('categories', 'links_book_category', 'category_id');
 	}
-
+	
 	/**
-	 * Set authors property by joining the book ID on db.
+	 * Join a book field by joining book ID with a property
+	 * ('categories' and 'authors') and sets the corresponding
+	 * property.
 	 *
-	 * ID property must be setted.
-	 * 
+	 * @param string  $property property name
+	 * @param string  $join_table join table name
+	 * @param string  $join_field the field of "join_table" containing book ID
 	 * @return void
-	 * @access private
+	 * @access private 
 	 */
-	private function _join_authors()
+	private function _join($property, $join_table, $join_field)
 	{
-		$this->db->from('authors')->where('book_id', $this->ID)
-			->join('links_book_author', 'authors.ID = links_book_author.author_id');
+		$this->db->from($property)->where('book_id', $this->ID)
+			->join($join_table, "{$property}.ID = {$join_table}.{$join_field}");
 		$results = $this->db->get()->result();
 		foreach ($results as $result)
 		{
-			$this->authors[] = $result->name;
-		}
-	}
-
-	/**
-	 * Set categories property by joining the book ID on db.
-	 *
-	 * ID property must be setted.
-	 * 
-	 * @return void
-	 * @access private
-	 */
-	private function _join_categories()
-	{
-		$this->db->from('categories')->where('book_id', $this->ID)
-			->join('links_book_category', 'categories.ID = links_book_category.category_id');
-		$results = $this->db->get()->result();
-		foreach ($results as $result)
-		{
-			$this->categories[] = $result->name;
+			$this->{$property}[] = $result->name;
 		}
 	}
 
@@ -1048,22 +1026,25 @@ class Exchange_base extends MY_Model {
 	 * Set user id
 	 *
 	 * Retrieve the user id from the session and set
-	 * user_id property.
+	 * user_id property only if is not setted.
 	 * 
 	 * @return void
 	 * @access protected
 	 */
 	protected function _set_user_id()
 	{
-		$user = new User_base;
-		$user->read_session();
-		$this->user_id = $user->get_id();
+		if ( ! isset($this->user_id))
+		{
+			$user = new User_base;
+			$user->read_session();
+			$this->user_id = $user->get_id();
+		}
 	}
 
 	/**
 	 * Get book id
 	 *
-	 * @return mixed  int or FALSE
+	 * @return int|false
 	 */
 	public function get_book_id()
 	{
@@ -1090,8 +1071,12 @@ class Exchange_base extends MY_Model {
 	 * property
 	 * 
 	 * @param string  $table the table name
-	 * @param array  $properties other object properties to insert, like 'price' (optional)
+	 * @param string[]  $properties other object properties to insert, like 'price' (optional)
 	 * @return void
+	 * @throws Custom_exception(EXISTING_SALE) if the pair
+	 *    user_id - book_id exists in the 'books_for_sale' table
+	 * @throws Custom_exception(EXISTING_REQUEST) if the pair
+	 *    user_id - book_id exists int the 'books_requested' table
 	 * @access protected
 	 */
 	protected function _insert($table, $properties = array())
@@ -1110,10 +1095,6 @@ class Exchange_base extends MY_Model {
 			{
 				throw new Custom_exception(EXISTING_REQUEST);
 			}
-			else
-			{
-				throw new Custom_exception(INVALID_PARAMETER);
-			}
 		}
 
 		foreach ($properties as $property)
@@ -1128,18 +1109,16 @@ class Exchange_base extends MY_Model {
 	 * user_id and book_id properties must be setted
 	 * 
 	 * @param string  $table the table name
-	 * @return void
+	 * @return boolean
 	 * @access protected
 	 */
 	protected function _delete($table)
 	{
-		if (isset($this->book_id))
-		{
-			$this->db->delete($table, array(
-				'user_id'	=> $this->user_id,
-				'book_id'	=> $this->book_id,
-			));
-		}
+		$this->_set_user_id();
+		return $this->db->delete($table, array(
+			'user_id'	=> $this->user_id,
+			'book_id'	=> $this->_get('book_id'),
+		));
 	}
 }
 

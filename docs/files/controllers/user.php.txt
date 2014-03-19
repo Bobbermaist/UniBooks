@@ -43,6 +43,7 @@ class User extends MY_Controller {
 				'p'	=> 'Il tuo &egrave; un account amministratore',
 			));
 		}
+		// else{ who the fuck are you? }
 		
 		$this->_set_view('generic', array(
 			'div'		=> anchor('user/settings', 'Modifica') . ' le informazioni',
@@ -116,19 +117,8 @@ class User extends MY_Controller {
 
 	private function _update_user_name()
 	{
-		if ($this->User_model->update_user_name($this->input->post('user_name')))
-		{
-			$this->_set_view('generic', array(
-				'p' => 'User name modificato in: ' . $this->User_model->get_user_name(),
-			));
-		}
-		else
-		{
-			$this->_set_view('generic', array(
-				'p'		=> 'User name non valido o gi&agrave; in uso',
-				'id'	=> 'error',
-			));
-		}
+		$this->_try('User_model', 'update_user_name', $this->input->post('user_name'));
+		$this->_set_message('user_name_update');
 	}
 
 	private function _ask_for_modify_email()
@@ -149,19 +139,11 @@ class User extends MY_Controller {
 
 	private function _modify_email()
 	{
-		if ($this->User_model->ask_for_update_email($this->input->post('email')) === TRUE)
+		$this->_try('User_model', 'ask_for_update_email', $this->input->post('email'));
+		$this->_set_message('email_update_request');
+		if ($this->exception_code === NO_EXCEPTIONS)
 		{
 			$this->_send_confirm();
-			$this->_set_view('generic', array(
-				'p'	=> 'Controlla l\'indirizzo indicato per l\'email di conferma',
-			));
-		}
-		else
-		{
-			$this->_set_view('generic', array(
-				'p'		=> 'Indirizzo email gi&agrave; in uso',
-				'id'	=> 'error',
-			));
 		}
 	}
 
@@ -184,19 +166,8 @@ class User extends MY_Controller {
 
 	private function _update_email($confirm_code)
 	{
-		if ($this->User_model->update_email($confirm_code) === TRUE)
-		{
-			$this->_set_view('generic', array(
-				'p'	=> 'Email confermata correttamente',
-			));
-		}
-		else
-		{
-			$this->_set_view('generic', array(
-				'p'			=> 'Errore nella conferma email',
-				'class'	=> 'error',
-			));
-		}
+		$this->_try('User_model', 'update_email', $confirm_code);
+		$this->_set_message('email_update');
 	}
 
 	private function _modify_password()
@@ -219,22 +190,8 @@ class User extends MY_Controller {
 
 	private function _update_password()
 	{
-
-		if ($this->User_model->update_password(
-					$this->input->post('old_password'),
-						$this->input->post('new_password')) === TRUE)
-		{
-			$this->_set_view('generic', array(
-				'p'	=> 'Password aggiornata correttamente',
-			));
-		}
-		else
-		{
-			$this->_set_view('generic', array(
-				'p' 		=> 'Vecchia password non valida',
-				'class'	=> 'error',
-			));
-		}
+		$this->_try('User_model', 'update_password', $this->input->post('old_password'), $this->input->post('new_password'));
+		$this->_set_message('password_update');
 	}
 
 	public function logout()

@@ -25,6 +25,7 @@ $lang['exception_'.REQUEST_NON_EXISTENT] = 'Richiesta inesistente';
 
 $lang['exception_'.WRONG_PASSWORD] = 'La password inserita è errata';
 $lang['exception_'.WRONG_CONFIRM_CODE] = 'Il codice di conferma non corrisponde';
+$lang['exception_'.WRONG_ISBN] = 'Il codice ISBN inserito non è valido';
 $lang['exception_'.ACCOUNT_ALREADY_CONFIRMED] = 'Questo account è già stato attivato';
 $lang['exception_'.ACCOUNT_NOT_CONFIRMED] = 'Questo account deve essere prima attivato per eseguire questa operazione';
 

@@ -158,24 +158,26 @@ define('REQUEST_NON_EXISTENT', 10010);
 define('WRONG_PASSWORD', 10011);
 /** The provided confirmation code is incorrect */
 define('WRONG_CONFIRM_CODE', 10012);
+/** The provided ISBN code is invalid */
+define('WRONG_ISBN', 10013);
 /** Trying to confirm an account a second time */
-define('ACCOUNT_ALREADY_CONFIRMED', 10013);
+define('ACCOUNT_ALREADY_CONFIRMED', 10014);
 /** Account must be confirmed */
-define('ACCOUNT_NOT_CONFIRMED', 10014);
+define('ACCOUNT_NOT_CONFIRMED', 10015);
 
 /** A pair user_id - book_id already exists in sales db */
-define('EXISTING_SALE', 10015);
+define('EXISTING_SALE', 10016);
 /** A pair user_id - book_id already exists in requests db */
-define('EXISTING_REQUEST', 10016);
+define('EXISTING_REQUEST', 10017);
 /** User name already existing */
-define('EXISTING_USER_NAME', 10017);
+define('EXISTING_USER_NAME', 10018);
 /** Email address already existing */
-define('EXISTING_EMAIL', 10018);
+define('EXISTING_EMAIL', 10019);
 
 /** An ISBN cannot be found using google API */
-define('ISBN_NOT_FOUND', 10019);
+define('ISBN_NOT_FOUND', 10020);
 /** A book cannot be found */
-define('BOOK_NOT_FOUND', 10020);
+define('BOOK_NOT_FOUND', 10021);
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

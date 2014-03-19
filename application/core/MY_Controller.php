@@ -213,19 +213,23 @@ class MY_Controller extends CI_Controller  {
 	 * After sets the *exception_message* to
 	 * NO_EXCEPTIONS.
 	 *
-	 * @param $name  the name of message lang
+	 * If $name parameter is FALSE (default)
+	 * won't load any message in case of the is
+	 * no exception
+	 *
+	 * @param string|false $name  the name of message lang
 	 * @return void
 	 * @throws Custom_exception(INVALID_PARAMETER)
 	 *    if can't loads the requested lang line
 	 * @access protected
 	 */
-	protected function _set_message($name)
+	protected function _set_message($name = FALSE)
 	{
 		if ($this->exception_code !== NO_EXCEPTIONS)
 		{
 			$this->_queue_exception_message();
 		}
-		else
+		elseif ($name !== FALSE)
 		{
 			$message = $this->lang->line('message_' . $name);
 			if ($message === FALSE)
@@ -323,6 +327,7 @@ class MY_Controller extends CI_Controller  {
 	 *
 	 * @param mixed  $fields the field or fields of POST data to check (string or array)
 	 * @return void
+	 * @throws Custom_exception(INVALID_PARAMETER) if a POST data missing
 	 * @access protected
 	 */
 	protected function _post_required($fields)
@@ -336,7 +341,7 @@ class MY_Controller extends CI_Controller  {
 		{
 			if ( ! $this->input->post($field))
 			{
-				show_error($this->lang->line("error_post_{$field}"));
+				throw new Custom_exception(INVALID_PARAMETER);
 			}
 		}
 	}

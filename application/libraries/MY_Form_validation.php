@@ -24,9 +24,9 @@ class MY_Form_validation extends CI_Form_validation {
 	 * CodeIgniter istance
 	 *
 	 * @var object
-	 * @access protected
+	 * @access private
 	 */
-	protected $CI;
+	private $_CI;
 
 	/**
 	 * Constructor
@@ -39,7 +39,7 @@ class MY_Form_validation extends CI_Form_validation {
   public function __construct($rules = array())
   {
   	parent::__construct($rules);
-  	$this->CI =& get_instance();
+  	$this->_CI =& get_instance();
   }
 
 	/**
@@ -72,12 +72,24 @@ class MY_Form_validation extends CI_Form_validation {
 	 */
 	public function valid_isbn($str)
 	{
-		$this->load->helper('isbn');
-		$this->CI->load->model('Book_model');
+		$this->_CI->load->model('Book_model');
+
+		try
+		{
+			$this->_CI->Book_model->set_isbn($str);
+		}
+		catch (Custom_exception $e)
+		{
+			return FALSE;
+		}
+		return TRUE;
+		/*
+		$this->_CI->load->helper('isbn');
 
 		return validate_isbn_13($str) OR
 						validate_isbn_10($str) OR
 						validate_isbn_13('978' . $str);
+		*/
 	}
 }
 

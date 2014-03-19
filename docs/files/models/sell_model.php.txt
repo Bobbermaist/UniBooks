@@ -76,9 +76,10 @@ class Sell_model extends Exchange_base {
 	/**
 	 * Insert method.
 	 * See the Exchange_base class in ./application/core/MY_Model.php
-	 * for _insert method.
+	 * for _insert() method.
 	 *
 	 * @return void
+	 * @see _insert() method in Exchange_base class
 	 */
 	public function insert()
 	{
@@ -113,10 +114,15 @@ class Sell_model extends Exchange_base {
 	 * user_id and book_id properties must be setted.
 	 *
 	 * @return void
+	 * @throws Custom_exception(SALE_NON_EXISTENT) if
+	 *    the sale does not exist
 	 */
 	public function delete()
 	{
-		$this->_delete('books_for_sale');
+		if ( ! $this->_delete('books_for_sale'))
+		{
+			throw new Custom_exception(SALE_NON_EXISTENT);
+		}
 	}
 }
 

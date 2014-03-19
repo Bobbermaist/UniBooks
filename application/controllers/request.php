@@ -27,8 +27,6 @@ class Request extends MY_Controller {
 
 	public function index()
 	{
-		$this->User_model->add_userdata('search_action', 'request/complete');
-
 		$this->load->helper('form');
 		$this->_set_view('form/single_field', array(
 			'action'				=> 'book/search',

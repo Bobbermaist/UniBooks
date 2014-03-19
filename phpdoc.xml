@@ -9,5 +9,8 @@
 	<files>
 		<directory>application</directory>
 		<ignore>third_party/*</ignore>
+		<ignore>cache/*</ignore>
+		<ignore>errors/*</ignore>
+		<ignore>logs/*</ignore>
 	</files>
 </phpdoc>

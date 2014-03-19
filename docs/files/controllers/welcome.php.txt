@@ -44,7 +44,7 @@ class Welcome extends MY_Controller {
 			'p'	=> 'Benvenuto : )',
 		));
 		$this->_set_view('generic', array(
-			'p'	=> 'Puoi registrarti ' . anchor('registration', 'qui'),
+			'p'	=> 'Puoi registrarti ' . anchor('signup', 'qui'),
 		));
 		$this->_set_view('generic', array(
 			'p'	=> 'Puoi effettuare il reset della tua password ' . anchor('reset', 'qui'),

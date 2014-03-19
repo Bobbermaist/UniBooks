@@ -148,7 +148,7 @@ class Google_books {
   private function _list_volumes()
   {
     $opt_params = array(
-      'maxResults'  => MAX_RESULTS,
+      'maxResults'  => 10,
     );
     $google_fetch = $this->_service->volumes->listVolumes($this->search_key, $opt_params);
     $this->volumes = $this->_array_format($google_fetch);

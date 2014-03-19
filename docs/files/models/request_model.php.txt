@@ -80,10 +80,15 @@ class Request_model extends Exchange_base {
 	 * user_id and book_id properties must be setted.
 	 *
 	 * @return void
+	 * @throws Custom_exception(REQUEST_NON_EXISTENT) if 
+	 *    the request does not exist
 	 */
 	public function delete()
 	{
-		$this->_delete('books_requested');
+		if ( ! $this->_delete('books_requested'))
+		{
+			throw new Custom_exception(REQUEST_NON_EXISTENT);
+		}
 	}
 }
 

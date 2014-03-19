@@ -702,10 +702,12 @@ class Book_base extends MY_Model {
 	 * If $value is a valid 13-digit ISBN it sets ISBN_13 property,
 	 * if it is a valid 10-digit ISBN sets ISBN_10.
 	 *
-	 * Return boolean indicating whether the code is valid
+	 * *Throws an exception* if the ISBN code provided is not valid
 	 * 
 	 * @param string  $value the ISBN code to set
-	 * @return boolean
+	 * @return void
+	 * @throws Custom_exception(WRONG_ISBN) if can't set
+	 *    the ISBN code
 	 */
 	public function set_isbn($value)
 	{
@@ -724,7 +726,11 @@ class Book_base extends MY_Model {
 			// did you forget the '978' prefix?
 			$this->ISBN_13 = '978' . $value;
 		}
-		return isset($this->ISBN_13) OR isset($this->ISBN_10);
+
+		if ( ! isset($this->ISBN_13) AND ! isset($this->ISBN_10))
+		{
+			throw new Custom_exception(WRONG_ISBN);
+		}
 	}
 
 	/**

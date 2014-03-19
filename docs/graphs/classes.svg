@@ -223,15 +223,15 @@
 <path fill="none" stroke="black" d="M636.393,-903.127C628.433,-899.217 619.881,-894.98 612,-891 573.695,-871.656 530.403,-849.124 499.159,-832.742"/>
 <polygon fill="none" stroke="black" points="500.757,-829.628 490.276,-828.08 497.504,-835.826 500.757,-829.628"/>
 </g>
-<!-- \\Registration -->
-<g id="node20" class="node"><title>\\Registration</title>
-<polygon fill="none" stroke="black" points="703.5,-882 632.5,-882 632.5,-846 703.5,-846 703.5,-882"/>
-<text text-anchor="middle" x="668" y="-861.2" font-family="Times,serif" font-size="11.00">Registration</text>
+<!-- \\Signup -->
+<g id="node20" class="node"><title>\\Signup</title>
+<polygon fill="none" stroke="black" points="695,-882 641,-882 641,-846 695,-846 695,-882"/>
+<text text-anchor="middle" x="668" y="-861.2" font-family="Times,serif" font-size="11.00">Signup</text>
 </g>
-<!-- \\Registration&#45;&gt;\\MY_Controller -->
-<g id="edge19" class="edge"><title>\\Registration&#45;&gt;\\MY_Controller</title>
-<path fill="none" stroke="black" d="M632.158,-855.083C598.311,-846.421 546.508,-833.163 507.827,-823.264"/>
-<polygon fill="none" stroke="black" points="508.349,-819.785 497.793,-820.696 506.613,-826.566 508.349,-819.785"/>
+<!-- \\Signup&#45;&gt;\\MY_Controller -->
+<g id="edge19" class="edge"><title>\\Signup&#45;&gt;\\MY_Controller</title>
+<path fill="none" stroke="black" d="M640.703,-857.27C607.464,-848.763 549.506,-833.931 507.361,-823.144"/>
+<polygon fill="none" stroke="black" points="508.106,-819.722 497.55,-820.634 506.37,-826.504 508.106,-819.722"/>
 </g>
 <!-- \\Request_model -->
 <g id="node21" class="node"><title>\\Request_model</title>

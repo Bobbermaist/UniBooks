@@ -44,6 +44,15 @@ class MY_Controller extends CI_Controller  {
 	protected $exception_code = NO_EXCEPTIONS;
 
 	/**
+	 * The "_try" method stores here the exception
+	 * messafe if an exception is catched.
+	 *
+	 * @var string
+	 * @access protected
+	 */
+	protected $exception_message;
+
+	/**
 	 * An array of all view names to be shown.
 	 *
 	 * @var array  (string)
@@ -115,8 +124,8 @@ class MY_Controller extends CI_Controller  {
 	/**
 	 * Executes a try - catch command through a callback.
 	 *
-	 * The first parameter indicates the controller property
-	 * to call (e.g. 'User_model'), the second one the object method
+	 * The first parameter indicates the model name to call
+	 * (e.g. 'User_model'), the second one the method
 	 * (like any method or User_model).
 	 *
 	 * It is also possible to pass an arbitrary numer of parameters
@@ -138,6 +147,7 @@ class MY_Controller extends CI_Controller  {
 	 *    $this->User_model->reset_password($confirm_code, $new_password);
 	 *  } catch (Custom_exception $e) {
 	 *    $this->exception_code = $e->getCode();
+	 *    $this->exception_message = $e->getMessage();
 	 *  }
 	 * </pre>
 	 *
@@ -146,8 +156,8 @@ class MY_Controller extends CI_Controller  {
 	 * exception will be thrown.
 	 *
 	 * If the called method raises a Custom_exception,
-	 * its code will be stored in *exception_code*
-	 * property.
+	 * its code will be stored in *exception_code* property
+	 * and its message in *exception_message*.
 	 *
 	 * @param string  $property_name controller's property name
 	 * @param string  $method_name method name
@@ -184,12 +194,101 @@ class MY_Controller extends CI_Controller  {
 			catch (Custom_exception $e)
 			{
 				$this->exception_code = $e->getCode();
+				$this->exception_message = $e->getMessage();
 			}
 		}
 		else
 		{
 			throw new Custom_exception(INVALID_PARAMETER);
 		}
+	}
+
+	/**
+	 * Loads a message from message_lang and enqueue
+	 * this message through "_set_view()".
+	 *
+	 * If an exception was previously catched
+	 * enqueue the exception message instead the
+	 * requested message.
+	 * After sets the *exception_message* to
+	 * NO_EXCEPTIONS.
+	 *
+	 * @param $name  the name of message lang
+	 * @return void
+	 * @throws Custom_exception(INVALID_PARAMETER)
+	 *    if can't loads the requested lang line
+	 * @access protected
+	 */
+	protected function _set_message($name)
+	{
+		if ($this->exception_code !== NO_EXCEPTIONS)
+		{
+			$this->_queue_exception_message();
+		}
+		else
+		{
+			$message = $this->lang->line('message_' . $name);
+			if ($message === FALSE)
+			{
+				throw new Custom_exception(INVALID_PARAMETER);
+			}
+			else
+			{
+				$this->_set_view('generic', array(
+					'p'		=> $message,
+				));
+			}
+		}
+	}
+
+	/**
+	 * Works as _set_message() but redirect if no exception
+	 * where thrown.
+	 *
+	 * Redirect to 'user' if an empty variable is provided.
+	 *
+	 * @param string  $controller redirect here
+	 * @param string|false  $default if $controller can be 
+	 *    FALSE it is possible to set a default redirect
+	 * @return void
+	 * @access protected
+	 */
+	protected function _redirect($controller, $default = 'user')
+	{
+		if ($this->exception_code !== NO_EXCEPTIONS)
+		{
+			$this->_queue_exception_message();
+		}
+		else
+		{
+			if (empty($controller))
+			{
+				redirect($default);
+			}
+			else
+			{
+				redirect($controller);
+			}
+		}
+	}
+
+	/**
+	 * Add the "exception_message" to te view queue
+	 * as a paragraph with id "error"
+	 *
+	 * @return void
+	 * @access private
+	 */
+	private function _queue_exception_message()
+	{
+		$this->_set_view('generic', array(
+			'p'		=> $this->exception_message,
+			'id'	=> 'error',
+		));
+		/*
+		$this->exception_code = NO_EXCEPTIONS;
+		unset($this->exception_message);
+		*/
 	}
 
 	/**

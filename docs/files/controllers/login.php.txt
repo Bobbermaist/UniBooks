@@ -41,31 +41,8 @@ class Login extends MY_Controller {
 
 		if ($this->form_validation->run() === TRUE)
 		{
-			$login = $this->User_model->login(
-				$this->input->post('user_name'),
-				$this->input->post('password')
-			);
-			
-			if ($login === TRUE)
-			{
-				$redirect = $this->User_model->userdata('redirect');
-				if ($redirect === FALSE)
-				{
-					redirect('user');
-				}
-				else
-				{
-					$this->User_model->del_userdata('redirect');
-					redirect($redirect);
-				}
-			}
-			else
-			{
-				$this->_set_view('generic', array(
-					'p'		=> 'Errore nel login',
-					'id'	=> 'error',
-				));
-			}
+			$this->_try('User_model', 'login', $this->input->post('user_name'), $this->input->post('password'));
+			$this->_redirect($this->User_model->userdata('redirect'));
 		}
 
 		$this->_view();

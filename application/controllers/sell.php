@@ -27,19 +27,9 @@ class Sell extends MY_Controller {
 
 	public function index()
 	{
-		$this->User_model->add_userdata('search_action', 'sell/choose_price');
-
 		$this->load->helper('form');
-		$this->_set_view('form/single_field', array(
-			'action'				=> 'book/search',
-			'label'					=> 'Cerca un libro da vendere',
-			'submit_name'		=> 'search_for_sell',
-			'submit_value'	=> 'Cerca',
-			'input'					=> array(
-					'name'			=> 'search_key',
-					'maxlength'	=> '255',
-					'id'				=> 'search_for_sell',
-			),
+		$this->_set_view('form/sell_book', array(
+			'action'	=> 'sell/index',
 		));
 
 		$this->_view();

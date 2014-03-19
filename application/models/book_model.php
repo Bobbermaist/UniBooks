@@ -57,17 +57,12 @@ class Book_model extends Book_base {
 	 *
 	 * @param string  $key a search key
 	 * @return void
-	 * @throws Custom_exception(ISBN_NOT_FOUND)
-	 * @see _search_by_isbn()
 	 * @throws Custom_exception(BOOK_NOT_FOUND) if can't
 	 *     find a book with the provided search key
 	 */
 	public function search($key)
 	{
-		if ($this->set_isbn($key) === TRUE)
-		{
-			$this->_search_by_isbn();
-		}
+		$this->search_by_isbn($key);
 		
 		throw new Custom_exception(BOOK_NOT_FOUND);
 	}
@@ -81,12 +76,12 @@ class Book_model extends Book_base {
 	 * If google books api fail throws an exception
 	 *
 	 * @return void
-	 * @access private
 	 * @throws Custom_exception(ISBN_NOT_FOUND) if can't
 	 *    find the given ISBN code on google books API
 	 */
-	private function _search_by_isbn()
+	public function search_by_isbn($isbn)
 	{
+		$this->set_isbn($isbn);
 		try
 		{
 			$this->select_by('ISBN');

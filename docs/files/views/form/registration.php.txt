@@ -1,6 +1,6 @@
 
 <?php echo validation_errors();
-	echo form_open('registration');
+	echo form_open('signup');
 ?>
 	  <h1>Iscrizione</h1>
 	  <p>Nome utente: <?php echo form_input($user_name); ?> </p>

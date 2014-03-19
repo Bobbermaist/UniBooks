@@ -30,6 +30,12 @@
  */
 class Custom_exception extends Exception {
 
+	/**
+	 * CodeIgniter instance
+	 *
+	 * @var object
+	 * @access private
+	 */
 	private $_CI;
 
 	/**

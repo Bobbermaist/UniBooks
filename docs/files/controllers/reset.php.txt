@@ -44,20 +44,7 @@ class Reset extends MY_Controller {
 		{
 			$this->_try('User_model', 'ask_for_reset_password', $input);
 
-			if ($this->exception_code === NEITHER_USER_NOR_EMAIL)
-			{
-				$this->_set_view('generic', array(
-					'p'		=> 'I parametri inseriti non corrispondono a nessun utente',
-					'id'	=> 'error',
-				));
-			}
-			else
-			{
-				$this->_send_reset();
-				$this->_set_view('generic', array(
-					'p'		=> 'Ti &egrave; stata inviata un\'email con le istruzioni per effettuare il reset della password',
-				));
-			}
+			$this->_set_message('reset_email');
 		}
 
 		$this->_view();
@@ -108,19 +95,7 @@ class Reset extends MY_Controller {
 		{
 			$this->_try('User_model', 'reset_password', $confirm_code, $new_password);
 
-			if ($this->exception_code === WRONG_CONFIRM_CODE)
-			{
-				$this->_set_view('generic', array(
-					'p'		=> 'Errore nel reset password (codice di conferma errato)',
-					'id'	=> 'error',
-				));
-			}
-			else
-			{
-				$this->_set_view('generic', array(
-					'p' => 'Reset password effettuato con successo',
-				));
-			}
+			$this ->_set_message('reset_complete');
 		}
 	}
 }
