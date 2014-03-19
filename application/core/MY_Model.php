@@ -908,16 +908,18 @@ class Book_base extends MY_Model {
 	 */
 	public function select_by($field)
 	{
-		$this->_required_properties($field);
-
 		$this->load->database();
 		$this->db->from('books');
 		if ($field === 'ISBN')
 		{
+			$this->_required_isbn();
+			
 			$this->db->where('ISBN', cut_isbn( $this->get_isbn() ));
 		}
 		else
 		{
+			$this->_required_properties($field);
+
 			$this->db->where($field, $this->{$field});
 		}
 		$this->db->limit(1);

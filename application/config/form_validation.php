@@ -56,7 +56,7 @@ $config = array(
     array(
       'field'   => 'description',
       'label'   => 'Descrizione',
-      'rules'   => 'max_length[500]',
+      'rules'   => 'max_length[' . SALE_DESCRIPTION_LENGTH . ']',
     ),
   ),
   'request/index' => array(

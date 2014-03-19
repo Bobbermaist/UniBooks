@@ -39,6 +39,41 @@ define('FOPEN_READ_WRITE_CREATE_STRICT',		'x+b');
 
 /*
 |--------------------------------------------------------------------------
+| Settings
+|--------------------------------------------------------------------------
+|
+| Costants with settings values
+|
+*/
+
+/**
+ * An user who has completed the registration
+ * but not confirmed his email address yet,
+ * has this rights
+ */
+define('UNCONFIRMED_ACCOUNT', 1);
+
+/**
+ * An user registered has this rights.
+ * These are standard user rights.
+ */
+define('USER_RIGHTS', 2);
+
+/**
+ * Admin rights.
+ * Who owns these righs can access to
+ * all controllers.
+ */
+define('ADMIN_RIGHTS', 3);
+
+/**
+ * Max length of sale description.
+ * Used in migration and fomr validation.
+ */
+define('SALE_DESCRIPTION_LENGTH', 500);
+
+/*
+|--------------------------------------------------------------------------
 | Paths
 |--------------------------------------------------------------------------
 |
@@ -88,36 +123,6 @@ define('IMG_PATH', ASSETS_PATH . 'img/');
 
 /** Path to ./application/views/assets/css/ */
 define('CSS_PATH', ASSETS_PATH . 'css/');
-
-/*
-|--------------------------------------------------------------------------
-| User rights
-|--------------------------------------------------------------------------
-|
-| Specify the user rights.
-|
-*/
-
-
-/**
- * An user who has completed the registration
- * but not confirmed his email address yet,
- * has this rights
- */
-define('UNCONFIRMED_ACCOUNT', 1);
-
-/**
- * An user registered has this rights.
- * These are standard user rights.
- */
-define('USER_RIGHTS', 2);
-
-/**
- * Admin rights.
- * Who owns these righs can access to
- * all controllers.
- */
-define('ADMIN_RIGHTS', 3);
 
 /*
 |--------------------------------------------------------------------------

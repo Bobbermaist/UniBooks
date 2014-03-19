@@ -73,14 +73,21 @@ class Book_model extends Book_base {
 		}
 		catch (Custom_exception $e)
 		{
-			$this->load->library('google_books');
-			$this->google_books->get_by_isbn( $this->get_isbn() );
-			if ($this->google_books->total_items === 0)
+			if ($e->getCode() === ISBN_NON_EXISTENT)
 			{
-				throw new Custom_exception(ISBN_NOT_FOUND);
+				$this->load->library('google_books');
+				$this->google_books->get_by_isbn( $this->get_isbn() );
+				if ($this->google_books->total_items === 0)
+				{
+					throw new Custom_exception(ISBN_NOT_FOUND);
+				}
+				$this->_set_from_google();
+				$this->insert();
 			}
-			$this->_set_from_google();
-			$this->insert();
+			else
+			{
+				throw $e;
+			}
 		}
 	}
 
