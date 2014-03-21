@@ -910,8 +910,8 @@ class Book_base extends MY_Model {
 			books.*,
 			publishers.name AS publisher_name,
 			languages.name AS language_name,
-			GROUP_CONCAT(authors.name SEPARATOR ", ") AS authors,
-			GROUP_CONCAT(categories.name SEPARATOR ", ") AS categories
+			GROUP_CONCAT(DISTINCT authors.name SEPARATOR ", ") AS authors,
+			GROUP_CONCAT(DISTINCT categories.name SEPARATOR ", ") AS categories
 		', FALSE);
 
 		$this->db->join('publishers', 'books.publisher_id = publishers.ID');
