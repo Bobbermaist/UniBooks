@@ -746,7 +746,7 @@ class Book_base extends MY_Model {
 	{
 		if ($this->get_isbn() === FALSE)
 		{
-			throw new Custom_exception(REQUIRED_PROPERTY, 'ISBN_13 - ISBN_10');
+			throw new Custom_exception(REQUIRED_PROPERTY, 'ISBN');
 		}
 	}
 
@@ -791,8 +791,6 @@ class Book_base extends MY_Model {
 	 *
 	 * The value can be an array, in that case an array of
 	 * ID is returned.
-	 *
-	 * If $value is empty (0, NULL, FALSE etc...), return NULL
 	 * 
 	 * @param string  $table the table name
 	 * @param mixed  $value string or array of data to insert
@@ -801,14 +799,10 @@ class Book_base extends MY_Model {
 	 */
 	private function _insert_info($table, $value)
 	{
-		/*
-		 * What should I do with NULL values??
-		if (empty($value))
+		if (empty($value) AND $value !== NULL)
 		{
-			return NULL;
-			//return $this->_insert_info($table, 'Unknown');
+			return $this->_insert_info($table, NULL);
 		}
-		*/
 
 		if ( ! is_array($value))
 		{

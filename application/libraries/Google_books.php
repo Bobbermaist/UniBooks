@@ -151,7 +151,6 @@ class Google_books {
       'maxResults'  => 10,
     );
     $google_fetch = $this->_service->volumes->listVolumes($this->search_key, $opt_params);
-    var_dump($google_fetch);
     $this->volumes = $this->_array_format($google_fetch);
     $this->total_items = $google_fetch['totalItems'];
   }

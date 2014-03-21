@@ -249,14 +249,20 @@ class Migration_Db extends CI_Migration {
 	 *
 	 * @return void
 	 * @access private
+	 * @todo `name` field NULL or NOT NULL?
 	 */
 	private function authors_up()
 	{
 		$query = "CREATE TABLE IF NOT EXISTS `authors` (
 							`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-							`name` varchar(255) NOT NULL DEFAULT '',
-							PRIMARY KEY (`ID`)
+							`name` varchar(255) DEFAULT NULL,
+							PRIMARY KEY (`ID`),
+							UNIQUE KEY `author_name` (`name`)
 						) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+		$this->db->query($query);
+
+		$query = "INSERT INTO `authors` (`ID`, `name`)
+							VALUES (1, NULL);";
 		$this->db->query($query);
 	}
 
@@ -309,14 +315,20 @@ class Migration_Db extends CI_Migration {
 	 *
 	 * @return void
 	 * @access private
+	 * @todo `name` field NULL or NOT NULL?
 	 */
 	private function publishers_up()
 	{
 		$query = "CREATE TABLE IF NOT EXISTS `publishers` (
 							`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-							`name` varchar(255) NOT NULL DEFAULT '',
-							PRIMARY KEY (`ID`)
+							`name` varchar(255) DEFAULT NULL,
+							PRIMARY KEY (`ID`),
+							UNIQUE KEY `publisher_name` (`name`)
 						) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+		$this->db->query($query);
+
+		$query = "INSERT INTO `publishers` (`ID`, `name`)
+							VALUES (1, NULL);";
 		$this->db->query($query);
 	}
 
@@ -336,14 +348,20 @@ class Migration_Db extends CI_Migration {
 	 * 
 	 * @return void
 	 * @access private
+	 * @todo `name` field NULL or NOT NULL?
 	 */
 	private function categories_up()
 	{
 		$query = "CREATE TABLE IF NOT EXISTS `categories` (
 							`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-							`name` varchar(255) NOT NULL DEFAULT '',
-							PRIMARY KEY (`ID`)
+							`name` varchar(255) DEFAULT NULL,
+							PRIMARY KEY (`ID`),
+							UNIQUE KEY `category_name` (`name`)
 						) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+		$this->db->query($query);
+
+		$query = "INSERT INTO `categories` (`ID`, `name`)
+							VALUES (1, NULL);";
 		$this->db->query($query);
 	}
 
@@ -396,14 +414,20 @@ class Migration_Db extends CI_Migration {
 	 *
 	 * @return void
 	 * @access private
+	 * @todo `name` field NULL or NOT NULL?
 	 */
 	private function languages_up()
 	{
 		$query = "CREATE TABLE IF NOT EXISTS `languages` (
 							`ID` int(5) unsigned NOT NULL AUTO_INCREMENT,
-							`name` varchar(255) NOT NULL DEFAULT '',
-							PRIMARY KEY (`ID`)
+							`name` varchar(255) DEFAULT NULL,
+							PRIMARY KEY (`ID`),
+							UNIQUE KEY `language_name` (`name`)
 						) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+		$this->db->query($query);
+
+		$query = "INSERT INTO `languages` (`ID`, `name`)
+							VALUES (1, NULL);";
 		$this->db->query($query);
 	}
 
