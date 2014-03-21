@@ -43,7 +43,7 @@ class Request_model extends Exchange_base {
 
 	public function get_requests()
 	{
-		return $this->_get('requests');
+		return $this->requests;
 	}
 
 	/**

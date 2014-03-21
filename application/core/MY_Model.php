@@ -30,63 +30,6 @@ class MY_Model extends CI_Model {
 	}
 
 	/**
-	 * Try to get a model property, return the property's value
-	 * if not empty, FALSE otherwise.
-	 *
-	 * Be careful!
-	 * Return FALSE if the property has one of the
-	 * following values:
-	 *
-	 * FALSE, integer 0, float 0.0, an empty string
-	 * and the string '0', empty array, empty object,
-	 * NULL.
-	 * 
-	 * If the property contains one of those values,
-	 * or it isn't setted this method will return boolean FALSE
-	 * 
-	 * @param string  $property the property name to retrieve
-	 * @return mixed  object property or FALSE
-	 */
-	protected function _get($property)
-	{
-		return empty( $this->{$property} ) ? FALSE : $this->{$property};
-	}
-
-	/**
-	 * Checks if some properties are not empty
-	 * and if they are throws an exception.
-	 *
-	 * Can be called with an undefined number of parameter
-	 * each of wich can be a string (indicating the property name)
-	 * or a string[]
-	 *
-	 * @param string|string[] ... the name or names of
-	 *    properties that have to be checked
-	 * @return void
-	 * @throws Custom_exception(REQUIRED_PROPERTY) if a
-	 *    required property is empty
-	 */
-	protected function _required_properties()
-	{
-		for ($i=0; func_num_args() > $i; $i++)
-		{
-			$required_property = func_get_arg($i);
-
-			if (is_array($required_property))
-			{
-				foreach ($required_property as $item)
-				{
-					$this->_required_properties($item);
-				}
-			}
-			elseif ($this->_get($required_property) === FALSE)
-			{
-				throw new Custom_exception(REQUIRED_PROPERTY, $required_property);
-			}
-		}
-	}
-
-	/**
 	 * Select one result from a table.
 	 *
 	 * Accepts three parameters, the table name,
@@ -295,13 +238,11 @@ class User_base extends MY_Model {
 	/**
 	 * Get ID method.
 	 *
-	 * Return the user's ID if setted, FALSE otherwise.
-	 *
-	 * @return int|false
+	 * @return int
 	 */
-	public function get_id()
+	public function get_ID()
 	{
-		return $this->_get('ID');
+		return $this->ID;
 	}
 
 	/**
@@ -316,7 +257,7 @@ class User_base extends MY_Model {
 	 * @return void
 	 * @see select_by method for exceptions thrown
 	 */
-	public function set_id($value)
+	public function set_ID($value)
 	{
 		$this->ID = (int) $value;
 		$this->select_by('ID');
@@ -325,11 +266,11 @@ class User_base extends MY_Model {
 	/**
 	 * Get user name.
 	 *
-	 * @return string|false
+	 * @return string
 	 */
 	public function get_user_name()
 	{
-		return $this->_get('user_name');
+		return $this->user_name;
 	}
 
 	/**
@@ -348,14 +289,13 @@ class User_base extends MY_Model {
 	/**
 	 * Get password.
 	 *
-	 * Retrieve password property, return FALSE if not setted.
 	 * NOTE: The password property is the *hashed* password.
 	 *
-	 * @return string|false
+	 * @return string
 	 */
 	public function get_password()
 	{
-		$this->_get('password');
+		return $this->password;
 	}
 
 	/**
@@ -375,11 +315,11 @@ class User_base extends MY_Model {
 	/**
 	 * Get email.
 	 *
-	 * @return string|false
+	 * @return string
 	 */
 	public function get_email()
 	{
-		return $this->_get('email');
+		return $this->email;
 	}
 
 	/**
@@ -398,41 +338,41 @@ class User_base extends MY_Model {
 	/**
 	 * Get registration time.
 	 *
-	 * @return string|false
+	 * @return string
 	 */
 	public function get_registration_time()
 	{
-		return $this->_get('registration_time');
+		return $this->registration_time;
 	}
 
 	/**
 	 * Get rights.
 	 *
-	 * @return int|false
+	 * @return int
 	 */
 	public function get_rights()
 	{
-		return $this->_get('rights');
+		return $this->rights;
 	}
 
 	/**
 	 * Get confirm_code
 	 *
-	 * @return string|false
+	 * @return string
 	 */
 	public function get_confirm_code()
 	{
-		return $this->_get('confirm_code');
+		return $this->confirm_code;
 	}
 
 	/**
 	 * Get temporary email.
 	 *
-	 * @return string|false
+	 * @return string
 	 */
 	public function get_tmp_email()
 	{
-		return $this->_get('tmp_email');
+		return $this->tmp_email;
 	}
 
 	/**
@@ -504,6 +444,8 @@ class User_base extends MY_Model {
 	 *
 	 * @param string  $field the field name
 	 * @return void
+	 * @throws Custom_exception(REQUIRED_PROPERTY if
+	 *    $this->{$field} is not setted
 	 * @throws Custom_exception(ID_NON_EXISTENT) if the
 	 *    ID does not exists
 	 * @throws Custom_exception(USER_NAME_NON_EXISTENT) if the
@@ -515,7 +457,10 @@ class User_base extends MY_Model {
 	 */
 	public function select_by($field = 'ID')
 	{
-		$this->_required_properties($field);
+		if ( ! isset($this->{$field}))
+		{
+			throw new Custom_exception(REQUIRED_PROPERTY, $field);
+		}
 
 		$this->db->from('users')->where($field, $this->{$field});
 		$res = $this->db->get();
@@ -628,18 +573,10 @@ class Book_base extends MY_Model {
 	/**
 	 * Book's authors
 	 *
-	 * @var string[]
+	 * @var string
 	 * @access protected
 	 */
-	protected $authors = array();
-
-	/**
-	 * Authors id
-	 *
-	 * @var int[]
-	 * @access private
-	 */
-	private $_authors_id = array();
+	protected $authors;
 
 	/**
 	 * Book's publisher
@@ -648,14 +585,6 @@ class Book_base extends MY_Model {
 	 * @access protected
 	 */
 	protected $publisher;
-
-	/**
-	 * Publisher ID
-	 *
-	 * @var int
-	 * @access private
-	 */
-	private $_publisher_id;
 
 	/**
 	 * Book's publication year
@@ -682,28 +611,12 @@ class Book_base extends MY_Model {
 	protected $language;
 
 	/**
-	 * Language ID
-	 *
-	 * @var int
-	 * @access private
-	 */
-	private $_language_id;
-
-	/**
 	 * Book's categories
 	 *
-	 * @var string[]
+	 * @var string
 	 * @access protected
 	 */
-	protected $categories = array();
-
-	/**
-	 * Categories IDs
-	 *
-	 * @var int[]
-	 * @access private
-	 */
-	private $_categories_id = array();
+	protected $categories;
 
 	/**
 	 * Constructor
@@ -728,28 +641,22 @@ class Book_base extends MY_Model {
 			$this->google_id,
 			$this->title,
 			$this->authors,
-			$this->_authors_id,
 			$this->publisher,
-			$this->_publisher_id,
 			$this->publication_year,
 			$this->pages,
 			$this->language,
-			$this->_language_id,
-			$this->categories,
-			$this->_categories_id
+			$this->categories
 		);
 	}
 
 	/**
 	 * Get ID
-	 * 
-	 * Return book's ID if setted or FALSE.
 	 *
-	 * @return int|false
+	 * @return int
 	 */
-	public function get_id()
+	public function get_ID()
 	{
-		return $this->_get('ID');
+		return $this->ID;
 	}
 
 	/**
@@ -778,11 +685,17 @@ class Book_base extends MY_Model {
 	 */
 	public function get_isbn()
 	{
-		if ($this->_get('ISBN_13') !== FALSE)
+		if (isset($this->ISBN_13))
 		{
-			return $this->_get('ISBN_13');
+			return $this->ISBN_13;
 		}
-		return $this->_get('ISBN_10');
+		
+		if (isset($this->ISBN_10))
+		{
+			return $this->ISBN_10;
+		}
+
+		return FALSE;
 	}
 
 	/**
@@ -816,18 +729,17 @@ class Book_base extends MY_Model {
 			$this->ISBN_13 = '978' . $value;
 		}
 
-		if ( ! isset($this->ISBN_13) AND ! isset($this->ISBN_10))
+		if ($this->get_isbn() === FALSE)
 		{
 			throw new Custom_exception(WRONG_ISBN);
 		}
 	}
 
 	/**
-	 * Works as "_required_properties()" with ISBN properties
+	 * Throws an exception if no ISBN code is setted
 	 *
 	 * @return void
 	 * @throws Custom_exception(REQUIRED_PROPERTY)
-	 * @see _required_properties()
 	 * @access protected
 	 */
 	protected function _required_isbn()
@@ -841,34 +753,36 @@ class Book_base extends MY_Model {
 	/**
 	 * Insert a book
 	 * 
-	 * Insert all properties (that should be setted) in the db.
-	 * 
 	 * @return void
 	 */
-	public function insert()
+	public function insert($book_data)
 	{
+		if ($book_data['ISBN_13'] !== NULL)
+		{
+			$this->set_isbn($book_data['ISBN_13']);
+		}
+		if ($book_data['ISBN_10'] !== NULL)
+		{
+			$this->set_isbn($book_data['ISBN_10']);
+		}
+		
 		$this->_required_isbn();
 
 		$this->load->database();
 
-		$this->_publisher_id = $this->_insert_info('publishers', $this->publisher);
-		$this->_language_id = $this->_insert_info('languages', $this->language);
-		$this->_authors_id = $this->_insert_info('authors', $this->authors);
-		$this->_categories_id = $this->_insert_info('categories', $this->categories);
-
 		$this->db->insert('books', array(
 			'ISBN'							=> cut_isbn( $this->get_isbn() ),
-			'google_id'					=> $this->google_id,
-			'title'							=> $this->title,
-			'publisher_id'			=> $this->_publisher_id,
-			'publication_year'	=> $this->publication_year,
-			'pages'							=> $this->pages,
-			'language_id'				=> $this->_language_id,
+			'google_id'					=> $book_data['google_id'],
+			'title'							=> $book_data['title'],
+			'publisher_id'			=> $this->_insert_info('publishers', $book_data['publisher']),
+			'publication_year'	=> $book_data['publication_year'],
+			'pages'							=> $book_data['pages'],
+			'language_id'				=> $this->_insert_info('languages', $book_data['language']),
 		));
 		$this->ID = $this->db->insert_id();
 
-		$this->_create_links('_authors_id', 'author_id', 'links_book_author');
-		$this->_create_links('_categories_id', 'category_id', 'links_book_category');
+		$this->_create_links($this->_insert_info('authors', $book_data['authors']), 'author_id', 'links_book_author');
+		$this->_create_links($this->_insert_info('categories', $book_data['categories']), 'category_id', 'links_book_category');
 	}
 
 	/**
@@ -887,11 +801,14 @@ class Book_base extends MY_Model {
 	 */
 	private function _insert_info($table, $value)
 	{
+		/*
+		 * What should I do with NULL values??
 		if (empty($value))
 		{
 			return NULL;
 			//return $this->_insert_info($table, 'Unknown');
 		}
+		*/
 
 		if ( ! is_array($value))
 		{
@@ -915,24 +832,23 @@ class Book_base extends MY_Model {
 	/**
 	 * Create book links (authors and categories).
 	 *
-	 * @param string  $property_name the name of the property
-	 *    contains an array of ID to insert
+	 * @param int[]  $id_array array of IDs
 	 * @param string  $field_name name of the field that
 	 *    contains this value
 	 * @param string  $table the table name where insert
 	 * @return void
+	 * @throws Custom_exception(REQUIRED_PROPERTY) if 
+	 *    $this->{$property_name} is not setted
 	 * @access private
 	 */
-	private function _create_links($property_name, $field_name, $table)
+	private function _create_links($id_array, $field_name, $table)
 	{
-		$this->_required_properties($property_name);
-
 		$data = array();
-		foreach ($this->{$property_name} as $item)
+		foreach ($id_array as $id_item)
 		{
 			$data[] = array(
 				'book_id'		=> $this->ID,
-				$field_name	=> $item,
+				$field_name	=> $id_item,
 			);
 		}
 		$this->db->insert_batch($table, $data);
@@ -949,14 +865,8 @@ class Book_base extends MY_Model {
 	 * on failure.
 	 * 
 	 * @param string  $field the field name
-	 * @throws Custom_exception(ID_NON_EXISTENT)
-	 *    if the ID does not exists
-	 * @throws Custom_exception(ISBN_NON_EXISTENT)
-	 *    if the ISBN code does not exists in local db
-	 * @throws Custom_exception(GOOGLE_ID_NON_EXISTENT)
-	 *    if the google ID does not exists
-	 * @throws Custom_exception(INVALID_PARAMETER)
-	 *    if the profided field does not match with any valid field
+	 * @throws Custom_exception(REQUIRED_PROPERTY) if
+	 *    $this->{$field} is not setted
 	 * @return void
 	 */
 	public function select_by($field)
@@ -971,17 +881,19 @@ class Book_base extends MY_Model {
 		}
 		else
 		{
-			$this->_required_properties($field);
+			if ( ! isset($this->{$field}))
+			{
+				throw new Custom_exception(REQUIRED_PROPERTY, $field);
+			}
 
 			$this->db->where($field, $this->{$field});
 		}
-		$this->db->limit(1);
-		$this->_set_by($field);
+		$this->_run_query($field);
 	}
 
 	/**
 	 * Set all object properties from db.
-	 * The db query must be composed previously.
+	 * The 'where' clause must be composed previously.
 	 *
 	 * *Throws an exception* if the query does not 
 	 * procudes any result.
@@ -998,10 +910,26 @@ class Book_base extends MY_Model {
 	 *    if the profided field does not match with any valid field
 	 * @access private
 	 */
-	private function _set_by($field)
+	private function _run_query($field)
 	{
-		$query = $this->db->get();
-		if ($query->num_rows == 0)
+		$this->db->select('
+			books.*,
+			publishers.name AS publisher_name,
+			languages.name AS language_name,
+			GROUP_CONCAT(authors.name SEPARATOR ", ") AS authors,
+			GROUP_CONCAT(categories.name SEPARATOR ", ") AS categories
+		', FALSE);
+
+		$this->db->join('publishers', 'books.publisher_id = publishers.ID');
+		$this->db->join('languages', 'books.language_id = languages.ID');
+		$this->db->join('links_book_author', 'books.ID = links_book_author.book_id');
+		$this->db->join('authors', 'links_book_author.author_id = authors.ID');
+		$this->db->join('links_book_category', 'books.ID = links_book_category.book_id');
+		$this->db->join('categories', 'links_book_category.category_id = categories.ID');
+		$this->db->limit(1);
+
+		$book = $this->db->get()->row();
+		if (empty($book->ID))
 		{
 			switch ($field)
 			{
@@ -1020,8 +948,6 @@ class Book_base extends MY_Model {
 			}
 		}
 
-		$book = $query->row();
-
 		$this->ID = (int) $book->ID;
 		$this->ISBN_13 = uncut_isbn_13($book->ISBN);
 		$this->ISBN_10 = uncut_isbn_10($book->ISBN);
@@ -1032,32 +958,11 @@ class Book_base extends MY_Model {
 		$this->pages = (int) $book->pages;
 		$this->_language_id = (int) $book->language_id;
 
-		$this->publisher = $this->_single_select('publishers', 'ID', $this->_publisher_id)->name;
-		$this->language = $this->_single_select('languages', 'ID', $this->_language_id)->name;
-		$this->_join('authors', 'links_book_author', 'author_id');
-		$this->_join('categories', 'links_book_category', 'category_id');
-	}
-	
-	/**
-	 * Join a book field by joining book ID with a property
-	 * ('categories' and 'authors') and sets the corresponding
-	 * property.
-	 *
-	 * @param string  $property property name
-	 * @param string  $join_table join table name
-	 * @param string  $join_field the field of "join_table" containing book ID
-	 * @return void
-	 * @access private 
-	 */
-	private function _join($property, $join_table, $join_field)
-	{
-		$this->db->from($property)->where('book_id', $this->ID)
-			->join($join_table, "{$property}.ID = {$join_table}.{$join_field}");
-		$results = $this->db->get()->result();
-		foreach ($results as $result)
-		{
-			$this->{$property}[] = $result->name;
-		}
+		$this->publisher = $book->publisher_name;
+		$this->language = $book->language_name;
+
+		$this->authors = $book->authors;
+		$this->categories = $book->categories;
 	}
 
 	/**
@@ -1170,7 +1075,7 @@ class Exchange_base extends MY_Model {
 
 	public function get_total_items()
 	{
-		return $this->_get('total_items');
+		return $this->total_items;
 	}
 
 	/**
@@ -1187,11 +1092,11 @@ class Exchange_base extends MY_Model {
 	/**
 	 * Get book id
 	 *
-	 * @return int|false
+	 * @return int
 	 */
 	public function get_book_id()
 	{
-		return $this->_get('book_id');
+		return $this->book_id;
 	}
 
 	/**
@@ -1224,9 +1129,6 @@ class Exchange_base extends MY_Model {
 	 */
 	protected function _insert($table, $properties = array())
 	{
-		$this->_required_properties($properties);
-		$this->_required_properties('user_id', 'book_id');
-
 		$clause = array(
 			'user_id'	=> $this->user_id,
 			'book_id'	=> $this->book_id,
@@ -1260,8 +1162,6 @@ class Exchange_base extends MY_Model {
 	 */
 	protected function _delete($table)
 	{
-		$this->_required_properties('book_id');
-
 		$this->_set_user_id();
 		return $this->db->delete($table, array(
 			'user_id'	=> $this->user_id,
@@ -1282,7 +1182,24 @@ class Exchange_base extends MY_Model {
 	{
 		$this->_set_total_items($table);
 		$start_index = $this->_get_start_index($page_number, ITEMS_PER_PAGE, $this->total_items);
-		return $this->db->get($table, ITEMS_PER_PAGE, $start_index)->result();
+		$this->db->from($table);
+		$this->db->join('books', "books.ID = {$table}.book_id");
+		$this->db->join('links_book_author', 'books.ID = links_book_author.book_id');
+		$this->db->join('authors', 'links_book_author.author_id = authors.ID');
+		$this->db->join('links_book_category', 'books.ID = links_book_category.book_id');
+		$this->db->join('categories', 'links_book_category.category_id = categories.ID');
+		$this->db->limit(ITEMS_PER_PAGE, $start_index);
+		return $this->db->get()->result();
+	}
+	private function _join($property, $join_table, $join_field)
+	{
+		$this->db->from($property)->where('book_id', $this->ID)
+			->join($join_table, "{$property}.ID = {$join_table}.{$join_field}");
+		$results = $this->db->get()->result();
+		foreach ($results as $result)
+		{
+			$this->{$property}[] = $result->name;
+		}
 	}
 }
 

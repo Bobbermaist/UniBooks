@@ -67,7 +67,7 @@ class Sell_model extends Exchange_base {
 	 */
 	public function get_price()
 	{
-		return $this->_get('price');
+		return $this->price;
 	}
 
 	/**
@@ -86,7 +86,7 @@ class Sell_model extends Exchange_base {
 
 	public function get_sells()
 	{
-		return $this->_get('sells');
+		return $this->sells;
 	}
 
 	/**
@@ -96,7 +96,7 @@ class Sell_model extends Exchange_base {
 	 */
 	public function get_description()
 	{
-		return $this->_get('description');
+		return $this->description;
 	}
 
 	/**

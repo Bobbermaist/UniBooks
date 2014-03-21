@@ -133,7 +133,7 @@ class Google_books {
   public function get_by_isbn($isbn)
   {
     $this->_get_service();
-    $this->set_search_key("isbn:$isbn");
+    $this->set_search_key("isbn:{$isbn}");
     $this->_list_volumes();
   }
 
@@ -151,6 +151,7 @@ class Google_books {
       'maxResults'  => 10,
     );
     $google_fetch = $this->_service->volumes->listVolumes($this->search_key, $opt_params);
+    var_dump($google_fetch);
     $this->volumes = $this->_array_format($google_fetch);
     $this->total_items = $google_fetch['totalItems'];
   }

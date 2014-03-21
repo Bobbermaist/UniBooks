@@ -184,7 +184,8 @@ class MY_Controller extends CI_Controller  {
 			{
 				if (empty($param_arr))
 				{
-					call_user_func($callback);
+					$this->{$property_name}->{$method_name}();
+					//call_user_func($callback);
 				}
 				else
 				{

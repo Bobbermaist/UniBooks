@@ -43,8 +43,6 @@ class User_model extends User_base {
 	 */
 	public function insert()
 	{
-		$this->_required_properties('user_name', 'password', 'email');
-		
 		$this->_set_confirm_code();
 		$this->_set_time();
 		$this->rights = UNCONFIRMED_ACCOUNT;

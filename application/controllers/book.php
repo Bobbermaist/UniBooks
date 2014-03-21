@@ -62,7 +62,9 @@ class Book extends MY_Controller {
 
 	public function result($isbn = 0)
 	{
-		$this->_try('Book_model', 'search_by_isbn', $isbn);
+		$this->_try('Book_model', 'set_isbn', $isbn);
+		$this->Book_model->search_by_isbn();
+		//$this->_try('Book_model', 'search_by_isbn');
 
 		if ($this->exception_code === NO_EXCEPTIONS)
 		{

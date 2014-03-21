@@ -202,6 +202,7 @@ class User extends MY_Controller {
 	public function sells($page = 1)
 	{
 		$this->load->model('Sell_model');
+		//$this->load->model('Book_model');
 		$this->load->library('pagination');
 
 		$this->_try('Sell_model', 'get_page', $page);
@@ -215,10 +216,11 @@ class User extends MY_Controller {
 			'div'	=> $this->pagination->create_links(),
 		));
 
-		$selling_books = $this->Sell_model->get_sells();
-		foreach ($selling_books as $book)
+		$sells = $this->Sell_model->get_sells();
+		var_dump($sells);
+		foreach ($sells as $sell)
 		{
-			$this->_set_view('book', $book);
+			$this->_set_view('book', $sell);
 		}
 
 		$this->_view();

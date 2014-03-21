@@ -1,45 +1,25 @@
   <ul>
     <li>Titolo: <?php echo $title; ?> </li>
 
-<?php if (count($authors) === 1 AND $authors[0] !== 'Unknown'): ?>
+    <li>Autori: <?php echo $authors; ?> </li>
 
-    <li>Autore: <?php echo $authors[0]; ?> </li>
-
-<?php elseif (count($authors) > 1): ?>
-
-    <li>Autori: <?php echo implode(', ', $authors); ?> </li>
-
-<?php endif;
-
-			if ($publisher !== 'Unknown'): ?>
+<?php if ($publisher): ?>
 
     <li>Editore: <?php echo $publisher; ?> </li>
 
-<?php endif;
-
-			if ($publication_year): ?>
+<?php endif; if ($publication_year): ?>
 
     <li>Anno: <?php echo $publication_year; ?> </li>
 
-<?php endif;
+<?php endif; if ($pages): ?>
 
-			if ($pages): ?>
+    <li>Pagine: <?php echo $pages; ?> </li>
 
-			<li>Pagine: <?php echo $pages; ?> </li>
+<?php endif; ?>
 
-<?php endif;
+    <li>Categorie: <?php echo $categories; ?> </li>
 
-			if (count($categories) === 1 AND $categories[0] !== 'Unknown'): ?>
-
-    <li>Categoria: <?php echo $categories[0] ?> </li>
-
-<?php elseif (count($categories) > 1): ?>
-
-    <li>Categorie: <?php echo implode(', ', $categories); ?> </li>
-
-<?php endif;
-
-			if ($language !== 'Unknown'): ?>
+<?php if ($language): ?>
 
     <li>Lingua: <?php echo $language; ?> </li>
 
