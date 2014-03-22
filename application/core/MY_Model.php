@@ -1176,8 +1176,10 @@ class Exchange_base extends MY_Model {
 	{
 		$this->_set_total_items($table);
 		$start_index = $this->_get_start_index($page_number, ITEMS_PER_PAGE, $this->total_items);
+		
 		$this->db->from($table);
 		$this->db->select('
+			DISTINCT
 			books_for_sale.*,
 			books.*,
 			publishers.name AS publisher_name,
@@ -1195,6 +1197,7 @@ class Exchange_base extends MY_Model {
 		$this->db->join('categories', 'links_book_category.category_id = categories.ID');
 		$this->db->where('books_for_sale.user_id', $this->user_id);
 		$this->db->limit(ITEMS_PER_PAGE, $start_index);
+		
 		return $this->db->get()->result_array();
 	}
 }
