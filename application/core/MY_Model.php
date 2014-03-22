@@ -500,9 +500,9 @@ class User_base extends MY_Model {
 	 */
 	public function read_session()
 	{
-		if ($this->get_id() === FALSE)
+		$this->load->library('session');
+		if ( ! isset($this->ID))
 		{
-			$this->load->library('session');
 			$userdata_id = $this->session->userdata('user_id');
 
 			if ($userdata_id === FALSE)
@@ -1063,7 +1063,7 @@ class Exchange_base extends MY_Model {
 		{
 			$user = new User_base;
 			$user->read_session();
-			$this->user_id = $user->get_id();
+			$this->user_id = $user->get_ID();
 		}
 	}
 
@@ -1177,23 +1177,25 @@ class Exchange_base extends MY_Model {
 		$this->_set_total_items($table);
 		$start_index = $this->_get_start_index($page_number, ITEMS_PER_PAGE, $this->total_items);
 		$this->db->from($table);
-		$this->db->join('books', "books.ID = {$table}.book_id");
+		$this->db->select('
+			books_for_sale.*,
+			books.*,
+			publishers.name AS publisher_name,
+			languages.name AS language_name,
+			GROUP_CONCAT(DISTINCT authors.name SEPARATOR ", ") AS authors,
+			GROUP_CONCAT(DISTINCT categories.name SEPARATOR ", ") AS categories
+		', FALSE);
+
+		$this->db->join('books', 'books_for_sale.book_id = books.ID');
+		$this->db->join('publishers', 'books.publisher_id = publishers.ID');
+		$this->db->join('languages', 'books.language_id = languages.ID');
 		$this->db->join('links_book_author', 'books.ID = links_book_author.book_id');
 		$this->db->join('authors', 'links_book_author.author_id = authors.ID');
 		$this->db->join('links_book_category', 'books.ID = links_book_category.book_id');
 		$this->db->join('categories', 'links_book_category.category_id = categories.ID');
+		$this->db->where('books_for_sale.user_id', $this->user_id);
 		$this->db->limit(ITEMS_PER_PAGE, $start_index);
-		return $this->db->get()->result();
-	}
-	private function _join($property, $join_table, $join_field)
-	{
-		$this->db->from($property)->where('book_id', $this->ID)
-			->join($join_table, "{$property}.ID = {$join_table}.{$join_field}");
-		$results = $this->db->get()->result();
-		foreach ($results as $result)
-		{
-			$this->{$property}[] = $result->name;
-		}
+		return $this->db->get()->result_array();
 	}
 }
 

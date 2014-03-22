@@ -46,7 +46,7 @@ class Book extends MY_Controller {
 			if ($search_key !== FALSE)
 			{
 				$this->_try('Book_model', 'set_isbn', $search_key);
-				if ($this->exception_code === NO_EXCEPTIONS)
+				if ($this->_caught_exception() === FALSE)
 				{
 					redirect("book/result/{$search_key}");
 				}
@@ -65,7 +65,7 @@ class Book extends MY_Controller {
 		$this->_try('Book_model', 'set_isbn', $isbn);
 		$this->_try('Book_model', 'search_by_isbn');
 
-		if ($this->exception_code === NO_EXCEPTIONS)
+		if ($this->_caught_exception() === FALSE)
 		{
 			$this->_set_view('book', $this->Book_model->get_array());
 		}

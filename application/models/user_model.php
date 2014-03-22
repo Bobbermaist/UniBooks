@@ -23,13 +23,10 @@ class User_model extends User_base {
 
 	/**
 	 * Constructor
-	 *
-	 * Loads the db
 	 */
 	public function __construct()
 	{
 		parent::__construct();
-		$this->load->database();
 	}
 
 	/**
@@ -43,6 +40,8 @@ class User_model extends User_base {
 	 */
 	public function insert()
 	{
+		$this->load->database();
+
 		$this->_set_confirm_code();
 		$this->_set_time();
 		$this->rights = UNCONFIRMED_ACCOUNT;
@@ -66,6 +65,8 @@ class User_model extends User_base {
 	 */
 	public function update()
 	{
+		$this->load->database();
+
 		$this->db->where('ID', $this->ID)->update('users', array(
 			'user_name'					=> $this->user_name,
 			'password'					=> $this->password,
@@ -428,6 +429,8 @@ class User_model extends User_base {
 	 */
 	private function _get_tmp()
 	{
+		$this->load->database();
+
 		$this->db->from('tmp_users')->where('user_id', $this->ID)->limit(1);
 		$query = $this->db->get();
 		if ($query->num_rows === 0)
@@ -467,6 +470,8 @@ class User_model extends User_base {
 	 */
 	private function _empty_tmp()
 	{
+		$this->load->database();
+		
 		$this->db->where('user_id', $this->ID)->delete('tmp_users');
 	}
 

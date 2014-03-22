@@ -141,7 +141,7 @@ class User extends MY_Controller {
 	{
 		$this->_try('User_model', 'ask_for_update_email', $this->input->post('email'));
 		$this->_set_message('email_update_request');
-		if ($this->exception_code === NO_EXCEPTIONS)
+		if ($this->_caught_exception() === FALSE)
 		{
 			$this->_send_confirm();
 		}
