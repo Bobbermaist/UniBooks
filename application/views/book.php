@@ -1,9 +1,11 @@
   <ul>
     <li>Titolo: <?php echo $title; ?> </li>
 
+<?php if ($authors): ?>
+
     <li>Autori: <?php echo $authors; ?> </li>
 
-<?php if ($publisher): ?>
+<?php endif; if ($publisher): ?>
 
     <li>Editore: <?php echo $publisher; ?> </li>
 
@@ -15,11 +17,11 @@
 
     <li>Pagine: <?php echo $pages; ?> </li>
 
-<?php endif; ?>
+<?php endif; if ($categories): ?>
 
     <li>Categorie: <?php echo $categories; ?> </li>
 
-<?php if ($language): ?>
+<?php endif; if ($language): ?>
 
     <li>Lingua: <?php echo $language; ?> </li>
 
@@ -28,9 +30,14 @@
     <li>ISBN 13: <?php echo $ISBN_13; ?> </li>
     <li>ISBN 10: <?php echo $ISBN_10; ?> </li>
 
-<?php if (isset($price)): ?>
+<?php if ( ! empty($price)): ?>
 
     <li>Prezzo di vendita: € <?php echo $price; ?> </li>
 
+<?php endif; if ( ! empty($description)): ?>
+
+    <li>Descrizione: <p> <?php echo $description; ?> </p> </li>
+
 <?php endif; ?>
+
   </ul>

@@ -845,6 +845,11 @@ class Book_base extends MY_Model {
 	 */
 	private function _create_links($id_array, $field_name, $table)
 	{
+		if ( ! is_array($id_array))
+		{
+			$id_array = array($id_array);
+		}
+
 		$data = array();
 		foreach ($id_array as $id_item)
 		{
@@ -890,7 +895,7 @@ class Book_base extends MY_Model {
 
 			$this->db->where("books.{$field}", $this->{$field});
 		}
-		$this->_run_query($field);
+		$this->_run_extract($field);
 	}
 
 	/**
@@ -912,7 +917,7 @@ class Book_base extends MY_Model {
 	 *    if the profided field does not match with any valid field
 	 * @access private
 	 */
-	private function _run_query($field)
+	private function _run_extract($field)
 	{
 		$this->compose_select($this->db);
 		$this->compose_join($this->db);
@@ -1215,7 +1220,7 @@ class Exchange_base extends MY_Model {
 	{
 		$this->_set_total_items($table);
 		$start_index = $this->_get_start_index($page_number, ITEMS_PER_PAGE, $this->total_items);
-		
+
 		$book_resource = new Book_base;
 
 		$this->db->select($table . '.*');
