@@ -465,7 +465,7 @@ class User_base extends MY_Model {
 		$this->db->from('users')->where($field, $this->{$field});
 		$res = $this->db->get();
 
-		if ($res->num_rows == 0)
+		if ($res->num_rows() === 0)
 		{
 			switch ($field)
 			{
@@ -781,8 +781,16 @@ class Book_base extends MY_Model {
 		));
 		$this->ID = $this->db->insert_id();
 
-		$this->_create_links($this->_insert_info('authors', $book_data['authors']), 'author_id', 'links_book_author');
-		$this->_create_links($this->_insert_info('categories', $book_data['categories']), 'category_id', 'links_book_category');
+		$this->_create_links(
+			$this->_insert_info('authors', $book_data['authors']),
+			'author_id',
+			'links_book_author'
+		);
+		$this->_create_links(
+			$this->_insert_info('categories', $book_data['categories']),
+			'category_id',
+			'links_book_category'
+		);
 	}
 
 	/**
@@ -880,7 +888,7 @@ class Book_base extends MY_Model {
 				throw new Custom_exception(REQUIRED_PROPERTY, $field);
 			}
 
-			$this->db->where($field, $this->{$field});
+			$this->db->where("books.{$field}", $this->{$field});
 		}
 		$this->_run_query($field);
 	}
@@ -906,23 +914,11 @@ class Book_base extends MY_Model {
 	 */
 	private function _run_query($field)
 	{
-		$this->db->select('
-			books.*,
-			publishers.name AS publisher_name,
-			languages.name AS language_name,
-			GROUP_CONCAT(DISTINCT authors.name SEPARATOR ", ") AS authors,
-			GROUP_CONCAT(DISTINCT categories.name SEPARATOR ", ") AS categories
-		', FALSE);
-
-		$this->db->join('publishers', 'books.publisher_id = publishers.ID');
-		$this->db->join('languages', 'books.language_id = languages.ID');
-		$this->db->join('links_book_author', 'books.ID = links_book_author.book_id');
-		$this->db->join('authors', 'links_book_author.author_id = authors.ID');
-		$this->db->join('links_book_category', 'books.ID = links_book_category.book_id');
-		$this->db->join('categories', 'links_book_category.category_id = categories.ID');
+		$this->compose_select($this->db);
+		$this->compose_join($this->db);
 		$this->db->limit(1);
 
-		$book = $this->db->get()->row();
+		$book = rebuild_codes_row( $this->db->get()->row() );
 		if (empty($book->ID))
 		{
 			switch ($field)
@@ -943,20 +939,63 @@ class Book_base extends MY_Model {
 		}
 
 		$this->ID = (int) $book->ID;
-		$this->ISBN_13 = uncut_isbn_13($book->ISBN);
-		$this->ISBN_10 = uncut_isbn_10($book->ISBN);
+		$this->ISBN_13 = $book->ISBN_13;
+		$this->ISBN_10 = $book->ISBN_10;
 		$this->google_id = $book->google_id;
 		$this->title = $book->title;
-		$this->_publisher_id = (int) $book->publisher_id;
 		$this->publication_year = (int) $book->publication_year;
 		$this->pages = (int) $book->pages;
-		$this->_language_id = (int) $book->language_id;
 
-		$this->publisher = $book->publisher_name;
-		$this->language = $book->language_name;
+		$this->publisher = $book->publisher;
+		$this->language = $book->language;
 
 		$this->authors = $book->authors;
 		$this->categories = $book->categories;
+	}
+
+	/**
+	 * Compose the 'select' part of the query
+	 * to extract a book.
+	 * 
+	 * Takes in input the CI db resource ($this->db)
+	 *
+	 * @param object  $db_resource $this->db
+	 * @return void
+	 */
+	public function compose_select($db_resource)
+	{
+		$db_resource->select('
+			books.ID,
+			books.ISBN,
+			books.google_id,
+			books.title,
+			books.publication_year,
+			books.pages,
+			publishers.name AS publisher,
+			languages.name AS language,
+			GROUP_CONCAT(DISTINCT authors.name SEPARATOR ", ") AS authors,
+			GROUP_CONCAT(DISTINCT categories.name SEPARATOR ", ") AS categories
+		', FALSE);
+	}
+
+	/**
+	 * Compose the 'join' part of the query
+	 * to extract a book.
+	 * 
+	 * Takes in input the CI db resource ($this->db)
+	 *
+	 * @param object  $db_resource $this->db
+	 * @return void
+	 */
+	public function compose_join($db_resource)
+	{
+		$db_resource
+			->join('links_book_author', 'books.ID = links_book_author.book_id')
+			->join('authors', 'authors.ID = links_book_author.author_id')
+			->join('links_book_category', 'books.ID = links_book_category.book_id')
+			->join('categories', 'categories.ID = links_book_category.category_id')
+			->join('publishers', 'publishers.ID = books.publisher_id')
+			->join('languages', 'languages.ID = books.language_id');
 	}
 
 	/**
@@ -1177,28 +1216,18 @@ class Exchange_base extends MY_Model {
 		$this->_set_total_items($table);
 		$start_index = $this->_get_start_index($page_number, ITEMS_PER_PAGE, $this->total_items);
 		
-		$this->db->from($table);
-		$this->db->select('
-			DISTINCT
-			books_for_sale.*,
-			books.*,
-			publishers.name AS publisher_name,
-			languages.name AS language_name,
-			GROUP_CONCAT(DISTINCT authors.name SEPARATOR ", ") AS authors,
-			GROUP_CONCAT(DISTINCT categories.name SEPARATOR ", ") AS categories
-		', FALSE);
+		$book_resource = new Book_base;
 
-		$this->db->join('books', 'books_for_sale.book_id = books.ID');
-		$this->db->join('publishers', 'books.publisher_id = publishers.ID');
-		$this->db->join('languages', 'books.language_id = languages.ID');
-		$this->db->join('links_book_author', 'books.ID = links_book_author.book_id');
-		$this->db->join('authors', 'links_book_author.author_id = authors.ID');
-		$this->db->join('links_book_category', 'books.ID = links_book_category.book_id');
-		$this->db->join('categories', 'links_book_category.category_id = categories.ID');
-		$this->db->where('books_for_sale.user_id', $this->user_id);
+		$this->db->select($table . '.*');
+		$book_resource->compose_select($this->db);
+		$this->db->from($table);
+		$this->db->join('books', "books.ID = {$table}.book_id");
+		$book_resource->compose_join($this->db);
+		$this->db->group_by('books.ID');
+		$this->db->having($table . '.user_id', $this->user_id);
 		$this->db->limit(ITEMS_PER_PAGE, $start_index);
-		
-		return $this->db->get()->result_array();
+
+		return rebuild_codes_results( $this->db->get()->result_array() );
 	}
 }
 

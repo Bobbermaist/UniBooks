@@ -125,5 +125,44 @@ function uncut_isbn_10( $code )
 	}
 }
 
+/**
+ * Rebuild ISBN_10 and ISBN_13 in a single fetched row
+ *
+ * @param	mixed  $book_data the book data fetched from db
+ * @return mixed  modified $book_data
+ * @access public 
+ */
+function rebuild_codes_row( &$book_data )
+{
+	if (is_object($book_data))
+	{
+		$book_data->ISBN_13 = uncut_isbn_13($book_data->ISBN);
+		$book_data->ISBN_10 = uncut_isbn_10($book_data->ISBN);
+	}
+	elseif (is_array($book_data))
+	{
+		$book_data['ISBN_13'] = uncut_isbn_13($book_data['ISBN']);
+		$book_data['ISBN_10'] = uncut_isbn_10($book_data['ISBN']);
+	}
+	return $book_data;
+}
+
+/**
+ * Rebuild ISBN_10 and ISBN_13 in multiple fetched rows
+ *
+ * @param	mixed[]  $books_data the books data fetched from db
+ * @return mixed[]  modified $books_data
+ * @access public 
+ */
+function rebuild_codes_results( &$books_data )
+{
+	$length = count($books_data);
+	for ($i=0; $i < $length; $i++)
+	{
+		rebuild_codes_row($books_data[$i]);
+	}
+	return $books_data;
+}
+
 /* End of file isbn_helper.php */
 /* Location: ./application/helpers/isbn_helper.php */ 

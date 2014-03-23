@@ -81,6 +81,8 @@ class MY_Controller extends CI_Controller  {
 		$this->output->set_header('Content-Type: text/html; charset=' . config_item('charset'));
 
 		$this->logged = $this->User_model->read_session();
+
+		$this->load->helper('debug');
 	}
 
 	public function __destruct()
