@@ -25,20 +25,9 @@ class Test extends MY_Controller {
 
 	public function index()
 	{
-		$this->prova(1, 2, 3, 4, 5);
-	}
-
-	public function prova($param0, $param1)
-	{
-		$parameters = array();
-		if (func_num_args() > 2)
-		{
-			for ($i=2; func_num_args() > $i; $i++)
-			{
-				$parameters[] = func_get_arg($i);
-			}
-		}
-		var_dump($parameters);
+		$this->load->model('Book_model');
+		$this->Book_model->set_id(1);
+		var_debug($this->Book_model->get_array());
 	}
 }
 

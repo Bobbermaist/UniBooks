@@ -194,6 +194,8 @@ define('BOOK_NOT_FOUND', 10022);
 
 /** If a request exceeds the maximum */
 define('REQUEST_OVERFLOW', 10023);
+/** If a request is under the minimum */
+define('REQUEST_UNDERFLOW', 10024);
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

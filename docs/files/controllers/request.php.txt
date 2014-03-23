@@ -28,62 +28,33 @@ class Request extends MY_Controller {
 	public function index()
 	{
 		$this->load->helper('form');
+		$this->load->library('form_validation');
+		$this->load->model('Book_model');
+
 		$this->_set_view('form/single_field', array(
-			'action'				=> 'book/search',
+			'action'				=> 'request/index',
 			'label'					=> 'Inserisci una richiesta per un libro',
 			'submit_name'		=> 'search_for_request',
-			'submit_value'	=> 'Cerca',
+			'submit_value'	=> 'Inserisci',
 			'input'					=> array(
-					'name'			=> 'search_key',
-					'maxlength'	=> '255',
+					'name'			=> 'isbn',
+					'maxlength'	=> '13',
 					'id'				=> 'search_for_request',
 			),
 		));
 
-		$this->_view();
-	}
-
-	public function complete()
-	{
-		$this->load->model('Book_model');
-
-		$book_id = $this->User_model->userdata('book_found');
-		if ($book_id !== FALSE)
+		if ($this->form_validation->run() === TRUE)
 		{
-			$this->Request_model->set_book_id($book_id);
-		}
-		else
-		{
-			show_error('Errore nell\'inserimento della richiesta');
+			$this->Book_model->set_isbn($this->input->post('isbn'));
+			$this->_try('Book_model', 'search_by_isbn');
+
+			$this->Request_model->set_book_id($this->Book_model->get_id());
+			$this->_try('Request_model', 'insert');
+
+			$this->_set_message('request_complete');
 		}
 
-		$this->User_model->del_userdata('book_found');
-
-		$this->_try('Request_model', 'insert');
-		$this->_set_message('request_complete');
-
-		$this->Book_model->set_id($book_id);
-		$this->_set_view('book', $this->Book_model->get_array());
-
 		$this->_view();
-	}
-
-	public function complete()
-	{
-		$this->load->model('Book_model');
-		$this->load->model('Request_model');
-
-		$book_id = $this->User_model->userdata('book_found');
-		if( $this->Request_model->insert($user_id, $book_id) )
-			$view_data = array('p' => 'Richiesta inserita con successo');
-		else
-			$view_data = array('p' => 'Hai gi&agrave; inserito una richiesta per questo libro');
-
-		$this->load->view('template/head');
-		$this->load->view('template/body');
-		$this->load->view('paragraphs', $view_data);
-		$this->load->view('book', $book_info);
-		$this->load->view('template/coda');
 	}
 
 	public function delete()

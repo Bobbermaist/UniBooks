@@ -205,6 +205,7 @@ class User extends MY_Controller {
 		$this->load->library('pagination');
 
 		$this->_try('Sell_model', 'get_page', $page);
+		$this->_set_message();
 
 		$config['base_url'] = site_url('user/sells');
 		$config['use_page_numbers'] = TRUE;
@@ -230,6 +231,7 @@ class User extends MY_Controller {
 		$this->load->library('pagination');
 
 		$this->_try('Request_model', 'get_page', $page);
+		$this->_set_message();
 
 		$config['base_url'] = site_url('user/requests');
 		$config['use_page_numbers'] = TRUE;

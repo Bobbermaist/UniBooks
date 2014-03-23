@@ -35,8 +35,7 @@ class MY_Controller extends CI_Controller  {
 	protected $logged;
 
 	/**
-	 * The "_try" method stores here the exception
-	 * code if an exception is catched.
+	 * *First* exception code catched by "_try" method.
 	 *
 	 * @var int
 	 * @access protected
@@ -44,8 +43,8 @@ class MY_Controller extends CI_Controller  {
 	protected $exception_code = NO_EXCEPTIONS;
 
 	/**
-	 * The "_try" method stores here the exception
-	 * messafe if an exception is catched.
+	 * *First* exception message catched
+	 * by the "_try" method.
 	 *
 	 * @var string
 	 * @access protected
@@ -55,7 +54,7 @@ class MY_Controller extends CI_Controller  {
 	/**
 	 * An array of all view names to be shown.
 	 *
-	 * @var array  (string)
+	 * @var string[]
 	 * @access private
 	 */
 	private $_view_names = array();
@@ -63,7 +62,7 @@ class MY_Controller extends CI_Controller  {
 	/**
 	 * An array of all view data to be showed.
 	 *
-	 * @var array  (mixed)
+	 * @var mixed[]
 	 * @access private
 	 */
 	private $_view_data = array();
@@ -82,6 +81,13 @@ class MY_Controller extends CI_Controller  {
 		$this->output->set_header('Content-Type: text/html; charset=' . config_item('charset'));
 
 		$this->logged = $this->User_model->read_session();
+
+		$this->load->helper('debug');
+	}
+
+	public function __destruct()
+	{
+		//var_dump($exception_code);
 	}
 
 	/**
@@ -122,7 +128,21 @@ class MY_Controller extends CI_Controller  {
 	}
 
 	/**
+	 * Return FALSE if no exceptions were catch
+	 * or int with first exception code caught
+	 *
+	 * @return int|false
+	 * @access protected
+	 */
+	protected function _caught_exception()
+	{
+		return ($this->exception_code === NO_EXCEPTIONS) ? FALSE : $this->exception_code;
+	}
+
+	/**
 	 * Executes a try - catch command through a callback.
+	 *
+	 * If an exception was previously catched does nothing;
 	 *
 	 * A model that may throws exception should be executed
 	 * with this method.
@@ -170,6 +190,10 @@ class MY_Controller extends CI_Controller  {
 	 */
 	protected function _try($property_name, $method_name)
 	{
+		if ($this->_caught_exception() !== FALSE)
+		{
+			return;
+		}
 		$callback = array($this->{$property_name}, $method_name);
 
 		$param_arr = array();
@@ -184,7 +208,8 @@ class MY_Controller extends CI_Controller  {
 			{
 				if (empty($param_arr))
 				{
-					call_user_func($callback);
+					$this->{$property_name}->{$method_name}();
+					//call_user_func($callback);
 				}
 				else
 				{
@@ -210,8 +235,6 @@ class MY_Controller extends CI_Controller  {
 	 * If an exception was previously catched
 	 * enqueue the exception message instead the
 	 * requested message.
-	 * After sets the *exception_message* to
-	 * NO_EXCEPTIONS.
 	 *
 	 * If $name parameter is FALSE (default)
 	 * won't load any message in case of the is
@@ -225,9 +248,9 @@ class MY_Controller extends CI_Controller  {
 	 */
 	protected function _set_message($name = FALSE)
 	{
-		if ($this->exception_code !== NO_EXCEPTIONS)
+		if ($this->_caught_exception() !== FALSE)
 		{
-			$this->_queue_exception_message();
+			$this->_enqueue_exception_message();
 		}
 		elseif ($name !== FALSE)
 		{
@@ -257,9 +280,9 @@ class MY_Controller extends CI_Controller  {
 	 */
 	protected function _redirect($controller, $default = 'user')
 	{
-		if ($this->exception_code !== NO_EXCEPTIONS)
+		if ($this->_caught_exception() !== FALSE)
 		{
-			$this->_queue_exception_message();
+			$this->_enqueue_exception_message();
 		}
 		else
 		{
@@ -281,16 +304,12 @@ class MY_Controller extends CI_Controller  {
 	 * @return void
 	 * @access private
 	 */
-	private function _queue_exception_message()
+	private function _enqueue_exception_message()
 	{
 		$this->_set_view('generic', array(
 			'p'		=> $this->exception_message,
 			'id'	=> 'error',
 		));
-		/*
-		$this->exception_code = NO_EXCEPTIONS;
-		unset($this->exception_message);
-		*/
 	}
 
 	/**

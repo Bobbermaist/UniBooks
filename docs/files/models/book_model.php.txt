@@ -81,50 +81,14 @@ class Book_model extends Book_base {
 				{
 					throw new Custom_exception(ISBN_NOT_FOUND);
 				}
-				$this->_set_from_google();
-				$this->insert();
+				$this->insert($this->google_books->volumes[0]);
+				$this->search_by_isbn();
 			}
 			else
 			{
 				throw $e;
 			}
 		}
-	}
-
-	/**
-	 * Set the object properties from google data.
-	 * The query to google_books library must be done before
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function _set_from_google()
-	{
-		$book_data = $this->google_books->volumes[0];
-
-		if ( ! isset($this->ISBN_13) AND $book_data['ISBN_13'] !== NULL)
-		{
-			$this->ISBN_13 = $book_data['ISBN_13'];
-		}
-		if ( ! isset($this->ISBN_10) AND $book_data['ISBN_10'] !== NULL)
-		{
-			$this->ISBN_10 = $book_data['ISBN_10'];
-		}
-		$this->google_id = $book_data['google_id'];
-		$this->title = $book_data['title'];
-		$this->authors = $book_data['authors'];
-		if ($book_data['publisher'] === NULL)
-		{
-			$this->publisher = $this->_get_publisher();
-		}
-		else
-		{
-			$this->publisher = $book_data['publisher'];
-		}
-		$this->publication_year = $book_data['publication_year'];
-		$this->pages = $book_data['pages'];
-		$this->language = $book_data['language'];
-		$this->categories = $book_data['categories'];
 	}
 }
 

@@ -128,19 +128,19 @@ class MY_Model extends CI_Model {
 	 * @param int  $items_per_page how many items shown per page
 	 * @param int|false  $total_items FALSE if don't want to control
 	 * @return int
-	 * @throws Custom_exception(INVALID_PARAMETER) if $page_number < 1
+	 * @throws Custom_exception(REQUEST_UNDERFLOW) if $page_number < 1
 	 * @throws Custom_exception(REQUEST_OVERFLOW) if
-	 *    $total_items parameter was setted and $start_index > $total_items
+	 *    $total_items parameter was setted and $start_index >= $total_items
 	 */
 	protected function _get_start_index($page_number, $items_per_page, $total_items = FALSE)
 	{
 		if ($page_number < 1)
 		{
-			throw new Custom_exception(INVALID_PARAMETER);
+			throw new Custom_exception(REQUEST_UNDERFLOW);
 		}
 		$start_index = ($page_number - 1) * $items_per_page;
 
-		if ($total_items !== FALSE AND $start_index > $total_items)
+		if ($total_items !== FALSE AND $start_index >= $total_items)
 		{
 			throw new Custom_exception(REQUEST_OVERFLOW);
 		}

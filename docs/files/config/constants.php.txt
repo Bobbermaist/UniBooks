@@ -72,6 +72,12 @@ define('ADMIN_RIGHTS', 3);
  */
 define('SALE_DESCRIPTION_LENGTH', 500);
 
+/**
+ * Items shown per page.
+ * E.g. user sells / requests
+ */
+define('ITEMS_PER_PAGE', 3);
+
 /*
 |--------------------------------------------------------------------------
 | Paths
@@ -185,6 +191,11 @@ define('EXISTING_EMAIL', 10020);
 define('ISBN_NOT_FOUND', 10021);
 /** A book cannot be found */
 define('BOOK_NOT_FOUND', 10022);
+
+/** If a request exceeds the maximum */
+define('REQUEST_OVERFLOW', 10023);
+/** If a request is under the minimum */
+define('REQUEST_UNDERFLOW', 10024);
 
 /* End of file constants.php */
 /* Location: ./application/config/constants.php */

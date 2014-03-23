@@ -67,6 +67,9 @@ class Welcome extends MY_Controller {
 		$this->_set_view('generic', array(
 			'p'	=> 'Area riservata: ' . anchor('admin', 'Admin area'),
 		));
+		$this->_set_view('generic', array(
+			'p'	=> '<a href="' . base_url('docs/index.html') . '"> <b>Documentazione</b> </a>',
+		));
 
 		$this->_view();
 	}

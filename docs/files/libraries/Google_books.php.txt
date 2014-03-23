@@ -133,7 +133,7 @@ class Google_books {
   public function get_by_isbn($isbn)
   {
     $this->_get_service();
-    $this->set_search_key("isbn:$isbn");
+    $this->set_search_key("isbn:{$isbn}");
     $this->_list_volumes();
   }
 
