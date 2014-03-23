@@ -249,7 +249,6 @@ class Migration_Db extends CI_Migration {
 	 *
 	 * @return void
 	 * @access private
-	 * @todo `name` field NULL or NOT NULL?
 	 */
 	private function authors_up()
 	{
@@ -315,7 +314,6 @@ class Migration_Db extends CI_Migration {
 	 *
 	 * @return void
 	 * @access private
-	 * @todo `name` field NULL or NOT NULL?
 	 */
 	private function publishers_up()
 	{
@@ -348,7 +346,6 @@ class Migration_Db extends CI_Migration {
 	 * 
 	 * @return void
 	 * @access private
-	 * @todo `name` field NULL or NOT NULL?
 	 */
 	private function categories_up()
 	{
@@ -414,7 +411,6 @@ class Migration_Db extends CI_Migration {
 	 *
 	 * @return void
 	 * @access private
-	 * @todo `name` field NULL or NOT NULL?
 	 */
 	private function languages_up()
 	{
