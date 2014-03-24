@@ -26,562 +26,562 @@ define('CHARSET', 'DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
  */
 class Migration_Db extends CI_Migration {
 
-	/**
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		$this->load->database();
-		parent::__construct();
-	}
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->load->database();
+        parent::__construct();
+    }
 
-	/**
-	 * Migration up.
-	 *
-	 * Creates all UniBooks tables
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-		$this->set_db_utf8();
-		$this->users_up();
-		$this->tmp_users_up();
-		$this->ci_sessions_up();
-		$this->languages_up();
-		$this->categories_up();
-		$this->publishers_up();
-		$this->authors_up();
-		$this->books_up();
-		$this->links_author_up();
-		$this->links_category_up();
-		$this->books_for_sale_up();
-		$this->books_requested_up();
-		$this->language_groups_up();
-		$this->publisher_codes_up();
-	}
+    /**
+     * Migration up.
+     *
+     * Creates all UniBooks tables
+     *
+     * @return void
+     */
+    public function up()
+    {
+        $this->set_db_utf8();
+        $this->users_up();
+        $this->tmp_users_up();
+        $this->ci_sessions_up();
+        $this->languages_up();
+        $this->categories_up();
+        $this->publishers_up();
+        $this->authors_up();
+        $this->books_up();
+        $this->links_author_up();
+        $this->links_category_up();
+        $this->books_for_sale_up();
+        $this->books_requested_up();
+        $this->language_groups_up();
+        $this->publisher_codes_up();
+    }
 
-	/**
-	 * Migration down.
-	 *
-	 * Drop all tables
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		$this->books_for_sale_down();
-		$this->books_requested_down();
-		$this->users_down();
-		$this->tmp_users_down();
-		$this->ci_sessions_down();
-		$this->links_author_down();
-		$this->links_category_down();
-		$this->books_down();
-		$this->languages_down();
-		$this->categories_down();
-		$this->publishers_down();
-		$this->authors_down();
-		$this->language_groups_down();
-		$this->publisher_codes_down();
-	}
+    /**
+     * Migration down.
+     *
+     * Drop all tables
+     *
+     * @return void
+     */
+    public function down()
+    {
+        $this->books_for_sale_down();
+        $this->books_requested_down();
+        $this->users_down();
+        $this->tmp_users_down();
+        $this->ci_sessions_down();
+        $this->links_author_down();
+        $this->links_category_down();
+        $this->books_down();
+        $this->languages_down();
+        $this->categories_down();
+        $this->publishers_down();
+        $this->authors_down();
+        $this->language_groups_down();
+        $this->publisher_codes_down();
+    }
 
-	/**
-	 * Sets the UTF-8 charset to the database 
-	 * indicated in config/database file.
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function set_db_utf8()
-	{
-		$query = 'ALTER DATABASE `' . $this->db->database . '`
-								CHARACTER SET utf8
-								DEFAULT CHARACTER SET utf8
-								COLLATE utf8_unicode_ci
-								DEFAULT COLLATE utf8_unicode_ci;';
-		$this->db->query($query);
-	}
+    /**
+     * Sets the UTF-8 charset to the database 
+     * indicated in config/database file.
+     *
+     * @return void
+     * @access private
+     */
+    private function set_db_utf8()
+    {
+        $query = 'ALTER DATABASE `' . $this->db->database . '`
+                                CHARACTER SET utf8
+                                DEFAULT CHARACTER SET utf8
+                                COLLATE utf8_unicode_ci
+                                DEFAULT COLLATE utf8_unicode_ci;';
+        $this->db->query($query);
+    }
 
-	/**
-	 * Creates `users` table and insert an admin account.
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function users_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `users` (
-							`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-							`user_name` varchar(20) NOT NULL DEFAULT '',
-							`password` varchar(60) NOT NULL DEFAULT '',
-							`email` varchar(64) NOT NULL DEFAULT '',
-							`registration_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-							`rights` tinyint(1) NOT NULL DEFAULT -1,
-							PRIMARY KEY (`ID`),
-							UNIQUE KEY `user_name` (`user_name`),
-							UNIQUE KEY `email` (`email`)
-						) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
-		$this->db->query($query);
+    /**
+     * Creates `users` table and insert an admin account.
+     *
+     * @return void
+     * @access private
+     */
+    private function users_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `users` (
+                            `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+                            `user_name` varchar(20) NOT NULL DEFAULT '',
+                            `password` varchar(60) NOT NULL DEFAULT '',
+                            `email` varchar(64) NOT NULL DEFAULT '',
+                            `registration_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+                            `rights` tinyint(1) NOT NULL DEFAULT -1,
+                            PRIMARY KEY (`ID`),
+                            UNIQUE KEY `user_name` (`user_name`),
+                            UNIQUE KEY `email` (`email`)
+                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+        $this->db->query($query);
 
-		// insert first admin user
-		$admin_rights = ADMIN_RIGHTS;
-		$query = "INSERT INTO `users` (`ID`, `user_name`, `password`, `email`, `registration_time`, `rights`)
-							VALUES (1, 'bob', '\$2a\$08\$HIRyxB7T8zohpHt25DPKSu.AOuUKkjl2ImYTj9NEanT/IYRR.JP3G',
-											'emilianobovetti@hotmail.it', NULL, $admin_rights);";
-		$this->db->query($query);
-	}
+        // insert first admin user
+        $admin_rights = ADMIN_RIGHTS;
+        $query = "INSERT INTO `users` (`ID`, `user_name`, `password`, `email`, `registration_time`, `rights`)
+                            VALUES (1, 'bob', '\$2a\$08\$HIRyxB7T8zohpHt25DPKSu.AOuUKkjl2ImYTj9NEanT/IYRR.JP3G',
+                                            'emilianobovetti@hotmail.it', NULL, $admin_rights);";
+        $this->db->query($query);
+    }
 
-	/**
-	 * Drops `users` table.
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function users_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `users`;');
-	}
+    /**
+     * Drops `users` table.
+     *
+     * @return void
+     * @access private
+     */
+    private function users_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `users`;');
+    }
 
-	/**
-	 * Creates `tmp_users` table.
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function tmp_users_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `tmp_users` (
-							`user_id` int(9) unsigned NOT NULL DEFAULT 0,
-							`confirm_code` varchar(15) DEFAULT NULL,
-							`tmp_email` varchar(64) DEFAULT NULL,
-							PRIMARY KEY (`user_id`)
-						) ENGINE=MyISAM " . CHARSET . ";";
-		$this->db->query($query);
-	}
+    /**
+     * Creates `tmp_users` table.
+     *
+     * @return void
+     * @access private
+     */
+    private function tmp_users_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `tmp_users` (
+                            `user_id` int(9) unsigned NOT NULL DEFAULT 0,
+                            `confirm_code` varchar(15) DEFAULT NULL,
+                            `tmp_email` varchar(64) DEFAULT NULL,
+                            PRIMARY KEY (`user_id`)
+                        ) ENGINE=MyISAM " . CHARSET . ";";
+        $this->db->query($query);
+    }
 
-	/**
-	 * Drops `tmp_users` table.
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function tmp_users_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `tmp_users`;');
-	}
+    /**
+     * Drops `tmp_users` table.
+     *
+     * @return void
+     * @access private
+     */
+    private function tmp_users_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `tmp_users`;');
+    }
 
-	/**
-	 * Creates `ci_sessions` table utilized to store 
-	 * CI session data.
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function ci_sessions_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `ci_sessions` (
-							`session_id` varchar(40) NOT NULL DEFAULT '0',
-							`ip_address` varchar(45) NOT NULL DEFAULT '0',
-							`user_agent` varchar(120) NOT NULL,
-							`last_activity` int(10) unsigned NOT NULL DEFAULT '0',
-							`user_data` text NOT NULL,
-							PRIMARY KEY (`session_id`),
-							KEY `last_activity_idx` (`last_activity`)
-						) ENGINE=MyISAM " . CHARSET . ";";
-		$this->db->query($query);
-	}
+    /**
+     * Creates `ci_sessions` table utilized to store 
+     * CI session data.
+     *
+     * @return void
+     * @access private
+     */
+    private function ci_sessions_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `ci_sessions` (
+                            `session_id` varchar(40) NOT NULL DEFAULT '0',
+                            `ip_address` varchar(45) NOT NULL DEFAULT '0',
+                            `user_agent` varchar(120) NOT NULL,
+                            `last_activity` int(10) unsigned NOT NULL DEFAULT '0',
+                            `user_data` text NOT NULL,
+                            PRIMARY KEY (`session_id`),
+                            KEY `last_activity_idx` (`last_activity`)
+                        ) ENGINE=MyISAM " . CHARSET . ";";
+        $this->db->query($query);
+    }
 
-	/**
-	 * Drops `ci_sessions` table.
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function ci_sessions_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `ci_sessions`;');
-	}
+    /**
+     * Drops `ci_sessions` table.
+     *
+     * @return void
+     * @access private
+     */
+    private function ci_sessions_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `ci_sessions`;');
+    }
 
-	/**
-	 * Creates `books` table.
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function books_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `books` (
-							`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-							`ISBN` varchar(9) NOT NULL DEFAULT '000000000',
-							`google_id` varchar(12) DEFAULT NULL,
-							`title` varchar(255) NOT NULL DEFAULT '',
-							`publisher_id` int(9) unsigned NOT NULL DEFAULT 0,
-							`publication_year` int(4) DEFAULT NULL,
-							`pages` int(5) unsigned DEFAULT NULL,
-							`language_id` int(5) unsigned NOT NULL DEFAULT 0,
-							PRIMARY KEY (`ID`),
-							UNIQUE KEY `ISBN` (`ISBN`),
-							UNIQUE KEY `google_id` (`google_id`),
-							FOREIGN KEY (publisher_id) REFERENCES publishers(ID)
-								ON DELETE NO ACTION
-								ON UPDATE NO ACTION,
-							FOREIGN KEY (language_id) REFERENCES languages(ID)
-								ON DELETE NO ACTION
-								ON UPDATE NO ACTION
-						) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
-		$this->db->query($query);
-	}
+    /**
+     * Creates `books` table.
+     *
+     * @return void
+     * @access private
+     */
+    private function books_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `books` (
+                            `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+                            `ISBN` varchar(9) NOT NULL DEFAULT '000000000',
+                            `google_id` varchar(12) DEFAULT NULL,
+                            `title` varchar(255) NOT NULL DEFAULT '',
+                            `publisher_id` int(9) unsigned NOT NULL DEFAULT 0,
+                            `publication_year` int(4) DEFAULT NULL,
+                            `pages` int(5) unsigned DEFAULT NULL,
+                            `language_id` int(5) unsigned NOT NULL DEFAULT 0,
+                            PRIMARY KEY (`ID`),
+                            UNIQUE KEY `ISBN` (`ISBN`),
+                            UNIQUE KEY `google_id` (`google_id`),
+                            FOREIGN KEY (publisher_id) REFERENCES publishers(ID)
+                                ON DELETE NO ACTION
+                                ON UPDATE NO ACTION,
+                            FOREIGN KEY (language_id) REFERENCES languages(ID)
+                                ON DELETE NO ACTION
+                                ON UPDATE NO ACTION
+                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+        $this->db->query($query);
+    }
 
-	/**
-	 * Drops `books` table.
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function books_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `books`;');
-	}
+    /**
+     * Drops `books` table.
+     *
+     * @return void
+     * @access private
+     */
+    private function books_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `books`;');
+    }
 
-	/**
-	 * Creates `authors` table.
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function authors_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `authors` (
-							`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-							`name` varchar(255) DEFAULT NULL,
-							PRIMARY KEY (`ID`),
-							UNIQUE KEY `author_name` (`name`)
-						) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
-		$this->db->query($query);
+    /**
+     * Creates `authors` table.
+     *
+     * @return void
+     * @access private
+     */
+    private function authors_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `authors` (
+                            `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+                            `name` varchar(255) DEFAULT NULL,
+                            PRIMARY KEY (`ID`),
+                            UNIQUE KEY `author_name` (`name`)
+                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+        $this->db->query($query);
 
-		$query = "INSERT INTO `authors` (`ID`, `name`)
-							VALUES (1, NULL);";
-		$this->db->query($query);
-	}
+        $query = "INSERT INTO `authors` (`ID`, `name`)
+                            VALUES (1, NULL);";
+        $this->db->query($query);
+    }
 
-	/**
-	 * Drops `authors` table
-	 * 
-	 * @return void
-	 * @access private
-	 */
-	private function authors_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `authors`;');
-	}
+    /**
+     * Drops `authors` table
+     * 
+     * @return void
+     * @access private
+     */
+    private function authors_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `authors`;');
+    }
 
-	/**
-	 * Creates `links_book_author` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function links_author_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `links_book_author` (
-							`book_id` int(9) unsigned NOT NULL  DEFAULT 0,
-							`author_id` int(9) unsigned NOT NULL DEFAULT 0,
-							UNIQUE KEY `author` (`book_id`, `author_id`),
-							FOREIGN KEY (book_id) REFERENCES books(ID)
-								ON DELETE CASCADE
-								ON UPDATE CASCADE,
-							FOREIGN KEY (author_id) REFERENCES authors(ID)
-								ON DELETE CASCADE
-								ON UPDATE CASCADE
-						) ENGINE=InnoDB " . CHARSET . ";";
-		$this->db->query($query);
-	}
+    /**
+     * Creates `links_book_author` table
+     *
+     * @return void
+     * @access private
+     */
+    private function links_author_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `links_book_author` (
+                            `book_id` int(9) unsigned NOT NULL  DEFAULT 0,
+                            `author_id` int(9) unsigned NOT NULL DEFAULT 0,
+                            UNIQUE KEY `author` (`book_id`, `author_id`),
+                            FOREIGN KEY (book_id) REFERENCES books(ID)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE,
+                            FOREIGN KEY (author_id) REFERENCES authors(ID)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE
+                        ) ENGINE=InnoDB " . CHARSET . ";";
+        $this->db->query($query);
+    }
 
-	/**
-	 * Drops `links_book_author` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function links_author_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `links_book_author`;');
-	}
+    /**
+     * Drops `links_book_author` table
+     *
+     * @return void
+     * @access private
+     */
+    private function links_author_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `links_book_author`;');
+    }
 
-	/**
-	 * Creates `publishers` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function publishers_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `publishers` (
-							`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-							`name` varchar(255) DEFAULT NULL,
-							PRIMARY KEY (`ID`),
-							UNIQUE KEY `publisher_name` (`name`)
-						) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
-		$this->db->query($query);
+    /**
+     * Creates `publishers` table
+     *
+     * @return void
+     * @access private
+     */
+    private function publishers_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `publishers` (
+                            `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+                            `name` varchar(255) DEFAULT NULL,
+                            PRIMARY KEY (`ID`),
+                            UNIQUE KEY `publisher_name` (`name`)
+                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+        $this->db->query($query);
 
-		$query = "INSERT INTO `publishers` (`ID`, `name`)
-							VALUES (1, NULL);";
-		$this->db->query($query);
-	}
+        $query = "INSERT INTO `publishers` (`ID`, `name`)
+                            VALUES (1, NULL);";
+        $this->db->query($query);
+    }
 
-	/**
-	 * Drops `publishers` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function publishers_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `publishers`;');
-	}
+    /**
+     * Drops `publishers` table
+     *
+     * @return void
+     * @access private
+     */
+    private function publishers_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `publishers`;');
+    }
 
-	/**
-	 * Creates `categories` table
-	 * 
-	 * @return void
-	 * @access private
-	 */
-	private function categories_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `categories` (
-							`ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-							`name` varchar(255) DEFAULT NULL,
-							PRIMARY KEY (`ID`),
-							UNIQUE KEY `category_name` (`name`)
-						) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
-		$this->db->query($query);
+    /**
+     * Creates `categories` table
+     * 
+     * @return void
+     * @access private
+     */
+    private function categories_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `categories` (
+                            `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+                            `name` varchar(255) DEFAULT NULL,
+                            PRIMARY KEY (`ID`),
+                            UNIQUE KEY `category_name` (`name`)
+                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+        $this->db->query($query);
 
-		$query = "INSERT INTO `categories` (`ID`, `name`)
-							VALUES (1, NULL);";
-		$this->db->query($query);
-	}
+        $query = "INSERT INTO `categories` (`ID`, `name`)
+                            VALUES (1, NULL);";
+        $this->db->query($query);
+    }
 
-	/** 
-	 * Drops `categories` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function categories_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `categories`;');
-	}
+    /** 
+     * Drops `categories` table
+     *
+     * @return void
+     * @access private
+     */
+    private function categories_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `categories`;');
+    }
 
-	/**
-	 * Creates `links_book_category` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function links_category_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `links_book_category` (
-							`book_id` int(9) unsigned NOT NULL  DEFAULT 0,
-							`category_id` int(9) unsigned NOT NULL DEFAULT 0,
-							UNIQUE KEY `category` (`book_id`, `category_id`),
-							FOREIGN KEY (book_id) REFERENCES books(ID)
-								ON DELETE CASCADE
-								ON UPDATE CASCADE,
-							FOREIGN KEY (category_id) REFERENCES categories(ID)
-								ON DELETE CASCADE
-								ON UPDATE CASCADE
-						) ENGINE=InnoDB " . CHARSET . ";";
-		$this->db->query($query);
-	}
+    /**
+     * Creates `links_book_category` table
+     *
+     * @return void
+     * @access private
+     */
+    private function links_category_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `links_book_category` (
+                            `book_id` int(9) unsigned NOT NULL  DEFAULT 0,
+                            `category_id` int(9) unsigned NOT NULL DEFAULT 0,
+                            UNIQUE KEY `category` (`book_id`, `category_id`),
+                            FOREIGN KEY (book_id) REFERENCES books(ID)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE,
+                            FOREIGN KEY (category_id) REFERENCES categories(ID)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE
+                        ) ENGINE=InnoDB " . CHARSET . ";";
+        $this->db->query($query);
+    }
 
-	/**
-	 * Drops `links_book_category` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function links_category_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `links_book_category`;');
-	}
+    /**
+     * Drops `links_book_category` table
+     *
+     * @return void
+     * @access private
+     */
+    private function links_category_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `links_book_category`;');
+    }
 
-	/**
-	 * Creates `languages` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function languages_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `languages` (
-							`ID` int(5) unsigned NOT NULL AUTO_INCREMENT,
-							`name` varchar(255) DEFAULT NULL,
-							PRIMARY KEY (`ID`),
-							UNIQUE KEY `language_name` (`name`)
-						) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
-		$this->db->query($query);
+    /**
+     * Creates `languages` table
+     *
+     * @return void
+     * @access private
+     */
+    private function languages_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `languages` (
+                            `ID` int(5) unsigned NOT NULL AUTO_INCREMENT,
+                            `name` varchar(255) DEFAULT NULL,
+                            PRIMARY KEY (`ID`),
+                            UNIQUE KEY `language_name` (`name`)
+                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+        $this->db->query($query);
 
-		$query = "INSERT INTO `languages` (`ID`, `name`)
-							VALUES (1, NULL);";
-		$this->db->query($query);
-	}
+        $query = "INSERT INTO `languages` (`ID`, `name`)
+                            VALUES (1, NULL);";
+        $this->db->query($query);
+    }
 
-	/**
-	 * Drops `languages` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function languages_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `languages`;');
-	}
+    /**
+     * Drops `languages` table
+     *
+     * @return void
+     * @access private
+     */
+    private function languages_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `languages`;');
+    }
 
-	/**
-	 * Creates `books_for_sale` table
-	 *
-	 * VARCHAR(500) requires MySQL 5.0.3
-	 * @return void
-	 * @access private
-	 */
-	private function books_for_sale_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `books_for_sale` (
-							`user_id` int(9) unsigned NOT NULL DEFAULT 0,
-							`book_id` int(9) unsigned NOT NULL DEFAULT 0,
-							`price` float(4,2) NOT NULL DEFAULT '0.00',
-							`description` VARCHAR(" . SALE_DESCRIPTION_LENGTH . ") DEFAULT NULL,
-							UNIQUE KEY `selling` (`user_id`, `book_id`),
-							FOREIGN KEY (user_id) REFERENCES users(ID)
-								ON DELETE CASCADE
-								ON UPDATE CASCADE,
-							FOREIGN KEY (book_id) REFERENCES books(ID)
-								ON DELETE CASCADE
-								ON UPDATE CASCADE
-						) ENGINE=InnoDB " . CHARSET . ";";
-		$this->db->query($query);
-	}
+    /**
+     * Creates `books_for_sale` table
+     *
+     * VARCHAR(500) requires MySQL 5.0.3
+     * @return void
+     * @access private
+     */
+    private function books_for_sale_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `books_for_sale` (
+                            `user_id` int(9) unsigned NOT NULL DEFAULT 0,
+                            `book_id` int(9) unsigned NOT NULL DEFAULT 0,
+                            `price` float(4,2) NOT NULL DEFAULT '0.00',
+                            `description` VARCHAR(" . SALE_DESCRIPTION_LENGTH . ") DEFAULT NULL,
+                            UNIQUE KEY `selling` (`user_id`, `book_id`),
+                            FOREIGN KEY (user_id) REFERENCES users(ID)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE,
+                            FOREIGN KEY (book_id) REFERENCES books(ID)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE
+                        ) ENGINE=InnoDB " . CHARSET . ";";
+        $this->db->query($query);
+    }
 
-	/**
-	 * Drops `books_for_sale` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function books_for_sale_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `books_for_sale`;');
-	}
+    /**
+     * Drops `books_for_sale` table
+     *
+     * @return void
+     * @access private
+     */
+    private function books_for_sale_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `books_for_sale`;');
+    }
 
-	/**
-	 * Creates `books_requested` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function books_requested_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `books_requested` (
-							`user_id` int(9) unsigned NOT NULL DEFAULT 0,
-							`book_id` int(9) unsigned NOT NULL DEFAULT 0,
-							FOREIGN KEY (user_id) REFERENCES users(ID)
-								ON DELETE CASCADE
-								ON UPDATE CASCADE,
-							FOREIGN KEY (book_id) REFERENCES books(ID)
-								ON DELETE CASCADE
-								ON UPDATE CASCADE
-						) ENGINE=InnoDB " . CHARSET . ";";
-		$this->db->query($query);
-	}
+    /**
+     * Creates `books_requested` table
+     *
+     * @return void
+     * @access private
+     */
+    private function books_requested_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `books_requested` (
+                            `user_id` int(9) unsigned NOT NULL DEFAULT 0,
+                            `book_id` int(9) unsigned NOT NULL DEFAULT 0,
+                            FOREIGN KEY (user_id) REFERENCES users(ID)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE,
+                            FOREIGN KEY (book_id) REFERENCES books(ID)
+                                ON DELETE CASCADE
+                                ON UPDATE CASCADE
+                        ) ENGINE=InnoDB " . CHARSET . ";";
+        $this->db->query($query);
+    }
 
-	/**
-	 * Drops `books_requested` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function books_requested_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `books_requested`;');
-	}
+    /**
+     * Drops `books_requested` table
+     *
+     * @return void
+     * @access private
+     */
+    private function books_requested_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `books_requested`;');
+    }
 
-	/**
-	 * Creates and populate `language_groups` table
-	 * 
-	 * Populates from ./application/migrations/populate_language_groups.sql
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function language_groups_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `language_groups` (
-							`code` varchar(5) NOT NULL DEFAULT '0',
-							`name` varchar(128) NOT NULL DEFAULT '',
-							PRIMARY KEY (`code`)
-						) ENGINE=InnoDB " . CHARSET . ";";
-		$this->db->query($query);
-		$pop_path = APPPATH . 'migrations/populate_language_groups.sql';
-		$pop_open = fopen($pop_path, 'r');
-		$populate = fread($pop_open, filesize($pop_path));
-		fclose($pop_open);
-		$this->db->query($populate);
-	}
+    /**
+     * Creates and populate `language_groups` table
+     * 
+     * Populates from ./application/migrations/populate_language_groups.sql
+     *
+     * @return void
+     * @access private
+     */
+    private function language_groups_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `language_groups` (
+                            `code` varchar(5) NOT NULL DEFAULT '0',
+                            `name` varchar(128) NOT NULL DEFAULT '',
+                            PRIMARY KEY (`code`)
+                        ) ENGINE=InnoDB " . CHARSET . ";";
+        $this->db->query($query);
+        $pop_path = APPPATH . 'migrations/populate_language_groups.sql';
+        $pop_open = fopen($pop_path, 'r');
+        $populate = fread($pop_open, filesize($pop_path));
+        fclose($pop_open);
+        $this->db->query($populate);
+    }
 
-	/**
-	 * Drops `language_groups` table
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function language_groups_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `language_groups`;');
-	}
+    /**
+     * Drops `language_groups` table
+     *
+     * @return void
+     * @access private
+     */
+    private function language_groups_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `language_groups`;');
+    }
 
-	/**
-	 * Creates and populate `publisher_codes` table
-	 * 
-	 * Populates first from ./application/migrations/populate_publisher_codes_from_wikipedia.sql
-	 * and then from ./application/migrations/populate_publisher_codes_from_books-by-isbn.com.sql
-	 *
-	 * so the second population file will overwrite the data of the first one
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function publisher_codes_up()
-	{
-		$query = "CREATE TABLE IF NOT EXISTS `publisher_codes` (
-							`code` varchar(7) NOT NULL DEFAULT '0',
-							`name` varchar(255) NOT NULL DEFAULT '',
-							PRIMARY KEY (`code`)
-						) ENGINE=InnoDB " . CHARSET . ";";
-		$this->db->query($query);
-		$pop_path = APPPATH . 'migrations/populate_publisher_codes_from_wikipedia.sql';
-		$pop_open = fopen($pop_path, 'r');
-		$populate_from_wikipedia = fread($pop_open, filesize($pop_path));
-		fclose($pop_open);
-		$pop_path = APPPATH . 'migrations/populate_publisher_codes_from_books-by-isbn.com.sql';
-		$pop_open = fopen($pop_path, 'r');
-		$populate_from_books = fread($pop_open, filesize($pop_path));
-		fclose($pop_open);
+    /**
+     * Creates and populate `publisher_codes` table
+     * 
+     * Populates first from ./application/migrations/populate_publisher_codes_from_wikipedia.sql
+     * and then from ./application/migrations/populate_publisher_codes_from_books-by-isbn.com.sql
+     *
+     * so the second population file will overwrite the data of the first one
+     *
+     * @return void
+     * @access private
+     */
+    private function publisher_codes_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `publisher_codes` (
+                            `code` varchar(7) NOT NULL DEFAULT '0',
+                            `name` varchar(255) NOT NULL DEFAULT '',
+                            PRIMARY KEY (`code`)
+                        ) ENGINE=InnoDB " . CHARSET . ";";
+        $this->db->query($query);
+        $pop_path = APPPATH . 'migrations/populate_publisher_codes_from_wikipedia.sql';
+        $pop_open = fopen($pop_path, 'r');
+        $populate_from_wikipedia = fread($pop_open, filesize($pop_path));
+        fclose($pop_open);
+        $pop_path = APPPATH . 'migrations/populate_publisher_codes_from_books-by-isbn.com.sql';
+        $pop_open = fopen($pop_path, 'r');
+        $populate_from_books = fread($pop_open, filesize($pop_path));
+        fclose($pop_open);
 
-		$this->db->query($populate_from_wikipedia);
-		$this->db->query($populate_from_books);
-	}
+        $this->db->query($populate_from_wikipedia);
+        $this->db->query($populate_from_books);
+    }
 
-	/**
-	 * Drops table `publisher_codes`
-	 *
-	 * @return void
-	 * @access private
-	 */
-	private function publisher_codes_down()
-	{
-		$this->db->query('DROP TABLE IF EXISTS `publisher_codes`;');
-	}
+    /**
+     * Drops table `publisher_codes`
+     *
+     * @return void
+     * @access private
+     */
+    private function publisher_codes_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `publisher_codes`;');
+    }
 }
 
 // END Migration_Db class

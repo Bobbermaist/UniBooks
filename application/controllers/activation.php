@@ -18,19 +18,19 @@
  */
 class Activation extends MY_Controller {
 
-	public function __construct()
-	{
-		parent::__construct();
-	}
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
-	public function index($id = NULL, $activation_key = NULL)
-	{
-		$this->User_model->set_id($id);
-		$this->_try('User_model', 'activate', $activation_key);
-		$this->_set_message('activation_complete');
+    public function index($id = NULL, $activation_key = NULL)
+    {
+        $this->User_model->set_id($id);
+        $this->_try('User_model', 'activate', $activation_key);
+        $this->_set_message('activation_complete');
 
-		$this->_view();
-	}
+        $this->_view();
+    }
 }
 
 // END Activation class

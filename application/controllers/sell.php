@@ -18,50 +18,50 @@
  */
 class Sell extends MY_Controller {
 
-	public function __construct()
-	{
-		parent::__construct();
-		$this->_restrict_area(USER_RIGHTS, 'sell');
-		$this->load->model('Sell_model');
-	}
+    public function __construct()
+    {
+        parent::__construct();
+        $this->_restrict_area(USER_RIGHTS, 'sell');
+        $this->load->model('Sell_model');
+    }
 
-	public function index()
-	{
-		$this->load->helper('form');
-		$this->load->library('form_validation');
-		$this->load->model('Book_model');
+    public function index()
+    {
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+        $this->load->model('Book_model');
 
-		$this->_set_view('form/sell_book', array(
-			'action'			=> 'sell/index',
-			'isbn'				=> $this->input->post('isbn'),
-			'price'				=> $this->input->post('price'),
-			'description'	=> $this->input->post('description'),
-		));
+        $this->_set_view('form/sell_book', array(
+            'action'            => 'sell/index',
+            'isbn'              => $this->input->post('isbn'),
+            'price'             => $this->input->post('price'),
+            'description'   => $this->input->post('description'),
+        ));
 
-		if ($this->form_validation->run() === TRUE)
-		{
-			$this->Book_model->set_isbn($this->input->post('isbn'));
-			$this->_try('Book_model', 'search_by_isbn');
+        if ($this->form_validation->run() === TRUE)
+        {
+            $this->Book_model->set_isbn($this->input->post('isbn'));
+            $this->_try('Book_model', 'search_by_isbn');
 
-			$this->Sell_model->set_book_id($this->Book_model->get_id());
-			$this->Sell_model->set_price($this->input->post('price'));
-			$this->Sell_model->set_description($this->input->post('description'));
-			$this->_try('Sell_model', 'insert');
+            $this->Sell_model->set_book_id($this->Book_model->get_id());
+            $this->Sell_model->set_price($this->input->post('price'));
+            $this->Sell_model->set_description($this->input->post('description'));
+            $this->_try('Sell_model', 'insert');
 
-			$this->_set_message('sell_complete');
-		}
+            $this->_set_message('sell_complete');
+        }
 
-		$this->_view();
-	}
+        $this->_view();
+    }
 
-	public function delete()
-	{
-		$this->Sell_model->set_book_id($this->input->post('book_id'));
-		$this->_try('Sell_model', 'delete');
-		$this->_set_message('sell_delete');
+    public function delete()
+    {
+        $this->Sell_model->set_book_id($this->input->post('book_id'));
+        $this->_try('Sell_model', 'delete');
+        $this->_set_message('sell_delete');
 
-		$this->_view();
-	}
+        $this->_view();
+    }
 }
 
 // END Sell class

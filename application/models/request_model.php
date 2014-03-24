@@ -21,71 +21,71 @@
  */
 class Request_model extends Exchange_base {
 
-	/**
-	 * All user requests
-	 * 
-	 * @var array
-	 * @access protected
-	 */
-	protected $requests = array();
+    /**
+     * All user requests
+     * 
+     * @var array
+     * @access protected
+     */
+    protected $requests = array();
 
-	/**
-	 * Constructor, loads db and sets user_id from session.
-	 *
-	 * @return void
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-		$this->load->database();
-		$this->_set_user_id();
-	}
+    /**
+     * Constructor, loads db and sets user_id from session.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->database();
+        $this->_set_user_id();
+    }
 
-	public function get_requests()
-	{
-		return $this->requests;
-	}
+    public function get_requests()
+    {
+        return $this->requests;
+    }
 
-	/**
-	 * Insert method.
-	 * See the Exchange_base class in ./application/core/MY_Model.php
-	 * for _insert method.
-	 *
-	 * @return void
-	 */
-	public function insert()
-	{
-		$this->_insert('books_requested');
-	}
+    /**
+     * Insert method.
+     * See the Exchange_base class in ./application/core/MY_Model.php
+     * for _insert method.
+     *
+     * @return void
+     */
+    public function insert()
+    {
+        $this->_insert('books_requested');
+    }
 
-	/**
-	 * Get "a page" of requests.
-	 * The number of requests in a page is defined in ITEMS_PER_PAGE
-	 * constant.
-	 *
-	 * @param int  $page_number must be > 1
-	 * @return void
-	 */
-	public function get_page($page_number)
-	{
-		$this->requests = $this->_get_page($page_number, 'books_requested');
-	}
+    /**
+     * Get "a page" of requests.
+     * The number of requests in a page is defined in ITEMS_PER_PAGE
+     * constant.
+     *
+     * @param int  $page_number must be > 1
+     * @return void
+     */
+    public function get_page($page_number)
+    {
+        $this->requests = $this->_get_page($page_number, 'books_requested');
+    }
 
-	/**
-	 * Delete a row from `books_requested`,
-	 * user_id and book_id properties must be setted.
-	 *
-	 * @return void
-	 * @throws Custom_exception(REQUEST_NON_EXISTENT) if 
-	 *    the request does not exist
-	 */
-	public function delete()
-	{
-		if ( ! $this->_delete('books_requested'))
-		{
-			throw new Custom_exception(REQUEST_NON_EXISTENT);
-		}
-	}
+    /**
+     * Delete a row from `books_requested`,
+     * user_id and book_id properties must be setted.
+     *
+     * @return void
+     * @throws Custom_exception(REQUEST_NON_EXISTENT) if 
+     *    the request does not exist
+     */
+    public function delete()
+    {
+        if ( ! $this->_delete('books_requested'))
+        {
+            throw new Custom_exception(REQUEST_NON_EXISTENT);
+        }
+    }
 }
 
 // END Request_model class

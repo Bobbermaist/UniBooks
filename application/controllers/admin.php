@@ -18,20 +18,20 @@
  */
 class Admin extends MY_Controller {
 
-	public function __construct()
-	{
-		parent::__construct();
-		$this->_restrict_area(ADMIN_RIGHTS, 'admin/index');
-	}
+    public function __construct()
+    {
+        parent::__construct();
+        $this->_restrict_area(ADMIN_RIGHTS, 'admin/index');
+    }
 
-	public function index()
-	{
-		$this->_set_view('generic', array(
-			'p'	=> 'Benvenuto, amministratore <b>' . $this->User_model->user_name() . '</b>!'
-		));
+    public function index()
+    {
+        $this->_set_view('generic', array(
+            'p' => 'Benvenuto, amministratore <b>' . $this->User_model->user_name() . '</b>!'
+        ));
 
-		$this->_view();
-	}
+        $this->_view();
+    }
 }
 
 // END Admin class

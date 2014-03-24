@@ -21,12 +21,12 @@
 
 function var_debug( $var )
 {
-	$backtrace = debug_backtrace();
-	echo "<b>var_debug()</b><br>\n",
-				'Caller file: ', $backtrace[0]['file'], "<br>\n",
-				'Caller line: ', $backtrace[0]['line'], "<br><br>\n\n";
-	var_dump($var);
-	echo "<br>\n<b>end</b>\n\n";
+    $backtrace = debug_backtrace();
+    echo "<b>var_debug()</b><br>\n",
+                'Caller file: ', $backtrace[0]['file'], "<br>\n",
+                'Caller line: ', $backtrace[0]['line'], "<br><br>\n\n";
+    var_dump($var);
+    echo "<br>\n<b>end</b>\n\n";
 }
 
 /* End of file debug_helper.php */
