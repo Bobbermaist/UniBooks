@@ -10,7 +10,7 @@
  */
 
 /**
- * UniBooks Welcome class.
+ * Welcome controller.
  *
  * @package UniBooks
  * @category Controllers

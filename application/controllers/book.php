@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks Book class.
+ * Book controller.
+ *
+ * Deals with the book extraction.
  *
  * @package UniBooks
  * @category Controllers

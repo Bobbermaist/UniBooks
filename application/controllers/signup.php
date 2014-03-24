@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks Signup class.
+ * Signup controller.
+ *
+ * Sign up to Unibooks.
  *
  * @package UniBooks
  * @category Controllers

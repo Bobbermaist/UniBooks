@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks Test class.
+ * Test controller.
+ *
+ * Just a test controller.
  *
  * @package UniBooks
  * @category Controllers

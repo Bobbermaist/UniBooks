@@ -10,13 +10,13 @@
  */
 
 /**
- * UniBooks MY_Model class.
+ * MY_Model class.
  *
  * Extends CI_Model class and is extended
  * by other application models.
  *
  * @package UniBooks
- * @category Models
+ * @category Core
  * @author Emiliano Bovetti
  */
 class MY_Model extends CI_Model {
@@ -151,7 +151,7 @@ class MY_Model extends CI_Model {
 // END MY_Model class
 
 /**
- * UniBooks User_base class.
+ * User_base class.
  *
  * Is extended by User_model class and
  * contains all user properties and
@@ -247,20 +247,13 @@ class User_base extends MY_Model {
 
     /**
      * Set ID method.
-     *
-     * Sets the ID property with the $value parameter
-     * and then retrieve other properties from `users` table.
-     *
-     * If not exists the select_by method will *throw an exception*
      * 
      * @param int  $value the ID value to set
      * @return void
-     * @see select_by method for exceptions thrown
      */
     public function set_ID($value)
     {
         $this->ID = (int) $value;
-        $this->select_by('ID');
     }
 
     /**
@@ -444,7 +437,7 @@ class User_base extends MY_Model {
      *
      * @param string  $field the field name
      * @return void
-     * @throws Custom_exception(REQUIRED_PROPERTY if
+     * @throws Custom_exception(REQUIRED_PROPERTY) if
      *    $this->{$field} is not setted
      * @throws Custom_exception(ID_NON_EXISTENT) if the
      *    ID does not exists
@@ -462,7 +455,7 @@ class User_base extends MY_Model {
             throw new Custom_exception(REQUIRED_PROPERTY, $field);
         }
 
-        $this->db->from('users')->where($field, $this->{$field});
+        $this->db->from('users')->where($field, $this->{$field})->limit(1);
         $res = $this->db->get();
 
         if ($res->num_rows() === 0)
@@ -510,6 +503,7 @@ class User_base extends MY_Model {
                 return FALSE;
             }
             $this->set_id($userdata_id);
+            $this->select_by('ID');
         }
         // ID property is setted, return TRUE
         return TRUE;
@@ -519,7 +513,7 @@ class User_base extends MY_Model {
 // END User_base class
 
 /**
- * UniBooks Book_base class.
+ * Book_base class.
  *
  * Is extended by Book model class and contains
  * all properties and base method to manage a book.
@@ -662,17 +656,12 @@ class Book_base extends MY_Model {
     /**
      * Set ID
      *
-     * Sets the ID property and try to set all properties
-     * from `books` db.
-     * Throws an exception on failure.
-     *
      * @param int  $value the ID to set
      * @return void
      */
     public function set_id($value)
     {
         $this->ID = (int) $value;
-        $this->select_by('ID');
     }
     
     /**
@@ -1050,12 +1039,12 @@ class Book_base extends MY_Model {
 // END Book_base class
 
 /**
- * UniBooks Exchange_base class.
+ * Exchange_base class.
  *
  * extended by Sell_model and Request_model
  *
  * @package UniBooks
- * @category Models
+ * @category Base Models
  * @author Emiliano Bovetti
  */
 class Exchange_base extends MY_Model {

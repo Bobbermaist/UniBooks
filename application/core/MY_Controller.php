@@ -10,18 +10,13 @@
  */
 
 /**
- * UniBooks MY_Controller class.
+ * MY_Controller class.
  *
- * Extended by controllers.
- *
- * Initializes an instance variable
- * indicating whether the user is logged in,
- * has a system to queue and load
- * multiple views and provides an exception
- * handler system.
+ * Extended by controllers, provides the
+ * basic functions.
  *
  * @package UniBooks
- * @category Controllers
+ * @category Core
  * @author Emiliano Bovetti
  */
 class MY_Controller extends CI_Controller  {

@@ -10,7 +10,7 @@
  */
 
 /**
- * UniBooks Custom_exception class.
+ * Custom_exception class.
  *
  * Extends native PHP Exception class.
  * The Custom exception can be constructed
@@ -19,10 +19,8 @@
  * All error codes are defined as contants in
  * ./application/config/constants.php
  * 
- * The custom exception class will construct
- * the parent Exception class with this error
- * code and the message retrieved by 'exception_lang'
- * file.
+ * The exception message will be retrieved in
+ * 'exception_lang' file.
  *
  * @package UniBooks
  * @category Exception

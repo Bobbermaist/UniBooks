@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks Request class.
+ * Request controller.
+ *
+ * Provides insert and delete requests.
  *
  * @package UniBooks
  * @category Controllers

@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks Sell class.
+ * Sell controller.
+ *
+ * Provides insert and delete sells.
  *
  * @package UniBooks
  * @category Controllers

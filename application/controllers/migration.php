@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks Migration class.
+ * Migration controller.
+ *
+ * Carries out migration and drop.
  *
  * @package UniBooks
  * @category Controllers

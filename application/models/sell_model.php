@@ -10,10 +10,10 @@
  */
 
 /**
- * UniBooks Sell_model class.
+ * Sell_model class.
  * 
  * Extends Exchange_base class and provides
- * all methods to manage sells
+ * all methods to manage sells.
  *
  * @package UniBooks
  * @category Models

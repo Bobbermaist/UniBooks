@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks Login class.
+ * Login controller.
+ *
+ * Log in functionality for registered users.
  *
  * @package UniBooks
  * @category Controllers
@@ -42,7 +44,7 @@ class Login extends MY_Controller {
         if ($this->form_validation->run() === TRUE)
         {
             $this->_try('User_model', 'login', $this->input->post('user_name'), $this->input->post('password'));
-            $this->_redirect($this->User_model->userdata('redirect'));
+            $this->_redirect($this->User_model->userdata('redirect'), 'user');
         }
 
         $this->_view();

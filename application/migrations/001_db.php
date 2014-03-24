@@ -15,7 +15,7 @@
 define('CHARSET', 'DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci');
 
 /**
- * UniBooks Migration_Db class.
+ * Migration_Db class.
  *
  * Extends CI_Migration class and contains
  * the UniBooks migration.

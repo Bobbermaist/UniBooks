@@ -16,7 +16,7 @@
 require_once CORE_PATH . 'Custom_exception.php';
 
 /**
- * UniBooks MY_Loader Class
+ * MY_Loader class.
  *
  * Extends the default loader class.
  *

@@ -10,7 +10,7 @@
  */
 
 /**
- * UniBooks MY_Form_validation class.
+ * MY_Form_validation library.
  *
  * Extends the CI validation rules.
  *

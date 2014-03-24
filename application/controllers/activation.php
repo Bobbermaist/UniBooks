@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks Activation class.
+ * Activation controller.
+ *
+ * Confirms the account to enter the site.
  *
  * @package UniBooks
  * @category Controllers

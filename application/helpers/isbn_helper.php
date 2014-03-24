@@ -10,7 +10,7 @@
  */
 
 /**
- * UniBooks ISBN helper.
+ * ISBN helper.
  * 
  * Contains all the useful function
  * to manage ISBNs

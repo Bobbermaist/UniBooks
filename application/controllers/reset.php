@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks Reset class.
+ * Reset controller.
+ *
+ * Forgot your password?
  *
  * @package UniBooks
  * @category Controllers

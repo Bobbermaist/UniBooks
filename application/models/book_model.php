@@ -10,7 +10,7 @@
  */
 
 /**
- * UniBooks Book_model class.
+ * Book_model class.
  *
  * Extends Book_base class and provides all
  * methods to manage books.

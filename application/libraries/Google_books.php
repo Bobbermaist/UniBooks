@@ -16,7 +16,7 @@ require_once GOOGLE_API_PATH . 'Google_Client.php';
 require_once GOOGLE_API_PATH . 'contrib/Google_BooksService.php';
 
 /**
- * UniBooks Google_books class.
+ * Google_books library.
  *
  * Provides an interface to the
  * google books API

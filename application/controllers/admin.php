@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks Admin class.
+ * Admin controller.
+ *
+ * Provides a reserved area for admins.
  *
  * @package UniBooks
  * @category Controllers

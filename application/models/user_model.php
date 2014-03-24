@@ -10,10 +10,10 @@
  */
 
 /**
- * UniBooks User_model class.
+ * User_model class.
  *
  * Extends User_base class and provides all 
- * functionalities to manage users
+ * functionalities to manage users.
  *
  * @package UniBooks
  * @category Models

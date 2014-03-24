@@ -10,10 +10,10 @@
  */
 
 /**
- * UniBooks Request_model class.
+ * Request_model class.
  * 
  * Extends Exchange_base class and provides
- * all methods to manage requests
+ * all methods to manage requests.
  *
  * @package UniBooks
  * @category Models

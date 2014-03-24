@@ -10,7 +10,7 @@
  */
 
 /**
- * UniBooks debug helper.
+ * Debug helper.
  *
  * @package UniBooks
  * @category Helpers
@@ -19,6 +19,14 @@
 
 // ------------------------------------------------------------------------
 
+/**
+ * It's really annoying when you don't remember where you
+ * put yours var_dump()
+ *
+ * @param mixed  $var any type of var
+ * @return void
+ * @access public
+ */
 function var_debug( $var )
 {
     $backtrace = debug_backtrace();

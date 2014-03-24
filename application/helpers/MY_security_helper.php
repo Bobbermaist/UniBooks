@@ -10,7 +10,7 @@
  */
 
 /**
- * UniBooks MY_security_helper
+ * MY_security_helper
  * 
  * Adds functions to the CI security helper.
  *
@@ -26,7 +26,7 @@ require_once PHPASS_PATH . 'PasswordHash.php';
 /**
  * Uses the PHPass library to make secure hash.
  *
- * @param   string  $str the string to hash
+ * @param string  $str the string to hash
  * @return string  (hashed)
  * @access public 
  */

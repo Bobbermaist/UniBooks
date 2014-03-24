@@ -10,7 +10,11 @@
  */
 
 /**
- * UniBooks User class.
+ * User controller.
+ *
+ * Reserved users area.
+ * Allows to make account changes and to retrieve
+ * sells and requests.
  *
  * @package UniBooks
  * @category Controllers
