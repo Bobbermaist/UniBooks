@@ -10,12 +10,6 @@
  */
 
 /**
- * Load the Custom_exception class.
- */
-
-// require_once CORE_PATH . 'Custom_exception.php';
-
-/**
  * MY_Loader class.
  *
  * Extends the default loader class.

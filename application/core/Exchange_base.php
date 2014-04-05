@@ -191,8 +191,9 @@ class Exchange_base extends MY_Model {
         $this->db->group_by('books.ID');
         $this->db->having($table . '.user_id', $this->user_id);
         $this->db->limit(ITEMS_PER_PAGE, $start_index);
+        $result = $this->db->get()->result_array();
 
-        return rebuild_codes_results( $this->db->get()->result_array() );
+        return rebuild_codes_results($result);
     }
 }
 
