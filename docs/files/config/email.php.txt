@@ -1,10 +1,10 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 $config = array(
-  'protocol'	=> 'mail',
-  'mailpath'	=> '/usr/sbin/sendmail',
-  'mailtype'	=> 'html',
-  'charset'		=> 'utf-8'
+  'protocol'    => 'mail',
+  'mailpath'    => '/usr/sbin/sendmail',
+  'mailtype'    => 'html',
+  'charset'        => 'utf-8'
 );
 
 /* End of file email.php */

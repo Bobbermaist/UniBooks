@@ -68,9 +68,14 @@ define('ADMIN_RIGHTS', 3);
 
 /**
  * Max length of sale description.
- * Used in migration and fomr validation.
+ * Used in migration and form validation.
  */
 define('SALE_DESCRIPTION_LENGTH', 500);
+
+/**
+ * Max length of a message.
+ */
+define('MESSAGE_LENGTH', 500);
 
 /**
  * Items shown per page.

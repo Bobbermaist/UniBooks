@@ -96,10 +96,10 @@ class Migration_Db extends CI_Migration {
     private function set_db_utf8()
     {
         $query = 'ALTER DATABASE `' . $this->db->database . '`
-                                CHARACTER SET utf8
-                                DEFAULT CHARACTER SET utf8
-                                COLLATE utf8_unicode_ci
-                                DEFAULT COLLATE utf8_unicode_ci;';
+                    CHARACTER SET utf8
+                    DEFAULT CHARACTER SET utf8
+                    COLLATE utf8_unicode_ci
+                    DEFAULT COLLATE utf8_unicode_ci;';
         $this->db->query($query);
     }
 
@@ -112,23 +112,23 @@ class Migration_Db extends CI_Migration {
     private function users_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `users` (
-                            `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-                            `user_name` varchar(20) NOT NULL DEFAULT '',
-                            `password` varchar(60) NOT NULL DEFAULT '',
-                            `email` varchar(64) NOT NULL DEFAULT '',
-                            `registration_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-                            `rights` tinyint(1) NOT NULL DEFAULT -1,
-                            PRIMARY KEY (`ID`),
-                            UNIQUE KEY `user_name` (`user_name`),
-                            UNIQUE KEY `email` (`email`)
-                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+                    `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+                    `user_name` varchar(20) NOT NULL DEFAULT '',
+                    `password` varchar(60) NOT NULL DEFAULT '',
+                    `email` varchar(64) NOT NULL DEFAULT '',
+                    `registration_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+                    `rights` tinyint(1) NOT NULL DEFAULT -1,
+                    PRIMARY KEY (`ID`),
+                    UNIQUE KEY `user_name` (`user_name`),
+                    UNIQUE KEY `email` (`email`)
+                ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
         $this->db->query($query);
 
         // insert first admin user
         $admin_rights = ADMIN_RIGHTS;
         $query = "INSERT INTO `users` (`ID`, `user_name`, `password`, `email`, `registration_time`, `rights`)
-                            VALUES (1, 'bob', '\$2a\$08\$HIRyxB7T8zohpHt25DPKSu.AOuUKkjl2ImYTj9NEanT/IYRR.JP3G',
-                                            'emilianobovetti@hotmail.it', NULL, $admin_rights);";
+                    VALUES (1, 'bob', '\$2a\$08\$HIRyxB7T8zohpHt25DPKSu.AOuUKkjl2ImYTj9NEanT/IYRR.JP3G',
+                        'emilianobovetti@hotmail.it', NULL, $admin_rights);";
         $this->db->query($query);
     }
 
@@ -152,11 +152,11 @@ class Migration_Db extends CI_Migration {
     private function tmp_users_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `tmp_users` (
-                            `user_id` int(9) unsigned NOT NULL DEFAULT 0,
-                            `confirm_code` varchar(15) DEFAULT NULL,
-                            `tmp_email` varchar(64) DEFAULT NULL,
-                            PRIMARY KEY (`user_id`)
-                        ) ENGINE=MyISAM " . CHARSET . ";";
+                    `user_id` int(9) unsigned NOT NULL DEFAULT 0,
+                    `confirm_code` varchar(15) DEFAULT NULL,
+                    `tmp_email` varchar(64) DEFAULT NULL,
+                    PRIMARY KEY (`user_id`)
+                ) ENGINE=MyISAM " . CHARSET . ";";
         $this->db->query($query);
     }
 
@@ -172,6 +172,42 @@ class Migration_Db extends CI_Migration {
     }
 
     /**
+     * Creates `messages` table.
+     *
+     * @return void
+     * @access private
+     */
+    private function messages_up()
+    {
+        $query = "CREATE TABLE IF NOT EXISTS `messages` (
+                    `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+                    `id_sender` int(9) unsigned NOT NULL DEFAULT 0,
+                    `id_receiver` int(9) unsigned NOT NULL DEFAULT 0,
+                    `message` varchar(" . MESSAGE_LENGTH . ") NOT NULL DEFAULT '',
+                    `sending_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+                    PRIMARY KEY (`ID`),
+                    FOREIGN KEY (id_sender) REFERENCES users(ID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE,
+                    FOREIGN KEY (id_receiver) REFERENCES users(ID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE,
+                ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+        $this->db->query($query);
+    }
+
+    /**
+     * Drops `messages` table.
+     *
+     * @return void
+     * @access private
+     */
+    private function messages_down()
+    {
+        $this->db->query('DROP TABLE IF EXISTS `messages`;');
+    }
+
+    /**
      * Creates `ci_sessions` table utilized to store 
      * CI session data.
      *
@@ -181,14 +217,14 @@ class Migration_Db extends CI_Migration {
     private function ci_sessions_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `ci_sessions` (
-                            `session_id` varchar(40) NOT NULL DEFAULT '0',
-                            `ip_address` varchar(45) NOT NULL DEFAULT '0',
-                            `user_agent` varchar(120) NOT NULL,
-                            `last_activity` int(10) unsigned NOT NULL DEFAULT '0',
-                            `user_data` text NOT NULL,
-                            PRIMARY KEY (`session_id`),
-                            KEY `last_activity_idx` (`last_activity`)
-                        ) ENGINE=MyISAM " . CHARSET . ";";
+                    `session_id` varchar(40) NOT NULL DEFAULT '0',
+                    `ip_address` varchar(45) NOT NULL DEFAULT '0',
+                    `user_agent` varchar(120) NOT NULL,
+                    `last_activity` int(10) unsigned NOT NULL DEFAULT '0',
+                    `user_data` text NOT NULL,
+                    PRIMARY KEY (`session_id`),
+                    KEY `last_activity_idx` (`last_activity`)
+                ) ENGINE=MyISAM " . CHARSET . ";";
         $this->db->query($query);
     }
 
@@ -212,24 +248,24 @@ class Migration_Db extends CI_Migration {
     private function books_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `books` (
-                            `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-                            `ISBN` varchar(9) NOT NULL DEFAULT '000000000',
-                            `google_id` varchar(12) DEFAULT NULL,
-                            `title` varchar(255) NOT NULL DEFAULT '',
-                            `publisher_id` int(9) unsigned NOT NULL DEFAULT 0,
-                            `publication_year` int(4) DEFAULT NULL,
-                            `pages` int(5) unsigned DEFAULT NULL,
-                            `language_id` int(5) unsigned NOT NULL DEFAULT 0,
-                            PRIMARY KEY (`ID`),
-                            UNIQUE KEY `ISBN` (`ISBN`),
-                            UNIQUE KEY `google_id` (`google_id`),
-                            FOREIGN KEY (publisher_id) REFERENCES publishers(ID)
-                                ON DELETE NO ACTION
-                                ON UPDATE NO ACTION,
-                            FOREIGN KEY (language_id) REFERENCES languages(ID)
-                                ON DELETE NO ACTION
-                                ON UPDATE NO ACTION
-                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+                    `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+                    `ISBN` varchar(9) NOT NULL DEFAULT '000000000',
+                    `google_id` varchar(12) DEFAULT NULL,
+                    `title` varchar(255) NOT NULL DEFAULT '',
+                    `publisher_id` int(9) unsigned NOT NULL DEFAULT 0,
+                    `publication_year` int(4) DEFAULT NULL,
+                    `pages` int(5) unsigned DEFAULT NULL,
+                    `language_id` int(5) unsigned NOT NULL DEFAULT 0,
+                    PRIMARY KEY (`ID`),
+                    UNIQUE KEY `ISBN` (`ISBN`),
+                    UNIQUE KEY `google_id` (`google_id`),
+                    FOREIGN KEY (publisher_id) REFERENCES publishers(ID)
+                        ON DELETE NO ACTION
+                        ON UPDATE NO ACTION,
+                    FOREIGN KEY (language_id) REFERENCES languages(ID)
+                        ON DELETE NO ACTION
+                        ON UPDATE NO ACTION
+                ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
         $this->db->query($query);
     }
 
@@ -253,11 +289,11 @@ class Migration_Db extends CI_Migration {
     private function authors_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `authors` (
-                            `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-                            `name` varchar(255) DEFAULT NULL,
-                            PRIMARY KEY (`ID`),
-                            UNIQUE KEY `author_name` (`name`)
-                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+                    `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+                    `name` varchar(255) DEFAULT NULL,
+                    PRIMARY KEY (`ID`),
+                    UNIQUE KEY `author_name` (`name`)
+                ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
         $this->db->query($query);
 
         $query = "INSERT INTO `authors` (`ID`, `name`)
@@ -285,16 +321,16 @@ class Migration_Db extends CI_Migration {
     private function links_author_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `links_book_author` (
-                            `book_id` int(9) unsigned NOT NULL  DEFAULT 0,
-                            `author_id` int(9) unsigned NOT NULL DEFAULT 0,
-                            UNIQUE KEY `author` (`book_id`, `author_id`),
-                            FOREIGN KEY (book_id) REFERENCES books(ID)
-                                ON DELETE CASCADE
-                                ON UPDATE CASCADE,
-                            FOREIGN KEY (author_id) REFERENCES authors(ID)
-                                ON DELETE CASCADE
-                                ON UPDATE CASCADE
-                        ) ENGINE=InnoDB " . CHARSET . ";";
+                    `book_id` int(9) unsigned NOT NULL  DEFAULT 0,
+                    `author_id` int(9) unsigned NOT NULL DEFAULT 0,
+                    UNIQUE KEY `author` (`book_id`, `author_id`),
+                    FOREIGN KEY (book_id) REFERENCES books(ID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE,
+                    FOREIGN KEY (author_id) REFERENCES authors(ID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE
+                ) ENGINE=InnoDB " . CHARSET . ";";
         $this->db->query($query);
     }
 
@@ -318,11 +354,11 @@ class Migration_Db extends CI_Migration {
     private function publishers_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `publishers` (
-                            `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-                            `name` varchar(255) DEFAULT NULL,
-                            PRIMARY KEY (`ID`),
-                            UNIQUE KEY `publisher_name` (`name`)
-                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+                    `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+                    `name` varchar(255) DEFAULT NULL,
+                    PRIMARY KEY (`ID`),
+                    UNIQUE KEY `publisher_name` (`name`)
+                ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
         $this->db->query($query);
 
         $query = "INSERT INTO `publishers` (`ID`, `name`)
@@ -350,11 +386,11 @@ class Migration_Db extends CI_Migration {
     private function categories_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `categories` (
-                            `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
-                            `name` varchar(255) DEFAULT NULL,
-                            PRIMARY KEY (`ID`),
-                            UNIQUE KEY `category_name` (`name`)
-                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+                    `ID` int(9) unsigned NOT NULL AUTO_INCREMENT,
+                    `name` varchar(255) DEFAULT NULL,
+                    PRIMARY KEY (`ID`),
+                    UNIQUE KEY `category_name` (`name`)
+                ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
         $this->db->query($query);
 
         $query = "INSERT INTO `categories` (`ID`, `name`)
@@ -382,16 +418,16 @@ class Migration_Db extends CI_Migration {
     private function links_category_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `links_book_category` (
-                            `book_id` int(9) unsigned NOT NULL  DEFAULT 0,
-                            `category_id` int(9) unsigned NOT NULL DEFAULT 0,
-                            UNIQUE KEY `category` (`book_id`, `category_id`),
-                            FOREIGN KEY (book_id) REFERENCES books(ID)
-                                ON DELETE CASCADE
-                                ON UPDATE CASCADE,
-                            FOREIGN KEY (category_id) REFERENCES categories(ID)
-                                ON DELETE CASCADE
-                                ON UPDATE CASCADE
-                        ) ENGINE=InnoDB " . CHARSET . ";";
+                    `book_id` int(9) unsigned NOT NULL  DEFAULT 0,
+                    `category_id` int(9) unsigned NOT NULL DEFAULT 0,
+                    UNIQUE KEY `category` (`book_id`, `category_id`),
+                    FOREIGN KEY (book_id) REFERENCES books(ID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE,
+                    FOREIGN KEY (category_id) REFERENCES categories(ID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE
+                ) ENGINE=InnoDB " . CHARSET . ";";
         $this->db->query($query);
     }
 
@@ -415,11 +451,11 @@ class Migration_Db extends CI_Migration {
     private function languages_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `languages` (
-                            `ID` int(5) unsigned NOT NULL AUTO_INCREMENT,
-                            `name` varchar(255) DEFAULT NULL,
-                            PRIMARY KEY (`ID`),
-                            UNIQUE KEY `language_name` (`name`)
-                        ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
+                    `ID` int(5) unsigned NOT NULL AUTO_INCREMENT,
+                    `name` varchar(255) DEFAULT NULL,
+                    PRIMARY KEY (`ID`),
+                    UNIQUE KEY `language_name` (`name`)
+                ) ENGINE=InnoDB " . CHARSET . " AUTO_INCREMENT=1;";
         $this->db->query($query);
 
         $query = "INSERT INTO `languages` (`ID`, `name`)
@@ -448,18 +484,18 @@ class Migration_Db extends CI_Migration {
     private function books_for_sale_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `books_for_sale` (
-                            `user_id` int(9) unsigned NOT NULL DEFAULT 0,
-                            `book_id` int(9) unsigned NOT NULL DEFAULT 0,
-                            `price` float(4,2) NOT NULL DEFAULT '0.00',
-                            `description` VARCHAR(" . SALE_DESCRIPTION_LENGTH . ") DEFAULT NULL,
-                            UNIQUE KEY `selling` (`user_id`, `book_id`),
-                            FOREIGN KEY (user_id) REFERENCES users(ID)
-                                ON DELETE CASCADE
-                                ON UPDATE CASCADE,
-                            FOREIGN KEY (book_id) REFERENCES books(ID)
-                                ON DELETE CASCADE
-                                ON UPDATE CASCADE
-                        ) ENGINE=InnoDB " . CHARSET . ";";
+                    `user_id` int(9) unsigned NOT NULL DEFAULT 0,
+                    `book_id` int(9) unsigned NOT NULL DEFAULT 0,
+                    `price` float(4,2) NOT NULL DEFAULT '0.00',
+                    `description` VARCHAR(" . SALE_DESCRIPTION_LENGTH . ") DEFAULT NULL,
+                    UNIQUE KEY `selling` (`user_id`, `book_id`),
+                    FOREIGN KEY (user_id) REFERENCES users(ID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE,
+                    FOREIGN KEY (book_id) REFERENCES books(ID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE
+                ) ENGINE=InnoDB " . CHARSET . ";";
         $this->db->query($query);
     }
 
@@ -483,15 +519,15 @@ class Migration_Db extends CI_Migration {
     private function books_requested_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `books_requested` (
-                            `user_id` int(9) unsigned NOT NULL DEFAULT 0,
-                            `book_id` int(9) unsigned NOT NULL DEFAULT 0,
-                            FOREIGN KEY (user_id) REFERENCES users(ID)
-                                ON DELETE CASCADE
-                                ON UPDATE CASCADE,
-                            FOREIGN KEY (book_id) REFERENCES books(ID)
-                                ON DELETE CASCADE
-                                ON UPDATE CASCADE
-                        ) ENGINE=InnoDB " . CHARSET . ";";
+                    `user_id` int(9) unsigned NOT NULL DEFAULT 0,
+                    `book_id` int(9) unsigned NOT NULL DEFAULT 0,
+                    FOREIGN KEY (user_id) REFERENCES users(ID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE,
+                    FOREIGN KEY (book_id) REFERENCES books(ID)
+                        ON DELETE CASCADE
+                        ON UPDATE CASCADE
+                ) ENGINE=InnoDB " . CHARSET . ";";
         $this->db->query($query);
     }
 
@@ -517,10 +553,10 @@ class Migration_Db extends CI_Migration {
     private function language_groups_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `language_groups` (
-                            `code` varchar(5) NOT NULL DEFAULT '0',
-                            `name` varchar(128) NOT NULL DEFAULT '',
-                            PRIMARY KEY (`code`)
-                        ) ENGINE=InnoDB " . CHARSET . ";";
+                    `code` varchar(5) NOT NULL DEFAULT '0',
+                    `name` varchar(128) NOT NULL DEFAULT '',
+                    PRIMARY KEY (`code`)
+                ) ENGINE=InnoDB " . CHARSET . ";";
         $this->db->query($query);
         $pop_path = APPPATH . 'migrations/populate_language_groups.sql';
         $pop_open = fopen($pop_path, 'r');
@@ -554,10 +590,10 @@ class Migration_Db extends CI_Migration {
     private function publisher_codes_up()
     {
         $query = "CREATE TABLE IF NOT EXISTS `publisher_codes` (
-                            `code` varchar(7) NOT NULL DEFAULT '0',
-                            `name` varchar(255) NOT NULL DEFAULT '',
-                            PRIMARY KEY (`code`)
-                        ) ENGINE=InnoDB " . CHARSET . ";";
+                    `code` varchar(7) NOT NULL DEFAULT '0',
+                    `name` varchar(255) NOT NULL DEFAULT '',
+                    PRIMARY KEY (`code`)
+                ) ENGINE=InnoDB " . CHARSET . ";";
         $this->db->query($query);
         $pop_path = APPPATH . 'migrations/populate_publisher_codes_from_wikipedia.sql';
         $pop_open = fopen($pop_path, 'r');

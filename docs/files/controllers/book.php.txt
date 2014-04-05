@@ -10,7 +10,9 @@
  */
 
 /**
- * UniBooks Book class.
+ * Book controller.
+ *
+ * Deals with the book extraction.
  *
  * @package UniBooks
  * @category Controllers
@@ -18,60 +20,60 @@
  */
 class Book extends MY_Controller {
 
-	public function __construct()
-	{
-		parent::__construct();
-		$this->load->model('Book_model');
-	}
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->model('Book_model');
+    }
 
-	public function index()
-	{
-		$this->load->helper('form');
-		$this->load->library('form_validation');
-		$this->_set_view('form/single_field', array(
-			'action'				=> 'book/',
-			'label'					=> 'Cerca un libro (ISBN)',
-			'submit_name'		=> 'search_book',
-			'submit_value'	=> 'Cerca',
-			'input'					=> array(
-				'name'			=> 'search_key',
-				'id'				=> 'search_book',
-				'maxlength'	=> '255',
-			),
-		));
+    public function index()
+    {
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+        $this->_set_view('form/single_field', array(
+            'action'                => 'book/',
+            'label'                 => 'Cerca un libro (ISBN)',
+            'submit_name'       => 'search_book',
+            'submit_value'  => 'Cerca',
+            'input'                 => array(
+                'name'          => 'search_key',
+                'id'                => 'search_book',
+                'maxlength' => '255',
+            ),
+        ));
 
-		if ($this->form_validation->run() === TRUE)
-		{
-			$search_key = $this->input->post('search_key');
-			if ($search_key !== FALSE)
-			{
-				$this->_try('Book_model', 'set_isbn', $search_key);
-				if ($this->_caught_exception() === FALSE)
-				{
-					redirect("book/result/{$search_key}");
-				}
-				else
-				{
-					$this->_set_message();
-				}
-			}
-		}
+        if ($this->form_validation->run() === TRUE)
+        {
+            $search_key = $this->input->post('search_key');
+            if ($search_key !== FALSE)
+            {
+                $this->_try('Book_model', 'set_isbn', $search_key);
+                if ($this->_caught_exception() === FALSE)
+                {
+                    redirect("book/result/{$search_key}");
+                }
+                else
+                {
+                    $this->_set_message();
+                }
+            }
+        }
 
-		$this->_view();
-	}
+        $this->_view();
+    }
 
-	public function result($isbn = 0)
-	{
-		$this->_try('Book_model', 'set_isbn', $isbn);
-		$this->_try('Book_model', 'search_by_isbn');
+    public function result($isbn = 0)
+    {
+        $this->_try('Book_model', 'set_isbn', $isbn);
+        $this->_try('Book_model', 'search_by_isbn');
 
-		if ($this->_caught_exception() === FALSE)
-		{
-			$this->_set_view('book', $this->Book_model->get_array());
-		}
-		$this->_set_message();
-		$this->_view();
-	}
+        if ($this->_caught_exception() === FALSE)
+        {
+            $this->_set_view('book', $this->Book_model->get_array());
+        }
+        $this->_set_message();
+        $this->_view();
+    }
 }
 
 // END Book class

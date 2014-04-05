@@ -10,7 +10,7 @@
  */
 
 /**
- * UniBooks MY_url_helper
+ * MY_url_helper
  *
  * Adds funtctions to the CI url helper
  *

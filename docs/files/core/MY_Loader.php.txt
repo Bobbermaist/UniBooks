@@ -16,7 +16,7 @@
 require_once CORE_PATH . 'Custom_exception.php';
 
 /**
- * UniBooks MY_Loader Class
+ * MY_Loader class.
  *
  * Extends the default loader class.
  *
@@ -26,38 +26,38 @@ require_once CORE_PATH . 'Custom_exception.php';
  */
 class MY_Loader extends CI_Loader {
 
-	/**
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-	}
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
-	/**
-	 * The variables loaded in this way
-	 *
-	 * <code>
-	 * 	$this->load->vars($var);
-	 * </code>
-	 * or
-	 * <code>
-	 * 	$this->load->view('name', $var);
-	 * </code>
-	 *
-	 * are cached by CodeIgniter and if you try
-	 * to load the same view with different
-	 * variables this could lead to problems.
-	 *
-	 * This method allows to unset all these cached variables.
-	 *
-	 * @return void
-	 */
-	public function clean_cached_vars()
-	{
-		// sets this instance variable to its default value
-		$this->_ci_cached_vars = array();
-	}
+    /**
+     * The variables loaded in this way
+     *
+     * <code>
+     *  $this->load->vars($var);
+     * </code>
+     * or
+     * <code>
+     *  $this->load->view('name', $var);
+     * </code>
+     *
+     * are cached by CodeIgniter and if you try
+     * to load the same view with different
+     * variables this could lead to problems.
+     *
+     * This method allows to unset all these cached variables.
+     *
+     * @return void
+     */
+    public function clean_cached_vars()
+    {
+        // sets this instance variable to its default value
+        $this->_ci_cached_vars = array();
+    }
 }
 
 // END MY_Loader class

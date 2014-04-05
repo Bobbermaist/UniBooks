@@ -10,7 +10,7 @@
  */
 
 /**
- * UniBooks MY_Form_validation class.
+ * MY_Form_validation library.
  *
  * Extends the CI validation rules.
  *
@@ -20,77 +20,70 @@
  */
 class MY_Form_validation extends CI_Form_validation {
 
-	/**
-	 * CodeIgniter istance
-	 *
-	 * @var object
-	 * @access private
-	 */
-	private $_CI;
+    /**
+     * CodeIgniter istance
+     *
+     * @var object
+     * @access private
+     */
+    private $_CI;
 
-	/**
-	 * Constructor
-	 *
-	 * Get the CodeIgniter istance.
-	 *
-	 * @param array  $rules - see CodeIgniter doc for this parameter
-	 * @return void
-	 */
-  public function __construct($rules = array())
-  {
-  	parent::__construct($rules);
-  	$this->_CI =& get_instance();
-  }
+    /**
+     * Constructor
+     *
+     * Get the CodeIgniter istance.
+     *
+     * @param array  $rules - see CodeIgniter doc for this parameter
+     * @return void
+     */
+    public function __construct($rules = array())
+    {
+        parent::__construct($rules);
+        $this->_CI =& get_instance();
+    }
 
-	/**
-	 * Validate an email address.
-	 *
-	 * @param string  $str contains the email address to validate
-	 * @return boolean
-	 */
-  public function valid_email($str)
-  {
-  	return filter_var($str, FILTER_VALIDATE_EMAIL);
-  }
+    /**
+     * Validate an email address.
+     *
+     * @param string  $str contains the email address to validate
+     * @return boolean
+     */
+    public function valid_email($str)
+    {
+        return filter_var($str, FILTER_VALIDATE_EMAIL);
+    }
 
-	/**
-	 * Validate a price.
-	 *
-	 * @param string  $str contains the price to validate
-	 * @return boolean
-	 */
-	public function valid_price($str)
-	{
-		return ( ! preg_match('/^([0-9]+)([\.|,][0-9]{1,2})?$/', $str)) ? FALSE : TRUE;
-	}
-	
-	/**
-	 * Validate an ISBN code.
-	 *
-	 * @param string  $str contains the ISBN code to validate
-	 * @return boolean
-	 */
-	public function valid_isbn($str)
-	{
-		$this->_CI->load->model('Book_model');
+    /**
+     * Validate a price.
+     *
+     * @param string  $str contains the price to validate
+     * @return boolean
+     */
+    public function valid_price($str)
+    {
+        return ( ! preg_match('/^([0-9]+)([\.|,][0-9]{1,2})?$/', $str)) ? FALSE : TRUE;
+    }
+    
+    /**
+     * Validate an ISBN code.
+     *
+     * @param string  $str contains the ISBN code to validate
+     * @return boolean
+     */
+    public function valid_isbn($str)
+    {
+        $this->_CI->load->model('Book_model');
 
-		try
-		{
-			$this->_CI->Book_model->set_isbn($str);
-		}
-		catch (Custom_exception $e)
-		{
-			return FALSE;
-		}
-		return TRUE;
-		/*
-		$this->_CI->load->helper('isbn');
-
-		return validate_isbn_13($str) OR
-						validate_isbn_10($str) OR
-						validate_isbn_13('978' . $str);
-		*/
-	}
+        try
+        {
+            $this->_CI->Book_model->set_isbn($str);
+        }
+        catch (Custom_exception $e)
+        {
+            return FALSE;
+        }
+        return TRUE;
+    }
 }
 
 // END MY_Form_validation class

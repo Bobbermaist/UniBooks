@@ -13,7 +13,7 @@
  * Load the Custom_exception class.
  */
 
-require_once CORE_PATH . 'Custom_exception.php';
+// require_once CORE_PATH . 'Custom_exception.php';
 
 /**
  * MY_Loader class.
@@ -32,6 +32,73 @@ class MY_Loader extends CI_Loader {
     public function __construct()
     {
         parent::__construct();
+        set_error_handler(array($this, '_error_handler'));
+        spl_autoload_register(array($this, '_autoload_core_class'));
+        $this->class_file('Custom_exception');
+    }
+
+    /**
+     * Custom error handler.
+     * Converts errors in exceptions.
+     *
+     * @param $severity  PHP error code.
+     * @param $message  Text of error.
+     * @param $filename  File error occurred in.
+     * @param $line  Line number of error.
+     * @return void
+     * @throws ErrorException
+     * @access private
+     */
+    private function _error_handler($severity, $message, $filename, $line)
+    { 
+        throw new ErrorException($message, 0, $severity, $filename, $line); 
+    }
+
+    /**
+     * Autoload method for core classes.
+     *
+     * @param $class_name  The class name.
+     * @return void
+     * @access private
+     */
+    private function _autoload_core_class($class_name)
+    {
+        if (stripos($class_name, 'CI') === FALSE AND stripos($class_name, 'PEAR') === FALSE)
+        {
+            $this->class_file($class_name);
+        }
+    }
+
+    /**
+     * Load a class.
+     *
+     * @param $class_name  Class name.
+     * @param $file_path  File path.
+     * @return void
+     */
+    public function class_file($class_name, $file_path = CORE_PATH)
+    {
+        $full_path = $file_path . $class_name . '.php';
+        if (in_array($full_path, $this->_ci_loaded_files))
+        {
+            log_message('debug', $class_name . ' class already loaded. Second attempt ignored.');
+            return;
+        }
+
+        try
+        {
+            include_once $full_path;
+        }
+        catch (ErrorException $e)
+        {
+            log_message('error', 'Unable to load the requested class: ' . $class_name);
+            show_error('Unable to load the requested class: ' . $class_name);
+        }
+
+        if ( ! isset($e))
+        {
+            $this->_ci_loaded_files[] = $full_path;
+        }
     }
 
     /**

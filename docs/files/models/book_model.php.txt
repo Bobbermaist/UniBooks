@@ -10,7 +10,7 @@
  */
 
 /**
- * UniBooks Book_model class.
+ * Book_model class.
  *
  * Extends Book_base class and provides all
  * methods to manage books.
@@ -21,75 +21,75 @@
  */
 class Book_model extends Book_base {
 
-	/**
-	 * Constructor
-	 */
-	public function __construct()
-	{
-		parent::__construct();
-	}
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
-	/**
-	 * Return the object properties as an associative array.
-	 *
-	 * @return array
-	 */
-	public function get_array()
-	{
-		return array(
-			'ID'								=> $this->ID,
-			'ISBN_13'						=> $this->ISBN_13,
-			'ISBN_10'						=> $this->ISBN_10,
-			'google_id'					=> $this->google_id,
-			'title'							=> $this->title,
-			'authors'						=> $this->authors,
-			'publisher'					=> $this->publisher,
-			'publication_year'	=> $this->publication_year,
-			'pages'							=> $this->pages,
-			'language'					=> $this->language,
-			'categories'				=> $this->categories,
-		);
-	}
+    /**
+     * Return the object properties as an associative array.
+     *
+     * @return array
+     */
+    public function get_array()
+    {
+        return array(
+            'ID'                                => $this->ID,
+            'ISBN_13'                        => $this->ISBN_13,
+            'ISBN_10'                        => $this->ISBN_10,
+            'google_id'                    => $this->google_id,
+            'title'                            => $this->title,
+            'authors'                        => $this->authors,
+            'publisher'                    => $this->publisher,
+            'publication_year'    => $this->publication_year,
+            'pages'                            => $this->pages,
+            'language'                    => $this->language,
+            'categories'                => $this->categories,
+        );
+    }
 
-	/**
-	 * Search by ISBN code.
-	 * 
-	 * Search first in local db, if ISBN code is not found
-	 * calls the google_books library to retrieve book data.
-	 *
-	 * If google books api fail throws an exception
-	 *
-	 * @return void
-	 * @throws Custom_exception(ISBN_NOT_FOUND) if can't
-	 *    find the given ISBN code on google books API
-	 */
-	public function search_by_isbn()
-	{
-		$this->_required_isbn();
+    /**
+     * Search by ISBN code.
+     * 
+     * Search first in local db, if ISBN code is not found
+     * calls the google_books library to retrieve book data.
+     *
+     * If google books api fail throws an exception
+     *
+     * @return void
+     * @throws Custom_exception(ISBN_NOT_FOUND) if can't
+     *    find the given ISBN code on google books API
+     */
+    public function search_by_isbn()
+    {
+        $this->_required_isbn();
 
-		try
-		{
-			$this->select_by('ISBN');
-		}
-		catch (Custom_exception $e)
-		{
-			if ($e->getCode() === ISBN_NON_EXISTENT)
-			{
-				$this->load->library('google_books');
-				$this->google_books->get_by_isbn( $this->get_isbn() );
-				if ($this->google_books->total_items === 0)
-				{
-					throw new Custom_exception(ISBN_NOT_FOUND);
-				}
-				$this->insert($this->google_books->volumes[0]);
-				$this->search_by_isbn();
-			}
-			else
-			{
-				throw $e;
-			}
-		}
-	}
+        try
+        {
+            $this->select_by('ISBN');
+        }
+        catch (Custom_exception $e)
+        {
+            if ($e->getCode() === ISBN_NON_EXISTENT)
+            {
+                $this->load->library('google_books');
+                $this->google_books->get_by_isbn( $this->get_isbn() );
+                if ($this->google_books->total_items === 0)
+                {
+                    throw new Custom_exception(ISBN_NOT_FOUND);
+                }
+                $this->insert($this->google_books->volumes[0]);
+                $this->search_by_isbn();
+            }
+            else
+            {
+                throw $e;
+            }
+        }
+    }
 }
 
 // END Book_model class
