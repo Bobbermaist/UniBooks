@@ -85,8 +85,14 @@ class MY_Loader extends CI_Loader {
         }
         catch (ErrorException $e)
         {
-            log_message('error', 'Unable to load the requested class: ' . $class_name);
-            show_error('Unable to load the requested class: ' . $class_name);
+            $log = 'Unable to load the requested class: ' . $class_name;
+            if (ENVIRONMENT === 'development')
+            {
+                $log .= '<br><b> Full Trace: </b>' . str_replace('#', '<br>#', $e->getTraceAsString());
+            }
+
+            log_message('error', $log);
+            show_error($log);
         }
 
         if ( ! isset($e))
