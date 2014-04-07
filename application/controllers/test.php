@@ -29,7 +29,8 @@ class Test extends MY_Controller {
     {
         $this->load->model('Book_model');
         $this->Book_model->set_id(1);
-        var_debug($this->Book_model->get_array());
+        //var_debug($this->Book_model->get_array());
+        $this->load->class_file('Test_base');
     }
 }
 

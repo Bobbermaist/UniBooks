@@ -20,15 +20,18 @@
  */
 class MY_Loader extends CI_Loader {
 
+    private $_CI;
+
     /**
      * Constructor
      */
     public function __construct()
     {
         parent::__construct();
+        $this->_CI =& get_instance();
         set_error_handler(array($this, '_error_handler'));
-        spl_autoload_register(array($this, '_autoload_core_class'));
-        $this->class_file('Custom_exception');
+        spl_autoload_register(array($this, '_class_autoloader'));
+        $this->class_file('Custom_exception', CORE_PATH);
     }
 
     /**
@@ -55,11 +58,13 @@ class MY_Loader extends CI_Loader {
      * @return void
      * @access private
      */
-    private function _autoload_core_class($class_name)
+    private function _class_autoloader($class_name)
     {
-        if (stripos($class_name, 'CI') === FALSE AND stripos($class_name, 'PEAR') === FALSE)
+        if (strpos($class_name, $this->_CI->config->item('native_prefix')) === FALSE AND
+            strpos($class_name, $this->_CI->config->item('subclass_prefix')) === FALSE AND
+            strpos($class_name, 'PEAR') === FALSE)
         {
-            $this->class_file($class_name);
+            $this->class_file($class_name, NULL, 3);
         }
     }
 
@@ -70,9 +75,19 @@ class MY_Loader extends CI_Loader {
      * @param $file_path  File path.
      * @return void
      */
-    public function class_file($class_name, $file_path = CORE_PATH)
+    public function class_file($class_name, $file_path = NULL, $backtrace_level = 1)
     {
-        $full_path = $file_path . $class_name . '.php';
+        if (is_null($file_path))
+        {
+            $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $backtrace_level);
+            $backtrace = array_pop($backtrace);
+            $full_path = dirname($backtrace['file']) . '/' . $class_name . '.php';
+        }
+        else
+        {
+            $full_path = $file_path . $class_name . '.php';
+        }
+        
         if (in_array($full_path, $this->_ci_loaded_files))
         {
             log_message('debug', $class_name . ' class already loaded. Second attempt ignored.');
